@@ -1,0 +1,2255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Staff Portal — The Lifestyle Co</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:      #0d0d0d;
+  --cream:    #f7f4ef;
+  --warm:     #ede8e0;
+  --gold:     #c9a96e;
+  --gold2:    #b8915a;
+  --gold-dim: rgba(201,169,110,0.12);
+  --stone:    #7a7268;
+  --light:    #ffffff;
+  --border:   rgba(0,0,0,0.10);
+  --border2:  rgba(0,0,0,0.05);
+  --blue:     #3b82f6;  --blue-dim: rgba(59,130,246,0.10);
+  --green:    #22c55e;  --grn-dim:  rgba(34,197,94,0.10);
+  --red:      #ef4444;  --red-dim:  rgba(239,68,68,0.10);
+  --orange:   #f97316;  --org-dim:  rgba(249,115,22,0.10);
+  --purple:   #a855f7;  --pur-dim:  rgba(168,85,247,0.10);
+  --teal:     #14b8a6;  --teal-dim: rgba(20,184,166,0.10);
+  --2eros:    #3b82f6;  --supa:     #e05b6a;
+  --serif:    'Cormorant Garamond', Georgia, serif;
+  --sans:     'Outfit', system-ui, sans-serif;
+  --shadow:   0 2px 12px rgba(0,0,0,0.06);
+  --shadow-lg:0 8px 32px rgba(0,0,0,0.10);
+  --r: 6px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--sans); background: var(--cream); color: var(--ink); font-size: 15px; line-height: 1.5; overflow-x: hidden; }
+
+/* ── LAYOUT ── */
+.portal { display: flex; min-height: 100vh; }
+.sidebar {
+  width: 220px; flex-shrink: 0; background: var(--light);
+  border-right: 1px solid var(--border); display: flex; flex-direction: column;
+  position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; transition: transform 0.25s;
+}
+.sidebar-logo { padding: 18px 16px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+.logo-mark { width: 34px; height: 34px; background: var(--gold); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-family: var(--serif); font-size: 16px; font-weight: 600; color: var(--ink); }
+.logo-text { font-family: var(--serif); font-size: 15px; font-weight: 600; color: var(--ink); }
+.logo-sub  { font-size: 10px; color: var(--stone); }
+.brand-toggle { padding: 10px 12px; border-bottom: 1px solid var(--border); }
+.brand-toggle-label { font-size: 9px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--stone); margin-bottom: 6px; display:block; }
+.brand-tabs { display: grid; grid-template-columns: repeat(3,1fr); gap: 4px; }
+.brand-tab { padding: 5px 4px; border-radius: var(--r); border: 1px solid var(--border); background: none; color: var(--stone); font-family: var(--sans); font-size: 9px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
+.brand-tab.active        { border-color: var(--gold); color: var(--gold2); background: var(--gold-dim); }
+.brand-tab.active.eros   { border-color: var(--2eros); color: var(--2eros); background: var(--blue-dim); }
+.brand-tab.active.supa   { border-color: var(--supa);  color: var(--supa);  background: var(--red-dim); }
+.sidebar-nav { flex: 1; padding: 8px; overflow-y: auto; }
+.nav-section { margin-bottom: 16px; }
+.nav-section-label { font-size: 9px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--stone); padding: 0 8px; margin-bottom: 3px; }
+.nav-item { display: flex; align-items: center; gap: 9px; padding: 9px 10px; border-radius: var(--r); font-size: 13px; font-weight: 400; color: var(--stone); cursor: pointer; transition: all 0.15s; margin-bottom: 1px; border: none; background: none; width: 100%; text-align: left; }
+.nav-item:hover { background: var(--cream); color: var(--ink); }
+.nav-item.active { background: var(--gold-dim); color: var(--gold2); font-weight: 500; }
+.nav-icon { font-size: 13px; width: 18px; text-align: center; flex-shrink: 0; }
+.nav-badge { margin-left: auto; background: var(--red); color: white; font-size: 9px; font-weight: 600; padding: 1px 6px; border-radius: 99px; min-width: 18px; text-align: center; }
+.sidebar-footer { padding: 10px; border-top: 1px solid var(--border); }
+.user-row { display: flex; align-items: center; gap: 8px; padding: 8px; border-radius: var(--r); cursor: pointer; }
+.user-row:hover { background: var(--cream); }
+.user-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--gold-dim); border: 1px solid var(--gold); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: var(--gold2); }
+.user-name { font-size: 12px; font-weight: 500; }
+.user-role { font-size: 10px; color: var(--stone); }
+.main { flex: 1; margin-left: 220px; display: flex; flex-direction: column; min-height: 100vh; }
+.topbar { background: var(--light); border-bottom: 1px solid var(--border); padding: 11px 24px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 50; }
+.topbar-title { font-family: var(--serif); font-size: 18px; font-weight: 500; color: var(--ink); }
+.topbar-crumb { font-size: 11px; color: var(--stone); }
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+.search-input { background: var(--cream); border: 1px solid var(--border); border-radius: var(--r); padding: 7px 12px 7px 28px; font-size: 13px; color: var(--ink); width: 200px; outline: none; transition: all 0.2s; font-family: var(--sans); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 20 20' fill='none'%3E%3Ccircle cx='9' cy='9' r='6' stroke='%237a7268' stroke-width='1.5'/%3E%3Cpath d='M15 15l-3-3' stroke='%237a7268' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: 8px center; }
+.search-input:focus { border-color: var(--gold); width: 240px; background-color: var(--light); }
+.sidebar-toggle { display: none; }
+.page-content { padding: 24px; flex: 1; }
+.page-section { display: none; }
+.page-section.active { display: block; }
+
+/* ── BUTTONS ── */
+.btn { display: inline-flex; align-items: center; gap: 6px; border: none; border-radius: var(--r); cursor: pointer; font-family: var(--sans); font-weight: 500; transition: all 0.18s; text-decoration: none; font-size: 13px; }
+.btn-primary { background: var(--gold); color: var(--ink); padding: 9px 18px; }
+.btn-primary:hover { background: var(--gold2); }
+.btn-ink { background: var(--ink); color: var(--light); padding: 9px 18px; }
+.btn-ink:hover { background: #333; }
+.btn-outline { background: none; border: 1px solid var(--border); color: var(--stone); padding: 7px 14px; font-size: 12px; }
+.btn-outline:hover { border-color: var(--gold); color: var(--gold2); }
+.btn-ghost { background: none; color: var(--stone); padding: 6px 10px; font-size: 12px; }
+.btn-ghost:hover { color: var(--ink); background: var(--cream); }
+.btn-success { background: var(--grn-dim); color: var(--green); border: 1px solid rgba(34,197,94,0.3); padding: 5px 10px; font-size: 11px; }
+.btn-danger  { background: var(--red-dim); color: var(--red); border: 1px solid rgba(239,68,68,0.3); padding: 5px 10px; font-size: 11px; }
+.btn-sm { padding: 6px 12px; font-size: 12px; }
+.btn-xs { padding: 4px 8px; font-size: 11px; }
+.btn-export { background: var(--ink); color: var(--light); border: none; border-radius: var(--r); padding: 8px 16px; font-size: 12px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-family: var(--sans); transition: all 0.2s; }
+.btn-export:hover { background: #333; }
+
+/* ── SECTION HEADER ── */
+.section-hd { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; gap: 16px; }
+.section-hd h2 { font-family: var(--serif); font-size: 26px; font-weight: 400; color: var(--ink); }
+.section-hd p  { font-size: 12px; color: var(--stone); margin-top: 2px; }
+.section-actions { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+
+/* ── KPI CARDS ── */
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(175px, 1fr)); gap: 14px; margin-bottom: 24px; }
+.kpi-card { background: var(--light); border: 1px solid var(--border); border-radius: var(--r); padding: 18px 20px; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden; }
+.kpi-card:hover { box-shadow: var(--shadow); transform: translateY(-1px); }
+.kpi-accent { border-top: 3px solid var(--gold); }
+.kpi-blue   { border-top: 3px solid var(--blue); }
+.kpi-green  { border-top: 3px solid var(--green); }
+.kpi-red    { border-top: 3px solid var(--red); }
+.kpi-purple { border-top: 3px solid var(--purple); }
+.kpi-teal   { border-top: 3px solid var(--teal); }
+.kpi-orange { border-top: 3px solid var(--orange); }
+.kpi-label { font-size: 10px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--stone); margin-bottom: 8px; }
+.kpi-value { font-family: var(--serif); font-size: 38px; font-weight: 300; line-height: 1; color: var(--ink); margin-bottom: 4px; }
+.kpi-sub   { font-size: 11px; color: var(--stone); }
+.kpi-expand-icon { position: absolute; top: 12px; right: 12px; font-size: 11px; color: var(--stone); transition: transform 0.2s; }
+.kpi-card.expanded .kpi-expand-icon { transform: rotate(180deg); }
+.kpi-panel { display: none; background: var(--light); border: 1px solid var(--border); border-top: none; border-bottom-left-radius: var(--r); border-bottom-right-radius: var(--r); padding: 12px 14px; margin-top: -1px; }
+.kpi-panel.open { display: block; }
+.kpi-panel-row { display: flex; align-items: center; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid var(--border2); font-size: 12px; color: var(--stone); }
+.kpi-panel-row:last-child { border-bottom: none; }
+.kpi-panel-row strong { color: var(--ink); font-weight: 500; }
+
+/* ── CARDS ── */
+.card { background: var(--light); border: 1px solid var(--border); border-radius: var(--r); margin-bottom: 16px; box-shadow: var(--shadow); }
+.card-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--border); cursor: pointer; }
+.card-header h3 { font-family: var(--serif); font-size: 18px; font-weight: 400; color: var(--ink); }
+.card-body { padding: 16px 18px; }
+
+/* ── TABLES ── */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead th { font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--stone); padding: 10px 12px; border-bottom: 1px solid var(--border); text-align: left; white-space: nowrap; }
+tbody td { padding: 10px 12px; border-bottom: 1px solid var(--border2); vertical-align: middle; }
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover { background: var(--cream); }
+tbody tr.overdue-row { background: rgba(239,68,68,0.03); }
+tbody tr.overdue-row td:first-child { border-left: 3px solid var(--red); padding-left: 9px; }
+tbody tr.cursor { cursor: pointer; }
+
+/* ── CHIPS ── */
+.chip { display: inline-block; padding: 2px 9px; border-radius: 99px; font-size: 10px; font-weight: 600; white-space: nowrap; }
+.chip-2eros    { background: var(--blue-dim); color: var(--2eros); border: 1px solid rgba(59,130,246,0.2); }
+.chip-supa     { background: var(--red-dim);  color: var(--supa);  border: 1px solid rgba(224,91,106,0.2); }
+.chip-both     { background: var(--pur-dim);  color: var(--purple); border: 1px solid rgba(168,85,247,0.2); }
+.chip-new      { background: var(--blue-dim); color: var(--blue);   border: 1px solid rgba(59,130,246,0.2); }
+.chip-approved { background: var(--grn-dim);  color: var(--green);  border: 1px solid rgba(34,197,94,0.2); }
+.chip-pending  { background: var(--gold-dim); color: var(--gold2);  border: 1px solid rgba(201,169,110,0.3); }
+.chip-review   { background: var(--org-dim);  color: var(--orange); border: 1px solid rgba(249,115,22,0.2); }
+.chip-rejected { background: var(--red-dim);  color: var(--red);    border: 1px solid rgba(239,68,68,0.2); }
+.chip-hold     { background: var(--pur-dim);  color: var(--purple); border: 1px solid rgba(168,85,247,0.2); }
+.chip-completed{ background: var(--grn-dim);  color: var(--green);  border: 1px solid rgba(34,197,94,0.2); }
+.chip-overdue  { background: var(--red-dim);  color: var(--red);    border: 1px solid rgba(239,68,68,0.2); }
+.chip-shipped  { background: var(--teal-dim); color: var(--teal);   border: 1px solid rgba(20,184,166,0.2); }
+
+/* ── FILTERS ── */
+.filter-bar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; align-items: center; }
+.filter-select { background: var(--light); border: 1px solid var(--border); border-radius: var(--r); padding: 7px 28px 7px 10px; font-size: 12px; color: var(--stone); cursor: pointer; outline: none; appearance: none; font-family: var(--sans); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%237a7268' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 8px center; }
+.filter-select:focus { border-color: var(--gold); color: var(--ink); }
+.filter-label { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--stone); }
+
+/* ── FORM ── */
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-group.full { grid-column: 1 / -1; }
+.form-label { font-size: 10px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--stone); }
+.form-input, .form-select, .form-textarea { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--r); background: var(--cream); color: var(--ink); font-family: var(--sans); font-size: 14px; font-weight: 300; outline: none; transition: border-color 0.2s; -webkit-appearance: none; }
+.form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--gold); background: var(--light); }
+.form-select { cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%237a7268' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 30px; }
+.form-select option { background: var(--light); }
+.form-textarea { resize: vertical; min-height: 80px; }
+.form-hint { font-size: 11px; color: var(--stone); }
+.form-divider { grid-column: 1/-1; height: 1px; background: var(--border); margin: 4px 0; }
+.form-section-label { grid-column: 1/-1; font-family: var(--serif); font-size: 20px; font-weight: 400; color: var(--ink); padding-top: 4px; }
+.req { color: var(--gold); }
+
+/* Content type checkboxes */
+.content-type-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px,1fr)); gap: 8px; }
+.ct-check { position: relative; }
+.ct-check input { position: absolute; opacity: 0; width:0; height:0; }
+.ct-check-lbl { display: flex; align-items: center; gap: 8px; padding: 9px 12px; border: 1px solid var(--border); border-radius: var(--r); font-size: 12px; color: var(--stone); cursor: pointer; transition: all 0.15s; background: var(--cream); }
+.ct-check-lbl::before { content: ''; width: 14px; height: 14px; border: 1px solid var(--border); border-radius: 3px; flex-shrink: 0; transition: all 0.15s; }
+.ct-check input:checked + .ct-check-lbl { border-color: var(--gold); background: var(--gold-dim); color: var(--ink); font-weight: 500; }
+.ct-check input:checked + .ct-check-lbl::before { background: var(--gold); border-color: var(--gold); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='8' viewBox='0 0 10 8'%3E%3Cpath fill='%230d0d0d' d='M1 4l3 3 5-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: center; }
+
+/* ── MODAL ── */
+.modal-overlay { display: none; position: fixed; inset: 0; z-index: 200; background: rgba(13,13,13,0.5); backdrop-filter: blur(4px); align-items: center; justify-content: center; padding: 24px; }
+.modal-overlay.active { display: flex; }
+.modal { background: var(--light); border-radius: 8px; width: 100%; max-width: 640px; max-height: 90vh; overflow-y: auto; box-shadow: var(--shadow-lg); }
+.modal-header { display: flex; align-items: flex-start; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid var(--border); gap: 16px; position: sticky; top: 0; background: var(--light); z-index: 1; }
+.modal-header h2 { font-family: var(--serif); font-size: 24px; font-weight: 400; color: var(--ink); }
+.modal-close { background: none; border: none; font-size: 18px; cursor: pointer; color: var(--stone); padding: 2px 6px; border-radius: 4px; }
+.modal-close:hover { background: var(--cream); }
+.modal-body { padding: 20px 24px; }
+.modal-footer { display: flex; justify-content: flex-end; gap: 10px; padding: 14px 24px; border-top: 1px solid var(--border); }
+
+/* ── SCORE BAR ── */
+.score-bar-wrap { display: flex; align-items: center; gap: 8px; }
+.score-bar-track { flex: 1; height: 4px; background: var(--border); border-radius: 2px; }
+.score-bar-fill  { height: 100%; border-radius: 2px; }
+
+/* ── SENDOUT BARS ── */
+.sendout-bar-wrap { margin: 8px 0; }
+.sendout-bar-label { display: flex; justify-content: space-between; font-size: 11px; color: var(--stone); margin-bottom: 4px; }
+.sendout-bar-track { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+.sendout-bar-fill  { height: 100%; border-radius: 4px; background: var(--gold); transition: width 0.5s; }
+
+/* ── URGENCY ── */
+.urg-high   { background:var(--red-dim); color:var(--red); padding:2px 8px; border-radius:4px; font-size:10px; font-weight:600; }
+.urg-medium { background:var(--org-dim); color:var(--orange); padding:2px 8px; border-radius:4px; font-size:10px; font-weight:600; }
+.urg-low    { background:var(--grn-dim); color:var(--green); padding:2px 8px; border-radius:4px; font-size:10px; font-weight:600; }
+
+/* ── OUTSTANDING ALERT ── */
+.outstanding-alert { background: var(--red-dim); border: 1px solid rgba(239,68,68,0.25); border-radius: var(--r); padding: 8px 12px; font-size: 12px; color: var(--red); font-weight: 500; display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+
+/* ══════════════════════════════════════════
+   ETHNICITY REPRESENTATION SECTION
+══════════════════════════════════════════ */
+.eth-section {
+  background: var(--light); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 24px; margin-bottom: 20px; box-shadow: var(--shadow);
+}
+.eth-section-header {
+  display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 6px; gap: 16px;
+}
+.eth-section-title {
+  font-family: var(--sans); font-size: 12px; font-weight: 600;
+  letter-spacing: 0.25em; text-transform: uppercase; color: var(--ink);
+}
+.eth-section-sub { font-size: 12px; color: var(--stone); margin-bottom: 20px; }
+.eth-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+}
+.eth-card {
+  background: var(--cream); border: 1px solid var(--border);
+  border-radius: 10px; padding: 16px 14px;
+  cursor: pointer; transition: all 0.2s; position: relative;
+  min-height: 110px; display: flex; flex-direction: column; justify-content: space-between;
+}
+.eth-card:hover { box-shadow: var(--shadow); transform: translateY(-2px); border-color: var(--border); }
+.eth-card.has-data { background: var(--light); }
+.eth-card.has-data:hover { border-color: var(--gold); }
+.eth-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.eth-card-left { display: flex; align-items: flex-start; gap: 8px; }
+.eth-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; margin-top: 3px; }
+.eth-card-name { font-size: 13px; font-weight: 500; color: var(--ink); line-height: 1.3; }
+.eth-card.empty .eth-card-name { color: var(--stone); }
+.eth-card-count { font-family: var(--serif); font-size: 28px; font-weight: 300; line-height: 1; flex-shrink: 0; }
+.eth-card.empty .eth-card-count { color: var(--stone); font-size: 22px; }
+.eth-card-bottom { display: flex; flex-direction: column; gap: 2px; }
+.eth-card-pct { font-size: 11px; color: var(--stone); font-weight: 300; }
+.eth-card-cta { font-size: 10px; color: var(--gold2); font-weight: 500; display: flex; align-items: center; gap: 3px; }
+.eth-card.empty .eth-card-cta { display: none; }
+
+/* ══════════════════════════════════════════
+   SETTINGS PAGE
+══════════════════════════════════════════ */
+.settings-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 20px; }
+.settings-card { background: var(--light); border: 1px solid var(--border); border-radius: var(--r); box-shadow: var(--shadow); overflow: hidden; }
+.settings-card-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; justify-content: space-between; }
+.settings-card-header h3 { font-family: var(--serif); font-size: 20px; font-weight: 400; color: var(--ink); }
+.settings-card-header p { font-size: 11px; color: var(--stone); margin-top: 2px; }
+.settings-card-body { padding: 16px 20px; }
+.settings-tag-wrap { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; min-height: 28px; }
+.settings-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--cream); border: 1px solid var(--border);
+  border-radius: 99px; padding: 4px 10px 4px 12px;
+  font-size: 12px; font-weight: 400; color: var(--ink);
+}
+.settings-tag-del {
+  background: none; border: none; cursor: pointer;
+  color: var(--stone); font-size: 14px; line-height: 1;
+  padding: 0; display: flex; align-items: center;
+  border-radius: 50%; width: 16px; height: 16px; justify-content: center;
+  transition: all 0.15s;
+}
+.settings-tag-del:hover { background: var(--red-dim); color: var(--red); }
+.settings-add-row { display: flex; gap: 8px; }
+.settings-input { flex: 1; padding: 8px 12px; border: 1px solid var(--border); border-radius: var(--r); background: var(--cream); color: var(--ink); font-family: var(--sans); font-size: 13px; outline: none; }
+.settings-input:focus { border-color: var(--gold); background: var(--light); }
+.settings-note { font-size: 11px; color: var(--stone); margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border2); line-height: 1.5; }
+
+/* ── NOTES PAGE ── */
+.notes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+.note-card { background: var(--light); border: 1px solid var(--border); border-radius: var(--r); box-shadow: var(--shadow); display: flex; flex-direction: column; min-height: 220px; }
+.note-card-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border-bottom: 1px solid var(--border); gap: 8px; }
+.note-title-input { flex: 1; border: none; background: none; font-family: var(--serif); font-size: 18px; font-weight: 400; color: var(--ink); outline: none; }
+.note-title-input::placeholder { color: var(--stone); }
+.note-toolbar { display: flex; align-items: center; gap: 4px; padding: 6px 14px; border-bottom: 1px solid var(--border2); flex-wrap: wrap; }
+.note-tb-btn { background: none; border: 1px solid var(--border); border-radius: 4px; padding: 2px 7px; font-size: 11px; cursor: pointer; color: var(--stone); transition: all 0.15s; }
+.note-tb-btn:hover { background: var(--cream); color: var(--ink); border-color: var(--gold); }
+.note-tb-select { background: none; border: 1px solid var(--border); border-radius: 4px; padding: 2px 6px; font-size: 11px; cursor: pointer; color: var(--stone); outline: none; font-family: var(--sans); }
+.note-body-content { flex: 1; padding: 12px 14px; outline: none; font-size: 14px; color: var(--stone); line-height: 1.7; font-weight: 300; min-height: 120px; }
+.note-body-content:empty::before { content: attr(data-placeholder); color: rgba(122,114,104,0.4); }
+.note-footer { display: flex; align-items: center; justify-content: space-between; padding: 8px 14px; border-top: 1px solid var(--border2); }
+.note-date { font-size: 10px; color: var(--stone); }
+.add-note-card { background: none; border: 2px dashed var(--border); border-radius: var(--r); min-height: 220px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; color: var(--stone); gap: 10px; }
+.add-note-card:hover { border-color: var(--gold); color: var(--gold2); background: var(--gold-dim); }
+
+/* ── REPORT BARS ── */
+.bar-chart { display: flex; flex-direction: column; gap: 8px; }
+.bar-row { display: grid; grid-template-columns: 90px 1fr 36px; align-items: center; gap: 8px; font-size: 11px; color: var(--stone); }
+.bar-track { height: 6px; background: var(--warm); border-radius: 3px; overflow: hidden; }
+.bar-fill  { height: 100%; border-radius: 3px; background: var(--gold); }
+
+/* ── FEATURE CARDS ── */
+.feature-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+.feature-creator-card { background: var(--light); border: 1px solid var(--border); border-radius: var(--r); padding: 18px; cursor: pointer; transition: all 0.2s; }
+.feature-creator-card:hover { box-shadow: var(--shadow); transform: translateY(-1px); }
+.fc-name { font-family: var(--serif); font-size: 18px; font-weight: 400; color: var(--ink); margin-bottom: 2px; }
+.fc-handle { font-size: 11px; color: var(--stone); margin-bottom: 10px; }
+
+/* ── PLATFORM HANDLE LINKS ── */
+.handle-link {
+  display: inline-flex; align-items: center; gap: 4px;
+  color: var(--stone); font-size: 11px; text-decoration: none;
+  border-bottom: 1px dashed rgba(122,114,104,0.4); cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+.handle-link:hover { color: var(--gold2); border-color: var(--gold2); }
+.handle-link .plat-icon { font-size: 11px; }
+
+/* Multi-platform picker */
+.plat-picker-wrap { position: relative; display: inline-block; }
+.plat-picker-btn {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 11px; color: var(--stone); background: none; border: none;
+  border-bottom: 1px dashed rgba(122,114,104,0.4); cursor: pointer;
+  padding: 0; font-family: var(--sans); transition: color 0.15s;
+}
+.plat-picker-btn:hover { color: var(--gold2); border-color: var(--gold2); }
+.plat-picker-menu {
+  display: none; position: absolute; top: calc(100% + 6px); left: 0; z-index: 300;
+  background: var(--light); border: 1px solid var(--border); border-radius: var(--r);
+  box-shadow: var(--shadow-lg); min-width: 180px; overflow: hidden;
+}
+.plat-picker-menu.open { display: block; }
+.plat-picker-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 14px; font-size: 12px; color: var(--stone);
+  text-decoration: none; transition: background 0.12s;
+  border-bottom: 1px solid var(--border2);
+}
+.plat-picker-item:last-child { border-bottom: none; }
+.plat-picker-item:hover { background: var(--cream); color: var(--ink); }
+.plat-picker-item .pi { font-size: 13px; width: 18px; text-align: center; flex-shrink: 0; }
+.plat-picker-item .pn { font-weight: 500; flex: 1; }
+.plat-picker-item .ph { color: var(--stone); font-size: 11px; }
+
+/* Drive folder link */
+.drive-link {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11px; color: var(--green); text-decoration: none;
+  background: var(--grn-dim); border: 1px solid rgba(34,197,94,0.25);
+  border-radius: 4px; padding: 2px 8px; font-weight: 500;
+  transition: all 0.15s;
+}
+.drive-link:hover { background: rgba(34,197,94,0.18); }
+.drive-link-pending {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11px; color: var(--stone);
+  background: var(--cream); border: 1px solid var(--border);
+  border-radius: 4px; padding: 2px 8px;
+}
+.drive-creating {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11px; color: var(--orange);
+  background: var(--org-dim); border: 1px solid rgba(249,115,22,0.25);
+  border-radius: 4px; padding: 2px 8px; font-weight: 500;
+}
+.fc-stats { display: flex; gap: 16px; }
+.fc-stat { text-align: center; }
+.fc-stat-val { font-size: 16px; font-weight: 600; color: var(--ink); }
+.fc-stat-lbl { font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--stone); }
+
+/* ── LOGIN ── */
+.login-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; background: var(--cream); }
+.login-card { background: var(--light); border: 1px solid var(--border); border-radius: 8px; padding: 48px 40px; width: 100%; max-width: 380px; text-align: center; box-shadow: var(--shadow-lg); }
+.login-logo-mark { width: 52px; height: 52px; background: var(--gold); border-radius: 14px; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-family: var(--serif); font-size: 22px; font-weight: 500; color: var(--ink); }
+.login-card h1 { font-family: var(--serif); font-size: 28px; font-weight: 400; margin-bottom: 8px; }
+.login-card p  { font-size: 14px; color: var(--stone); margin-bottom: 28px; font-weight: 300; }
+.google-btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 12px 20px; background: var(--ink); color: var(--light); border: none; border-radius: var(--r); font-family: var(--sans); font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s; margin-bottom: 12px; }
+.google-btn:hover { background: #333; }
+.login-demo-btn { width: 100%; background: none; border: 1px solid var(--border); color: var(--stone); border-radius: var(--r); padding: 10px; font-size: 13px; cursor: pointer; transition: all 0.2s; font-family: var(--sans); }
+.login-demo-btn:hover { border-color: var(--gold); color: var(--gold2); }
+.login-note { font-size: 11px; color: var(--stone); margin-top: 12px; }
+
+/* ── TOAST ── */
+.toast-wrap { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
+.toast { display: flex; align-items: center; gap: 10px; padding: 11px 16px; border-radius: 6px; font-size: 13px; font-weight: 500; min-width: 220px; background: var(--light); border: 1px solid var(--border); box-shadow: var(--shadow-lg); animation: toastIn 0.25s ease; }
+.toast.success { border-color: rgba(34,197,94,.4); }
+.toast.error   { border-color: rgba(239,68,68,.4); }
+.toast.info    { border-color: rgba(201,169,110,.4); }
+@keyframes toastIn { from { opacity:0; transform:translateX(12px); } to { opacity:1; transform:translateX(0); } }
+
+/* ── DETAIL MODAL ── */
+.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.detail-group { display: flex; flex-direction: column; gap: 3px; }
+.detail-label { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--stone); }
+.detail-value { font-size: 13px; color: var(--ink); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1200px) { .eth-cards-grid { grid-template-columns: repeat(4, 1fr); } }
+@media (max-width: 900px) {
+  .sidebar { transform: translateX(-220px); }
+  .sidebar.open { transform: translateX(0); box-shadow: var(--shadow-lg); }
+  .main { margin-left: 0; }
+  .sidebar-toggle { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; background: var(--cream); border: 1px solid var(--border); border-radius: var(--r); font-size: 16px; cursor: pointer; }
+  .eth-cards-grid { grid-template-columns: repeat(3, 1fr); }
+  .detail-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .page-content { padding: 16px; }
+  .kpi-grid { grid-template-columns: 1fr 1fr; }
+  .form-grid { grid-template-columns: 1fr; }
+  .eth-cards-grid { grid-template-columns: repeat(2, 1fr); }
+  .settings-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="toast-wrap" id="toastContainer"></div>
+
+<!-- ── LOGIN ── -->
+<div id="loginScreen" style="display:none; position:fixed; inset:0; z-index:9999; background:#f7f4ef; display:flex; align-items:center; justify-content:center;">
+  <div style="background:#fff; border:1px solid rgba(0,0,0,0.1); border-radius:10px; padding:48px 40px; width:100%; max-width:360px; text-align:center; box-shadow:0 8px 32px rgba(0,0,0,0.10);">
+    <div style="width:48px; height:48px; background:#c9a96e; border-radius:10px; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; font-family:Georgia,serif; font-size:20px; color:#0d0d0d;">TL</div>
+    <div style="font-family:Georgia,serif; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:#7a7268; margin-bottom:24px;">The Lifestyle Co</div>
+    <h1 style="font-family:Georgia,serif; font-size:26px; font-weight:400; color:#0d0d0d; margin-bottom:8px;">Staff Portal</h1>
+    <p style="font-size:14px; color:#7a7268; margin-bottom:28px; font-weight:300;">Enter your password to continue.</p>
+    <input id="loginPasswordInput" type="password" placeholder="Password"
+      style="width:100%; padding:12px 14px; border:1px solid rgba(0,0,0,0.15); border-radius:6px; font-size:15px; font-family:system-ui,sans-serif; outline:none; margin-bottom:10px; box-sizing:border-box; background:#f7f4ef; color:#0d0d0d;"
+      onkeydown="if(event.key==='Enter')checkPassword()">
+    <div id="loginError" style="display:none; color:#c0392b; font-size:13px; margin-bottom:10px;">Incorrect password. Please try again.</div>
+    <button onclick="checkPassword()"
+      style="width:100%; padding:12px; background:#0d0d0d; color:#fff; border:none; border-radius:6px; font-size:14px; font-weight:500; font-family:system-ui,sans-serif; cursor:pointer;">
+      Sign In
+    </button>
+  </div>
+</div>
+
+<!-- ── PORTAL ── -->
+<div id="portalApp" class="portal" style="display:none">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">TL</div>
+      <div><div class="logo-text">The Lifestyle Co</div><div class="logo-sub">Influencer Portal</div></div>
+    </div>
+    <div class="brand-toggle">
+      <span class="brand-toggle-label">Active Brand</span>
+      <div class="brand-tabs">
+        <button class="brand-tab eros active" onclick="setBrand('2eros',this)">2EROS</button>
+        <button class="brand-tab supa" onclick="setBrand('supawear',this)">SUPA</button>
+        <button class="brand-tab both" onclick="setBrand('both',this)">BOTH</button>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-label">Overview</div>
+        <button class="nav-item active" onclick="showPage('dashboard',this)"><span class="nav-icon">◻</span> Dashboard</button>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-label">Creators</div>
+        <button class="nav-item" onclick="showPage('applications',this)"><span class="nav-icon">📥</span> Applications<span class="nav-badge" id="badge-apps">3</span></button>
+        <button class="nav-item" onclick="showPage('database',this)"><span class="nav-icon">👥</span> Creator Database</button>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-label">Campaigns</div>
+        <button class="nav-item" onclick="showPage('gifting',this)"><span class="nav-icon">📦</span> Gifting Tracker</button>
+        <button class="nav-item" onclick="showPage('followups',this)"><span class="nav-icon">🔔</span> Follow-ups<span class="nav-badge" id="badge-fu">5</span></button>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-label">Workspace</div>
+        <button class="nav-item" onclick="showPage('notes',this)"><span class="nav-icon">📝</span> Notes</button>
+        <button class="nav-item" onclick="showPage('reports',this)"><span class="nav-icon">📊</span> Reports</button>
+        <button class="nav-item" onclick="showPage('settings',this)"><span class="nav-icon">⚙</span> Settings</button>
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-row">
+        <div class="user-avatar" id="userAvatar">D</div>
+        <div><div class="user-name" id="userName">Demo User</div><div class="user-role">Staff</div></div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <button class="sidebar-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+      <div>
+        <div class="topbar-title" id="pageTitle">Dashboard</div>
+        <div class="topbar-crumb" id="pageCrumb">The Lifestyle Co / Influencer Portal</div>
+      </div>
+      <div class="topbar-right">
+        <input class="search-input" type="search" placeholder="Search creators…">
+        <button class="btn btn-primary btn-sm" onclick="openModal('newSendoutModal')">+ New Send-out</button>
+      </div>
+    </div>
+
+    <div class="page-content">
+
+      <!-- ══ DASHBOARD ══ -->
+      <div class="page-section active" id="page-dashboard">
+        <div class="section-hd">
+          <div><h2>Dashboard</h2><p id="dashBrandLabel">All Brands · <span id="dashDate"></span></p></div>
+          <button class="btn btn-outline btn-sm" onclick="loadData()">↻ Refresh</button>
+        </div>
+
+        <div id="outstandingAlert" style="display:none" class="outstanding-alert">⚠ <span id="outstandingText"></span></div>
+
+        <div class="kpi-grid" id="kpiGrid"></div>
+
+        <!-- Ethnicity Representation -->
+        <div class="eth-section">
+          <div class="eth-section-header">
+            <div>
+              <div class="eth-section-title">Ethnicity &amp; Background — Program Representation</div>
+              <div class="eth-section-sub">Click any card to see the influencers in that group</div>
+            </div>
+            <button class="btn-export" onclick="exportEthnicityCSV()">
+              <svg width="13" height="13" viewBox="0 0 20 20" fill="none"><path d="M17 13v4H3v-4M10 3v10M6 9l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Export → Google Sheets
+            </button>
+          </div>
+          <div class="eth-cards-grid" id="ethCardsGrid"></div>
+        </div>
+
+        <!-- Send-out type tracker -->
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-header" onclick="toggleCard('sendoutTypeCard')">
+            <h3>Send-out Types — Completion Tracker</h3><span>▾</span>
+          </div>
+          <div id="sendoutTypeCard" class="card-body">
+            <div id="sendoutTypeBars"></div>
+          </div>
+        </div>
+
+        <!-- Recent + Overdue -->
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px">
+          <div class="card">
+            <div class="card-header" onclick="toggleCard('recentAppsCard')">
+              <h3>Recent Applications</h3>
+              <div style="display:flex;gap:8px;align-items:center">
+                <button class="btn btn-ghost btn-xs" onclick="event.stopPropagation();showPage('applications',document.querySelector('[onclick*=applications]'))">View all</button>
+                <span>▾</span>
+              </div>
+            </div>
+            <div id="recentAppsCard" class="card-body" style="padding:0">
+              <div class="table-wrap"><table>
+                <thead><tr><th>Creator</th><th>Brand</th><th>Status</th></tr></thead>
+                <tbody id="recentAppsTable"></tbody>
+              </table></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header" onclick="toggleCard('overdueCard')">
+              <h3>Overdue Actions</h3>
+              <div style="display:flex;gap:8px;align-items:center">
+                <button class="btn btn-ghost btn-xs" onclick="event.stopPropagation();showPage('followups',document.querySelector('[onclick*=followups]'))">View all</button>
+                <span>▾</span>
+              </div>
+            </div>
+            <div id="overdueCard" class="card-body" style="padding:0">
+              <div class="table-wrap"><table>
+                <thead><tr><th>Creator</th><th>Issue</th><th>Days</th></tr></thead>
+                <tbody id="overdueTable"></tbody>
+              </table></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Feature Focus -->
+        <div style="margin-bottom:8px">
+          <div style="font-size:10px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:4px">Feature Focus</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+            <h3 style="font-family:var(--serif);font-size:20px;font-weight:400">Top Performing Creators</h3>
+            <button class="btn btn-outline btn-sm" onclick="showPage('database',document.querySelector('[onclick*=database]'))">View All</button>
+          </div>
+          <div class="feature-grid" id="featureCreatorsGrid"></div>
+        </div>
+      </div>
+
+      <!-- ══ APPLICATIONS ══ -->
+      <div class="page-section" id="page-applications">
+        <div class="section-hd">
+          <div><h2>Applications</h2><p>Review and process creator submissions</p></div>
+          <div class="section-actions">
+            <button class="btn-export btn-sm" onclick="exportTableCSV('applicationsTable','applications')">
+              <svg width="12" height="12" viewBox="0 0 20 20" fill="none"><path d="M17 13v4H3v-4M10 3v10M6 9l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Export CSV
+            </button>
+            <button class="btn btn-outline btn-sm" onclick="syncFromSheets()">↻ Sync</button>
+          </div>
+        </div>
+        <div class="filter-bar" id="appFilters"></div>
+        <div class="card">
+          <div class="table-wrap"><table>
+            <thead><tr><th>Creator</th><th>Submitted</th><th>Brand</th><th>Platform</th><th>Followers</th><th>Location</th><th>Ethnicity</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="applicationsTable"></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- ══ CREATOR DATABASE ══ -->
+      <div class="page-section" id="page-database">
+        <div class="section-hd">
+          <div><h2>Creator Database</h2><p>All approved and active creators</p></div>
+          <div class="section-actions">
+            <button class="btn-export" onclick="exportTableCSV('creatorDbTable','creators')">
+              <svg width="12" height="12" viewBox="0 0 20 20" fill="none"><path d="M17 13v4H3v-4M10 3v10M6 9l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Export → Google Sheets
+            </button>
+            <button class="btn btn-primary btn-sm" onclick="openModal('addCreatorModal')">+ Add Creator</button>
+          </div>
+        </div>
+        <div class="filter-bar" id="dbFilters"></div>
+        <div class="card">
+          <div class="table-wrap"><table>
+            <thead><tr><th>Creator</th><th>Brand</th><th>Platform</th><th>Location</th><th>Ethnicity</th><th>Score</th><th>Campaigns</th><th>Last Campaign</th><th>Flags</th><th>Drive</th><th>Actions</th></tr></thead>
+            <tbody id="creatorDbTable"></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- ══ GIFTING TRACKER ══ -->
+      <div class="page-section" id="page-gifting">
+        <div class="section-hd">
+          <div><h2>Gifting Tracker</h2><p>Orders, shipment and content tracking</p></div>
+          <div class="section-actions">
+            <button class="btn-export btn-sm" onclick="exportTableCSV('giftingTable','sendouts')">
+              <svg width="12" height="12" viewBox="0 0 20 20" fill="none"><path d="M17 13v4H3v-4M10 3v10M6 9l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Export CSV
+            </button>
+            <button class="btn btn-primary btn-sm" onclick="openModal('newSendoutModal')">+ New Send-out</button>
+          </div>
+        </div>
+        <div class="filter-bar" id="giftFilters"></div>
+        <div class="card">
+          <div class="table-wrap"><table>
+            <thead><tr><th>Creator</th><th>Brand</th><th>Campaign</th><th>Content Type</th><th>Order</th><th>Order Status</th><th>Content Status</th><th>Due Date</th><th>Owner</th><th>Actions</th></tr></thead>
+            <tbody id="giftingTable"></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- ══ FOLLOW-UPS ══ -->
+      <div class="page-section" id="page-followups">
+        <div class="section-hd">
+          <div><h2>Follow-ups</h2><p>Creators needing action or reminders</p></div>
+          <button class="btn-export btn-sm" onclick="exportTableCSV('followupsTable','followups')">Export CSV</button>
+        </div>
+        <div class="filter-bar">
+          <select class="filter-select" id="filterFuUrgency" onchange="renderFollowups(MOCK.followups)">
+            <option value="">All Urgency</option><option>High</option><option>Medium</option><option>Low</option>
+          </select>
+        </div>
+        <div class="card">
+          <div class="table-wrap"><table>
+            <thead><tr><th>Creator</th><th>Urgency</th><th>Reason</th><th>Days Over</th><th>Last Follow-up</th><th>Count</th><th>Suggested Action</th><th>Actions</th></tr></thead>
+            <tbody id="followupsTable"></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- ══ NOTES ══ -->
+      <div class="page-section" id="page-notes">
+        <div class="section-hd">
+          <div><h2>Notes</h2><p>Briefings, campaigns, message templates and more</p></div>
+          <button class="btn btn-primary btn-sm" onclick="addNote()">+ New Note</button>
+        </div>
+        <div class="notes-grid" id="notesGrid">
+          <div class="add-note-card" onclick="addNote()"><div style="font-size:28px">+</div><div style="font-size:13px">Add a note</div></div>
+        </div>
+      </div>
+
+      <!-- ══ REPORTS ══ -->
+      <div class="page-section" id="page-reports">
+        <div class="section-hd"><div><h2>Reports</h2><p>Campaign and creator performance</p></div></div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px">
+          <div class="card"><div class="card-header" onclick="toggleCard('chartMonthly')"><h3>Applications by Month</h3><span>▾</span></div><div id="chartMonthly" class="card-body"><div class="bar-chart" id="chart-monthly"></div></div></div>
+          <div class="card"><div class="card-header" onclick="toggleCard('chartBrand')"><h3>Approvals by Brand</h3><span>▾</span></div><div id="chartBrand" class="card-body"><div class="bar-chart" id="chart-brand"></div></div></div>
+          <div class="card"><div class="card-header" onclick="toggleCard('chartCompletion')"><h3>Campaign Completion</h3><span>▾</span></div><div id="chartCompletion" class="card-body" style="text-align:center;padding:20px 0"><div style="font-family:var(--serif);font-size:48px;font-weight:300;color:var(--green)">74%</div><div style="font-size:12px;color:var(--stone)">38 of 51 campaigns completed</div></div></div>
+          <div class="card"><div class="card-header" onclick="toggleCard('chartTopCreators')"><h3>Top Reliable Creators</h3><span>▾</span></div><div id="chartTopCreators" class="card-body"><div class="bar-chart" id="chart-creators"></div></div></div>
+          <div class="card"><div class="card-header" onclick="toggleCard('chartAvoid')"><h3>Creators to Avoid</h3><span>▾</span></div><div id="chartAvoid" class="card-body"><div id="avoid-list"></div></div></div>
+        </div>
+      </div>
+
+      <!-- ══ SETTINGS ══ -->
+      <div class="page-section" id="page-settings">
+        <div class="section-hd">
+          <div><h2>Settings</h2><p>Manage dropdown options across the portal and creator submission form</p></div>
+          <button class="btn btn-outline btn-sm" onclick="resetSettings()">↺ Reset to Defaults</button>
+        </div>
+        <div style="background:var(--gold-dim);border:1px solid rgba(201,169,110,0.3);border-radius:var(--r);padding:12px 16px;margin-bottom:20px;font-size:13px;color:var(--gold2)">
+          ✦ Changes save automatically and sync to the Creator Submission form via shared browser storage. Both files must be opened from the same server.
+        </div>
+
+        <!-- Password Card -->
+        <div class="settings-card" style="margin-bottom:20px;max-width:500px">
+          <div class="settings-card-header">
+            <div>
+              <h3>Portal Password</h3>
+              <p>Password required to access this staff portal.</p>
+            </div>
+          </div>
+          <div class="settings-card-body">
+            <div style="margin-bottom:14px">
+              <div class="form-label" style="margin-bottom:6px">Current password</div>
+              <div style="display:flex;align-items:center;gap:10px">
+                <code id="pw-display" style="background:var(--warm);border:1px solid var(--border);border-radius:var(--r);padding:8px 14px;font-size:15px;letter-spacing:0.1em;flex:1;font-family:monospace"></code>
+                <button class="btn btn-outline btn-sm" onclick="togglePwVisible()" id="pw-toggle">Show</button>
+              </div>
+            </div>
+            <div style="background:var(--blue-dim);border:1px solid var(--blue-bd,rgba(59,130,246,0.2));border-radius:var(--r);padding:12px 14px;font-size:13px;color:#1e3a5f;line-height:1.7">
+              <strong>To change the password:</strong><br>
+              1. Download <code>internal-portal.html</code> from GitHub<br>
+              2. Open it in a text editor (Notepad / TextEdit)<br>
+              3. Find this line near the top of the &lt;script&gt; section:<br>
+              <code style="display:block;margin:6px 0;background:rgba(0,0,0,0.06);padding:5px 8px;border-radius:4px;">var PORTAL_PASSWORD = 'TLC321!';</code>
+              4. Replace <code>TLC321!</code> with your new password<br>
+              5. Save the file and re-upload it to GitHub
+            </div>
+            <div class="settings-note" style="margin-top:10px">The password is shared across your whole team — everyone uses the same one. Session stays active until the browser tab is closed.</div>
+          </div>
+        </div>
+
+        <div class="settings-grid" id="settingsGrid"></div>
+      </div>
+
+    </div><!-- /page-content -->
+  </div><!-- /main -->
+</div><!-- /portal -->
+
+<!-- ══ MODALS ══ -->
+
+<!-- Creator Detail -->
+<div class="modal-overlay" id="creatorDetailModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div><h2 id="modalCreatorName">Creator</h2><div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap" id="modalCreatorChips"></div></div>
+      <button class="modal-close" onclick="closeModal('creatorDetailModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="detail-grid" id="modalDetailGrid"></div>
+      <div style="margin-top:20px"><div class="form-group"><label class="form-label">Internal Notes</label><textarea class="form-textarea" id="modalNotes" placeholder="Add notes…" style="min-height:80px"></textarea></div></div>
+      <div style="margin-top:14px"><div class="form-group"><label class="form-label">Assign To</label><select class="form-select" id="modalOwner"><option>Unassigned</option><option>Sarah</option><option>James</option></select></div></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger btn-sm" onclick="updateAppStatus('Rejected')">✕ Reject</button>
+      <button class="btn btn-outline btn-sm" onclick="updateAppStatus('On Hold')">⏸ Hold</button>
+      <button class="btn btn-outline btn-sm" onclick="updateAppStatus('Need More Info')">? More Info</button>
+      <button class="btn btn-success btn-sm" onclick="updateAppStatus('Approved')">✓ Approve</button>
+    </div>
+  </div>
+</div>
+
+<!-- Ethnicity detail modal -->
+<div class="modal-overlay" id="ethDetailModal">
+  <div class="modal" style="max-width:560px">
+    <div class="modal-header">
+      <h2 id="ethModalTitle">Ethnicity Group</h2>
+      <button class="modal-close" onclick="closeModal('ethDetailModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="ethModalContent"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-export" onclick="exportEthGroupCSV()">Export Group CSV</button>
+      <button class="btn btn-outline" onclick="closeModal('ethDetailModal')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- New Send-out -->
+<div class="modal-overlay" id="newSendoutModal">
+  <div class="modal">
+    <div class="modal-header"><h2>New Send-out</h2><button class="modal-close" onclick="closeModal('newSendoutModal')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-grid" style="gap:14px">
+        <div class="form-group"><label class="form-label">Creator <span class="req">*</span></label><select class="form-select" id="so-creator"><option value="">Select creator…</option><option>Marcus C.</option><option>Jordan A.</option><option>Sean F.</option></select></div>
+        <div class="form-group"><label class="form-label">Brand <span class="req">*</span></label><select class="form-select" id="so-brand"><option>2EROS</option><option>Supawear</option></select></div>
+        <div class="form-group"><label class="form-label">Campaign Name <span class="req">*</span></label><input class="form-input" type="text" id="so-name" placeholder="e.g. Summer 2025 Seeding"></div>
+        <div class="form-group"><label class="form-label">Shopify Order #</label><input class="form-input" type="text" id="so-order" placeholder="e.g. #1234"><span class="form-hint">⚡ Will auto-link to Shopify</span></div>
+        <div class="form-group full">
+          <label class="form-label">Content Type Request <span class="req">*</span></label>
+          <div class="content-type-grid" id="soContentTypes"></div>
+        </div>
+        <div class="form-group"><label class="form-label">Due Date</label><input class="form-input" type="date" id="so-due"></div>
+        <div class="form-group"><label class="form-label">Owner</label><select class="form-select" id="so-owner" ></select></div>
+        <div class="form-group full"><label class="form-label">Notes</label><textarea class="form-textarea" id="so-notes" placeholder="Product details, brief, deliverables…"></textarea></div>
+      </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-outline" onclick="closeModal('newSendoutModal')">Cancel</button><button class="btn btn-primary" onclick="saveSendout()">Create Send-out</button></div>
+  </div>
+</div>
+
+<!-- Add Creator -->
+<div class="modal-overlay" id="addCreatorModal">
+  <div class="modal">
+    <div class="modal-header"><h2>Add Creator</h2><button class="modal-close" onclick="closeModal('addCreatorModal')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-grid" style="gap:14px">
+        <div class="form-group"><label class="form-label">Full Name <span class="req">*</span></label><input class="form-input" type="text" id="ac-name" placeholder="Creator's full name"></div>
+        <div class="form-group"><label class="form-label">Handle <span class="req">*</span></label><input class="form-input" type="text" id="ac-handle" placeholder="@handle"></div>
+        <div class="form-group"><label class="form-label">Email <span class="req">*</span></label><input class="form-input" type="email" id="ac-email" placeholder="creator@example.com"></div>
+        <div class="form-group"><label class="form-label">Phone</label><input class="form-input" type="tel" id="ac-phone" placeholder="+61 400 000 000"></div>
+        <div class="form-group"><label class="form-label">Brand</label><select class="form-select" id="ac-brand"><option value="2eros">2EROS</option><option value="supawear">Supawear</option><option value="both">Both</option></select></div>
+        <div class="form-group"><label class="form-label">Platform</label><select class="form-select" id="ac-platform"></select></div>
+        <div class="form-group"><label class="form-label">Followers</label><input class="form-input" type="number" id="ac-followers" placeholder="0"></div>
+        <div class="form-group"><label class="form-label">City, Country</label><input class="form-input" type="text" id="ac-location" placeholder="Sydney, Australia"></div>
+        <div class="form-group full"><label class="form-label">Ethnicity / Background</label><select class="form-select" id="ac-ethnicity"></select></div>
+        <div class="form-group full"><label class="form-label">Notes</label><textarea class="form-textarea" id="ac-notes" placeholder="Any additional notes…"></textarea></div>
+      </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-outline" onclick="closeModal('addCreatorModal')">Cancel</button><button class="btn btn-primary" onclick="saveCreator()">Add Creator</button></div>
+  </div>
+</div>
+
+<!-- Tracking Update -->
+<div class="modal-overlay" id="trackingModal">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-header"><h2>Update Tracking</h2><button class="modal-close" onclick="closeModal('trackingModal')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-grid" style="gap:14px">
+        <div class="form-group"><label class="form-label">Shopify Order #</label><input class="form-input" type="text" id="track-order" placeholder="#1234"></div>
+        <div class="form-group"><label class="form-label">Tracking Number</label><input class="form-input" type="text" id="track-number" placeholder="JD000123456789"></div>
+        <div class="form-group"><label class="form-label">Carrier</label><select class="form-select"><option>Australia Post</option><option>DHL</option><option>FedEx</option><option>UPS</option><option>Other</option></select></div>
+        <div class="form-group"><label class="form-label">Fulfillment Status</label><select class="form-select"><option>Order Created</option><option>Fulfilled</option><option>Tracking Received</option><option>Delivered</option></select></div>
+        <div class="form-group full"><label class="form-label">Post URL(s)</label><textarea class="form-textarea" id="track-posts" placeholder="Paste post URLs…" style="min-height:70px"></textarea></div>
+      </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-outline" onclick="closeModal('trackingModal')">Cancel</button><button class="btn btn-primary" onclick="saveTracking()">Save Update</button></div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+// DEFAULT SETTINGS
+// ══════════════════════════════════════════
+const DEFAULT_SETTINGS = {
+  ethnicities: [
+    'White / Caucasian','African / Black','East Asian','South Asian',
+    'Southeast Asian','Middle Eastern','Latino / Hispanic','Mixed / Multiracial',
+    'Indigenous / First Nations','Pacific Islander','Aboriginal or Torres Strait Islander'
+  ],
+  niches: [
+    'Fashion & Style','Fitness & Gym','Lifestyle','Travel','Health & Wellness',
+    'LGBTQ+ Content','Body Positivity','Swimwear / Beach','Dance & Performance',
+    'Photography','Comedy & Entertainment','Food & Hospitality','Luxury','Resortwear','Underwear'
+  ],
+  countries: [
+    'Australia','United States','United Kingdom','Canada','New Zealand',
+    'Germany','France','Netherlands','Singapore','Brazil','South Africa','Japan','Thailand'
+  ],
+  audienceLocations: [
+    'Australia','United States','United Kingdom','Canada','New Zealand',
+    'Europe (broad)','Asia','Middle East','Latin America','Global / Mixed'
+  ],
+  contentTypes: ['Try On','Vibe / Aesthetic','Social Proof / Testimonial','Unboxing','Educational'],
+  platforms: ['Instagram','TikTok','YouTube','Facebook','Pinterest','Threads'],
+  team: ['Unassigned','Sarah','James'],
+};
+
+const ETH_COLORS = {
+  'White / Caucasian': '#ef4444',
+  'African / Black': '#a855f7',
+  'East Asian': '#3b82f6',
+  'South Asian': '#22c55e',
+  'Southeast Asian': '#c9a96e',
+  'Middle Eastern': '#14b8a6',
+  'Latino / Hispanic': '#f97316',
+  'Mixed / Multiracial': '#8b5cf6',
+  'Indigenous / First Nations': '#06b6d4',
+  'Pacific Islander': '#84cc16',
+  'Aboriginal or Torres Strait Islander': '#f59e0b',
+  'Prefer not to say': '#94a3b8',
+};
+
+function getSettings() {
+  try { return JSON.parse(localStorage.getItem('tlc-settings') || 'null') || JSON.parse(JSON.stringify(DEFAULT_SETTINGS)); }
+  catch(e) { return JSON.parse(JSON.stringify(DEFAULT_SETTINGS)); }
+}
+function saveSettings(s) {
+  localStorage.setItem('tlc-settings', JSON.stringify(s));
+  // Trigger propagation
+  propagateSettings();
+}
+function resetSettings() {
+  if (!confirm('Reset all settings to defaults?')) return;
+  localStorage.removeItem('tlc-settings');
+  propagateSettings();
+  renderSettingsPage();
+  showToast('Settings reset to defaults.','success');
+}
+
+// Propagate settings everywhere
+function propagateSettings() {
+  const s = getSettings();
+  // Update owner dropdowns
+  ['so-owner','modalOwner'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const current = el.value;
+    el.innerHTML = s.team.map(t=>`<option>${t}</option>`).join('');
+    if (s.team.includes(current)) el.value = current;
+  });
+  // Update platform dropdown in add creator
+  const plat = document.getElementById('ac-platform');
+  if (plat) plat.innerHTML = s.platforms.map(p=>`<option>${p}</option>`).join('');
+  // Update ethnicity in add creator
+  const eth = document.getElementById('ac-ethnicity');
+  if (eth) eth.innerHTML = `<option value="">Prefer not to say</option>` + s.ethnicities.map(e=>`<option>${e}</option>`).join('');
+  // Content types in sendout modal
+  const ctGrid = document.getElementById('soContentTypes');
+  if (ctGrid) {
+    ctGrid.innerHTML = s.contentTypes.map(t =>
+      `<label class="ct-check"><input type="checkbox" name="contentType" value="${t}"><div class="ct-check-lbl">${t}</div></label>`
+    ).join('');
+  }
+  // Rebuild filters
+  buildFilters();
+}
+
+// ══════════════════════════════════════════
+// MOCK DATA
+// ══════════════════════════════════════════
+const MOCK = {
+  applications: [
+    { id:1, name:'Marcus Chen', handle:'@marcus.c', email:'marcus@example.com', submitted:'28 Mar 2025', brand:'2eros', platform:'Instagram', platforms:['Instagram'], followers:52000, country:'Australia', city:'Sydney', status:'New', niche:'Fitness', ethnicity:'East Asian', audience:'25-34 male' },
+    { id:2, name:'Jordan Avery', handle:'@beach.jordan', email:'jordan@example.com', submitted:'25 Mar 2025', brand:'supawear', platform:'TikTok', platforms:['TikTok','Instagram'], followers:120000, country:'United States', city:'LA', status:'Under Review', niche:'Lifestyle', ethnicity:'African / Black', audience:'18-28 mixed' },
+    { id:3, name:'Sean Fitzgerald', handle:'@fitsean_', email:'sean@example.com', submitted:'22 Mar 2025', brand:'both', platform:'Instagram', platforms:['Instagram','YouTube'], followers:38000, country:'Australia', city:'Melbourne', status:'Approved', niche:'Fitness & Gym', ethnicity:'White / Caucasian', audience:'22-35 male' },
+    { id:4, name:'Axel Varga', handle:'@axel.v', email:'axel@example.com', submitted:'20 Mar 2025', brand:'2eros', platform:'Instagram', platforms:['Instagram'], followers:89000, country:'Germany', city:'Berlin', status:'Under Review', niche:'Fashion', ethnicity:'White / Caucasian', audience:'25-40 male' },
+    { id:5, name:'Kai Nakamura', handle:'@kai.swim', email:'kai@example.com', submitted:'18 Mar 2025', brand:'supawear', platform:'TikTok', platforms:['TikTok','Instagram'], followers:210000, country:'Australia', city:'Brisbane', status:'Approved', niche:'Swimwear / Beach', ethnicity:'East Asian', audience:'18-30 mixed' },
+    { id:6, name:'Luis Moreno', handle:'@luis.m', email:'luis@example.com', submitted:'15 Mar 2025', brand:'2eros', platform:'YouTube', platforms:['YouTube','Instagram'], followers:45000, country:'Australia', city:'Perth', status:'On Hold', niche:'Lifestyle', ethnicity:'Latino / Hispanic', audience:'20-35 male' },
+    { id:7, name:'Noah Williams', handle:'@noahfit', email:'noah@example.com', submitted:'10 Mar 2025', brand:'supawear', platform:'Instagram', platforms:['Instagram'], followers:67000, country:'New Zealand', city:'Auckland', status:'Need More Info', niche:'Body Positivity', ethnicity:'Mixed / Multiracial', audience:'18-28 mixed' },
+  ],
+  creators: [
+    { id:101, name:'Marcus Chen', handle:'@marcus.c', email:'marcus@example.com', brand:'2eros', platform:'Instagram', platforms:['Instagram'], followers:52000, country:'Australia', city:'Sydney', ethnicity:'East Asian', score:9.2, campaigns:4, lastCampaign:'Feb 2025', late:false, dnc:false, status:'Active', driveFolder:'https://drive.google.com/drive/folders/example101' },
+    { id:102, name:'Jordan Avery', handle:'@beach.jordan', email:'jordan@example.com', brand:'supawear', platform:'TikTok', platforms:['TikTok','Instagram'], followers:120000, country:'United States', city:'LA', ethnicity:'African / Black', score:8.7, campaigns:3, lastCampaign:'Mar 2025', late:false, dnc:false, status:'Active', driveFolder:'https://drive.google.com/drive/folders/example102' },
+    { id:103, name:'Sean Fitzgerald', handle:'@fitsean_', email:'sean@example.com', brand:'both', platform:'Instagram', platforms:['Instagram','YouTube'], followers:38000, country:'Australia', city:'Melbourne', ethnicity:'White / Caucasian', score:7.1, campaigns:2, lastCampaign:'Jan 2025', late:true, dnc:false, status:'Active', driveFolder:null },
+    { id:104, name:'Axel Varga', handle:'@axel.v', email:'axel@example.com', brand:'2eros', platform:'Instagram', platforms:['Instagram'], followers:89000, country:'Germany', city:'Berlin', ethnicity:'White / Caucasian', score:5.9, campaigns:1, lastCampaign:'Dec 2024', late:false, dnc:false, status:'Inactive', driveFolder:null },
+    { id:105, name:'Ghost Guy', handle:'@ghosted_guy', email:'ghost@example.com', brand:'supawear', platform:'Instagram', platforms:['Instagram'], followers:23000, country:'Australia', city:'Sydney', ethnicity:'East Asian', score:1.8, campaigns:2, lastCampaign:'Nov 2024', late:true, dnc:true, status:'DNC', driveFolder:null },
+  ],
+  campaigns: [
+    { id:201, creator:'Marcus Chen', brand:'2EROS', campaign:'Summer 25 Seeding', contentType:'Try On', orderNum:'#1089', tracking:'AUS123456', orderStatus:'Delivered', contentStatus:'Posted', dueDate:'2025-02-28', owner:'Sarah', sentDate:'2025-01-15' },
+    { id:202, creator:'Jordan Avery', brand:'Supawear', campaign:'Pride Drop', contentType:'Vibe / Aesthetic', orderNum:'#1094', tracking:'DHL987654', orderStatus:'Delivered', contentStatus:'Awaiting Content', dueDate:'2025-03-10', owner:'James', sentDate:'2025-02-01' },
+    { id:203, creator:'Sean Fitzgerald', brand:'2EROS', campaign:'Resort Gifting', contentType:'Unboxing', orderNum:'#1101', tracking:'AUS654321', orderStatus:'Delivered', contentStatus:'Awaiting Content', dueDate:'2025-02-01', owner:'Sarah', sentDate:'2025-01-05' },
+    { id:204, creator:'Axel Varga', brand:'2EROS', campaign:'EU Launch', contentType:'Social Proof / Testimonial', orderNum:'#1110', tracking:'', orderStatus:'Fulfilled', contentStatus:'Awaiting Content', dueDate:'2025-04-01', owner:'James', sentDate:'2025-03-10' },
+    { id:205, creator:'Kai Nakamura', brand:'Supawear', campaign:'Beach Season', contentType:'Vibe / Aesthetic', orderNum:'#1118', tracking:'AUS778899', orderStatus:'Delivered', contentStatus:'Content Submitted', dueDate:'2025-03-20', owner:'Sarah', sentDate:'2025-03-01' },
+    { id:206, creator:'Luis Moreno', brand:'2EROS', campaign:'Active 25', contentType:'Educational', orderNum:'', tracking:'', orderStatus:'Approved to Send', contentStatus:'Awaiting Content', dueDate:'2025-04-15', owner:'James', sentDate:'2025-03-25' },
+  ],
+  followups: [
+    { id:301, creator:'Jordan Avery', urgency:'High', reason:'No Content Submitted', daysOverdue:32, lastFollowup:'25 Mar 2025', count:2, suggestedAction:'Send final reminder before escalating' },
+    { id:302, creator:'Sean Fitzgerald', urgency:'High', reason:'Overdue', daysOverdue:58, lastFollowup:'20 Mar 2025', count:3, suggestedAction:'Mark as missed deliverable' },
+    { id:303, creator:'Ghost Guy', urgency:'High', reason:'No Reply', daysOverdue:45, lastFollowup:'15 Mar 2025', count:4, suggestedAction:'Consider DNC' },
+    { id:304, creator:'Axel Varga', urgency:'Medium', reason:'No Content Submitted', daysOverdue:14, lastFollowup:'28 Mar 2025', count:1, suggestedAction:'Send friendly reminder' },
+    { id:305, creator:'Luis Moreno', urgency:'Low', reason:'Address Missing', daysOverdue:3, lastFollowup:'30 Mar 2025', count:1, suggestedAction:'Request shipping address' },
+  ],
+};
+
+let currentEthGroup = null;
+
+// ══════════════════════════════════════════
+// PASSWORD AUTH
+// ──────────────────────────────────────────
+// The password is the single value of PORTAL_PASSWORD below.
+// To change it: edit this one line, save the file, re-upload to GitHub.
+// The Settings page shows the current password and these instructions.
+// ══════════════════════════════════════════
+var PORTAL_PASSWORD = 'TLC321!'; // <-- CHANGE THIS LINE TO UPDATE THE PASSWORD
+
+function checkPassword() {
+  var input = document.getElementById('loginPasswordInput');
+  var err   = document.getElementById('loginError');
+  if (!input) return;
+  if (input.value === PORTAL_PASSWORD) {
+    try { sessionStorage.setItem('tlc-authed', '1'); } catch(e) {}
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('portalApp').style.display = 'flex';
+    input.value = '';
+    if (err) err.style.display = 'none';
+    initPortal();
+  } else {
+    if (err) err.style.display = 'block';
+    input.focus();
+    input.select();
+  }
+}
+
+function initPortal() {
+  var dateEl = document.getElementById('dashDate');
+  if (dateEl) dateEl.textContent = new Date().toLocaleDateString('en-AU',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  propagateSettings();
+  loadData();
+  buildReports();
+  loadNotes();
+  renderSettingsPage();
+}
+
+function handleGoogleLogin() {}
+function loginDemo() {}
+
+document.addEventListener('DOMContentLoaded', function() {
+  // If already authenticated this tab session, go straight to portal
+  var authed = false;
+  try { authed = sessionStorage.getItem('tlc-authed') === '1'; } catch(e) {}
+
+  if (authed) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('portalApp').style.display = 'flex';
+    initPortal();
+  } else {
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('portalApp').style.display = 'none';
+    setTimeout(function() {
+      var inp = document.getElementById('loginPasswordInput');
+      if (inp) inp.focus();
+    }, 100);
+  }
+});
+
+// ══════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════
+function showPage(page, btn) {
+  document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  const titles = { dashboard:'Dashboard', applications:'Applications', database:'Creator Database', gifting:'Gifting Tracker', followups:'Follow-ups', notes:'Notes', reports:'Reports', settings:'Settings' };
+  document.getElementById('pageTitle').textContent = titles[page] || page;
+}
+// Track active brand globally — 'both' means no filter
+let ACTIVE_BRAND = 'both';
+
+function setBrand(brand, btn) {
+  ACTIVE_BRAND = brand;
+  document.querySelectorAll('.brand-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  const label = brand === '2eros' ? '2EROS' : brand === 'supawear' ? 'Supawear' : 'All Brands';
+  document.getElementById('dashBrandLabel').innerHTML = `${label} · <span id="dashDate">${document.getElementById('dashDate')?.textContent||''}</span>`;
+  // Re-render all views with the brand filter applied
+  renderDashboardBranded();
+  renderApplications(filteredApps());
+  renderCreatorDb(filteredCreators());
+  renderGifting(filteredCampaigns());
+  showToast(`Viewing: ${label}`, 'info');
+}
+
+// Brand-filtered data helpers
+function brandMatch(b) {
+  if (ACTIVE_BRAND === 'both') return true;
+  const bl = (b || '').toLowerCase();
+  if (ACTIVE_BRAND === '2eros')    return bl === '2eros'    || bl === '2EROS'    || bl === 'both';
+  if (ACTIVE_BRAND === 'supawear') return bl === 'supawear' || bl === 'Supawear' || bl === 'both';
+  return true;
+}
+function filteredApps()      { return MOCK.applications.filter(a => brandMatch(a.brand)); }
+function filteredCreators()  { return MOCK.creators.filter(c    => brandMatch(c.brand)); }
+function filteredCampaigns() { return MOCK.campaigns.filter(c   => brandMatch(c.brand === '2EROS' ? '2eros' : c.brand === 'Supawear' ? 'supawear' : c.brand)); }
+
+// Dashboard re-render that uses brand-filtered data
+function renderDashboardBranded() {
+  const apps  = filteredApps();
+  const camps = filteredCampaigns();
+  const creas = filteredCreators();
+  const fus   = MOCK.followups; // follow-ups aren't brand-tagged in mock data
+
+  const fourWeeksAgo = new Date(Date.now() - 28*24*60*60*1000);
+  const outstanding = camps.filter(c => new Date(c.dueDate) < fourWeeksAgo && !['Posted','Completed'].includes(c.contentStatus));
+
+  const alertEl = document.getElementById('outstandingAlert');
+  const textEl  = document.getElementById('outstandingText');
+  if (outstanding.length) {
+    alertEl.style.display = 'flex';
+    textEl.textContent = `${outstanding.length} send-out${outstanding.length>1?'s':''} outstanding 4+ weeks without content: ${outstanding.map(c=>c.creator).join(', ')}`;
+  } else { alertEl.style.display = 'none'; }
+
+  const approved  = apps.filter(a=>a.status==='Approved').length + creas.length;
+  const newApps   = apps.filter(a=>a.status==='New').length;
+  const reviewing = apps.filter(a=>a.status==='Under Review').length;
+  const active    = camps.filter(c=>!['Completed','Posted'].includes(c.contentStatus)).length;
+  const overdue   = fus.filter(f=>f.urgency==='High').length;
+  const completed = camps.filter(c=>['Completed','Posted'].includes(c.contentStatus)).length;
+
+  const kpiData = [
+    { id:'kpiApproved', label:'Approved Creators', value:approved, sub:'Total approved', cls:'kpi-green',
+      panelRows: creas.map(c=>`<div class="kpi-panel-row"><strong>${c.name}</strong><span>${c.brand}</span></div>`).join('') },
+    { id:'kpiNew', label:'New Applications', value:newApps, sub:'Awaiting review', cls:'kpi-blue',
+      panelRows: apps.filter(a=>a.status==='New').map(a=>`<div class="kpi-panel-row"><strong>${a.name}</strong><span>${a.brand}</span></div>`).join('') },
+    { id:'kpiReview', label:'Under Review', value:reviewing, sub:'In progress', cls:'kpi-orange',
+      panelRows: apps.filter(a=>a.status==='Under Review').map(a=>`<div class="kpi-panel-row"><strong>${a.name}</strong><span>${a.brand}</span></div>`).join('') },
+    { id:'kpiActive', label:'Active Send-outs', value:active, sub:'In progress', cls:'kpi-accent',
+      panelRows: camps.filter(c=>!['Completed','Posted'].includes(c.contentStatus)).map(c=>`<div class="kpi-panel-row"><strong>${c.creator}</strong><span>${c.contentStatus}</span></div>`).join('') },
+    { id:'kpiOverdue', label:'Overdue', value:overdue, sub:'Needs attention', cls:'kpi-red',
+      panelRows: fus.filter(f=>f.urgency==='High').map(f=>`<div class="kpi-panel-row"><strong>${f.creator}</strong><span style="color:var(--red)">+${f.daysOverdue}d</span></div>`).join('') },
+    { id:'kpiCompleted', label:'Completed', value:completed, sub:'All time', cls:'kpi-teal',
+      panelRows: camps.filter(c=>['Completed','Posted'].includes(c.contentStatus)).map(c=>`<div class="kpi-panel-row"><strong>${c.creator}</strong><span>${c.campaign}</span></div>`).join('') },
+  ];
+
+  document.getElementById('kpiGrid').innerHTML = kpiData.map(k =>
+    `<div>
+      <div class="kpi-card ${k.cls}" id="${k.id}" onclick="toggleKpi('${k.id}','${k.id}_panel')">
+        <div class="kpi-expand-icon">▾</div>
+        <div class="kpi-label">${k.label}</div>
+        <div class="kpi-value">${k.value}</div>
+        <div class="kpi-sub">${k.sub}</div>
+      </div>
+      <div class="kpi-panel" id="${k.id}_panel">${k.panelRows||'<div style="font-size:12px;color:var(--stone)">No items</div>'}</div>
+    </div>`
+  ).join('');
+
+  // Ethnicity from filtered set
+  renderEthnicityCards([...apps, ...creas]);
+
+  // Send-out type bars
+  const typeMap = {};
+  camps.forEach(c => {
+    (c.contentType||'').split(',').map(t=>t.trim()).forEach(t => {
+      if (!t) return;
+      if (!typeMap[t]) typeMap[t]={total:0,done:0};
+      typeMap[t].total++;
+      if (['Posted','Completed'].includes(c.contentStatus)) typeMap[t].done++;
+    });
+  });
+  document.getElementById('sendoutTypeBars').innerHTML = Object.entries(typeMap).map(([type,d]) =>
+    `<div class="sendout-bar-wrap">
+      <div class="sendout-bar-label"><span>${type}</span><span>${d.done}/${d.total} complete (${Math.round(d.done/d.total*100)}%)</span></div>
+      <div class="sendout-bar-track"><div class="sendout-bar-fill" style="width:${Math.round(d.done/d.total*100)}%"></div></div>
+    </div>`
+  ).join('') || '<div style="font-size:12px;color:var(--stone)">No send-outs yet</div>';
+
+  // Recent apps
+  document.getElementById('recentAppsTable').innerHTML = apps.slice(0,5).map(a =>
+    `<tr class="cursor" onclick="openCreatorDetail(${a.id})">
+      <td><strong>${a.name}</strong><div style="font-size:10px;color:var(--stone)">${a.handle}</div></td>
+      <td>${brandChip(a.brand)}</td>
+      <td>${statusChip(a.status)}</td>
+    </tr>`
+  ).join('') || '<tr><td colspan="3" style="text-align:center;color:var(--stone);font-size:12px;padding:16px">No applications for this brand</td></tr>';
+
+  // Overdue
+  document.getElementById('overdueTable').innerHTML = fus.filter(f=>f.urgency==='High').slice(0,4).map(f =>
+    `<tr><td><strong>${f.creator}</strong></td><td style="font-size:11px">${f.reason}</td><td><span style="color:var(--red);font-weight:700">+${f.daysOverdue}d</span></td></tr>`
+  ).join('');
+
+  // Feature Focus
+  const top = creas.filter(c=>!c.dnc).sort((a,b)=>b.score-a.score).slice(0,4);
+  document.getElementById('featureCreatorsGrid').innerHTML = top.map(c =>
+    `<div class="feature-creator-card" onclick="openCreatorDetail(${c.id})">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+        <div><div class="fc-name">${c.name}</div><div class="fc-handle">${handleLink(c.handle, c.platform, c.platforms)}</div></div>
+        ${brandChip(c.brand)}
+      </div>
+      <div class="fc-stats">
+        <div class="fc-stat"><div class="fc-stat-val" style="color:${c.score>=8?'var(--green)':c.score>=5?'var(--orange)':'var(--red)'}">${c.score}</div><div class="fc-stat-lbl">Score</div></div>
+        <div class="fc-stat"><div class="fc-stat-val">${c.campaigns}</div><div class="fc-stat-lbl">Campaigns</div></div>
+        <div class="fc-stat"><div class="fc-stat-val">${fmtNum(c.followers)}</div><div class="fc-stat-lbl">Followers</div></div>
+      </div>
+    </div>`
+  ).join('') || '<div style="color:var(--stone);font-size:13px">No creators for this brand yet</div>';
+}
+
+// ══════════════════════════════════════════
+// MODALS
+// ══════════════════════════════════════════
+function openModal(id) { document.getElementById(id).classList.add('active'); document.body.style.overflow='hidden'; }
+function closeModal(id) { document.getElementById(id).classList.remove('active'); document.body.style.overflow=''; }
+document.addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeModal(e.target.id); });
+
+// ══════════════════════════════════════════
+// TOASTS
+// ══════════════════════════════════════════
+function showToast(msg, type='info') {
+  const wrap = document.getElementById('toastContainer');
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.innerHTML = `<span>${{success:'✓',error:'✕',info:'ℹ'}[type]||'ℹ'}</span><span>${msg}</span>`;
+  wrap.appendChild(t);
+  setTimeout(() => t.remove(), 4000);
+}
+
+// ══════════════════════════════════════════
+// CARD TOGGLE
+// ══════════════════════════════════════════
+function toggleCard(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.style.display = el.style.display==='none' ? 'block' : 'none';
+}
+
+// ══════════════════════════════════════════
+// BUILD FILTERS
+// ══════════════════════════════════════════
+function buildFilters() {
+  const s = getSettings();
+
+  // Application filters
+  const appBar = document.getElementById('appFilters');
+  if (appBar) {
+    appBar.innerHTML = `
+      <span class="filter-label">Filter:</span>
+      <select class="filter-select" id="filterAppStatus" onchange="filterApplications()">
+        <option value="">All Statuses</option>
+        <option>New</option><option>Under Review</option><option>Need More Info</option>
+        <option>Approved</option><option>Rejected</option><option>On Hold</option>
+      </select>
+      <select class="filter-select" id="filterAppBrand" onchange="filterApplications()">
+        <option value="">All Brands</option><option>2eros</option><option>supawear</option><option>both</option>
+      </select>
+      <select class="filter-select" id="filterAppPlatform" onchange="filterApplications()">
+        <option value="">All Platforms</option>
+        ${s.platforms.map(p=>`<option>${p}</option>`).join('')}
+      </select>
+      <select class="filter-select" id="filterAppCountry" onchange="filterApplications()">
+        <option value="">All Countries</option>
+        ${s.countries.map(c=>`<option>${c}</option>`).join('')}
+      </select>
+      <select class="filter-select" id="filterAppEthnicity" onchange="filterApplications()">
+        <option value="">All Backgrounds</option>
+        ${s.ethnicities.map(e=>`<option>${e}</option>`).join('')}
+      </select>`;
+  }
+
+  // Database filters
+  const dbBar = document.getElementById('dbFilters');
+  if (dbBar) {
+    dbBar.innerHTML = `
+      <span class="filter-label">Filter:</span>
+      <select class="filter-select" id="filterDbBrand" onchange="filterDatabase()">
+        <option value="">All Brands</option><option value="2eros">2EROS</option><option value="supawear">Supawear</option><option value="both">Both</option>
+      </select>
+      <select class="filter-select" id="filterDbStatus" onchange="filterDatabase()">
+        <option value="">All Status</option><option>Active</option><option>Inactive</option><option>DNC</option>
+      </select>
+      <select class="filter-select" id="filterDbPlatform" onchange="filterDatabase()">
+        <option value="">All Platforms</option>
+        ${s.platforms.map(p=>`<option>${p}</option>`).join('')}
+      </select>
+      <select class="filter-select" id="filterDbCountry" onchange="filterDatabase()">
+        <option value="">All Countries</option>
+        ${s.countries.map(c=>`<option>${c}</option>`).join('')}
+      </select>
+      <select class="filter-select" id="filterDbEthnicity" onchange="filterDatabase()">
+        <option value="">All Backgrounds</option>
+        ${s.ethnicities.map(e=>`<option>${e}</option>`).join('')}
+      </select>
+      <select class="filter-select" id="filterDbScore" onchange="filterDatabase()">
+        <option value="">All Scores</option>
+        <option value="high">High (8–10)</option><option value="mid">Medium (5–7)</option><option value="low">Low (1–4)</option>
+      </select>`;
+  }
+
+  // Gifting filters
+  const giftBar = document.getElementById('giftFilters');
+  if (giftBar) {
+    giftBar.innerHTML = `
+      <span class="filter-label">Filter:</span>
+      <select class="filter-select" id="filterGiftStatus" onchange="filterGifting()">
+        <option value="">All Statuses</option>
+        <option>Approved to Send</option><option>Order Created</option><option>Fulfilled</option>
+        <option>Tracking Received</option><option>Delivered</option><option>Awaiting Content</option>
+        <option>Content Submitted</option><option>Posted</option><option>Completed</option>
+        <option>Overdue</option><option>Missed Deliverable</option>
+      </select>
+      <select class="filter-select" id="filterGiftBrand" onchange="filterGifting()">
+        <option value="">All Brands</option><option>2EROS</option><option>Supawear</option>
+      </select>
+      <select class="filter-select" id="filterContentType" onchange="filterGifting()">
+        <option value="">All Content Types</option>
+        ${s.contentTypes.map(t=>`<option>${t}</option>`).join('')}
+      </select>
+      <select class="filter-select" id="filterGiftOwner" onchange="filterGifting()">
+        <option value="">All Owners</option>
+        ${s.team.map(t=>`<option>${t}</option>`).join('')}
+      </select>`;
+  }
+}
+
+// ══════════════════════════════════════════
+// LOAD DATA
+// ══════════════════════════════════════════
+// ══════════════════════════════════════════
+// LOAD DATA — fetches live from Google Sheets
+// Falls back to demo data if GAS unavailable
+// ══════════════════════════════════════════
+function loadData() {
+  // Render demo data immediately so page looks alive
+  renderDashboard();
+  renderApplications(filteredApps());
+  renderCreatorDb(filteredCreators());
+  renderGifting(filteredCampaigns());
+  renderFollowups(MOCK.followups);
+
+  // Then fetch real data from GAS in the background
+  if (!GAS_ENDPOINT) return;
+  callGAS('getPortalData', {}).then(function(result) {
+    if (!result || !result.success) {
+      var err = (result && result.error) || 'unknown error';
+      if (err.includes('Unknown action')) {
+        showToast('Portal needs a new Apps Script deployment — see setup guide', 'error');
+      } else {
+        showToast('GAS error: ' + err, 'error');
+      }
+      return;
+    }
+    var changed = false;
+    if (result.applications && result.applications.length > 0) {
+      MOCK.applications = result.applications.map(mapSheetApplication);
+      changed = true;
+    }
+    if (result.creators && result.creators.length > 0) {
+      MOCK.creators = result.creators.map(mapSheetCreator);
+      changed = true;
+    }
+    if (result.campaigns && result.campaigns.length > 0) {
+      MOCK.campaigns = result.campaigns.map(mapSheetCampaign);
+      changed = true;
+    }
+    if (changed) {
+      renderDashboard();
+      renderApplications(filteredApps());
+      renderCreatorDb(filteredCreators());
+      renderGifting(filteredCampaigns());
+      showToast('Live data loaded from Google Sheets', 'success');
+    } else {
+      showToast('Connected to Sheets — no data yet', 'info');
+    }
+  }).catch(function(e) {
+    showToast('Could not reach Apps Script: ' + e.message, 'error');
+    console.log('GAS load error:', e);
+  });
+}
+
+function syncFromSheets() {
+  showToast('Syncing from Google Sheets…','info');
+  MOCK.applications = MOCK_DEMO.applications.slice();
+  MOCK.creators     = MOCK_DEMO.creators.slice();
+  MOCK.campaigns    = MOCK_DEMO.campaigns.slice();
+  if (!GAS_ENDPOINT) { loadData(); showToast('No endpoint set — showing demo data','info'); return; }
+  callGAS('getPortalData', {}).then(function(result) {
+    if (result && result.success) {
+      if (result.applications && result.applications.length > 0) MOCK.applications = result.applications.map(mapSheetApplication);
+      if (result.creators     && result.creators.length > 0)     MOCK.creators     = result.creators.map(mapSheetCreator);
+      if (result.campaigns    && result.campaigns.length > 0)    MOCK.campaigns    = result.campaigns.map(mapSheetCampaign);
+    }
+    renderDashboard();
+    renderApplications(filteredApps());
+    renderCreatorDb(filteredCreators());
+    renderGifting(filteredCampaigns());
+    showToast('Synced from Google Sheets','success');
+  }).catch(function(e) {
+    showToast('Sync failed — showing demo data','info');
+    loadData();
+  });
+}
+
+// ── FIELD MAPPERS ─────────────────────────
+// Map Google Sheet row objects (keyed by column header) to portal format
+
+function parseFollowerRange(val) {
+  // Converts range strings like "50k-100k" or "100k-250k" to a number
+  if (!val) return 0;
+  if (typeof val === 'number') return val;
+  var s = String(val).toLowerCase().trim();
+  // Take the lower bound of range
+  var lower = s.split('-')[0].replace('+','').trim();
+  if (lower.endsWith('k')) return Math.round(parseFloat(lower) * 1000) || 0;
+  if (lower.endsWith('m')) return Math.round(parseFloat(lower) * 1000000) || 0;
+  return parseInt(lower) || 0;
+}
+
+function mapSheetApplication(row) {
+  var platforms = [];
+  if (row.ig_handle) platforms.push('Instagram');
+  if (row.tt_handle) platforms.push('TikTok');
+  if (row.yt_handle) platforms.push('YouTube');
+  if (platforms.length === 0) platforms.push('Instagram');
+  return {
+    id:          row.application_id || ('a' + Date.now() + Math.random()),
+    gasId:       row.application_id || '',
+    name:        row.full_name       || '',
+    handle:      row.creator_handle  || '',
+    email:       row.email           || '',
+    phone:       row.phone           || '',
+    submitted:   row.submitted_at ? new Date(row.submitted_at).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'}) : '--',
+    brand:       (row.brand || 'both').toLowerCase().replace(/\s/g,''),
+    platform:    platforms[0],
+    platforms:   platforms,
+    followers:   parseFollowerRange(row.ig_followers),
+    followersRaw: row.ig_followers || '',
+    country:     row.country    || '',
+    city:        row.city       || '',
+    status:      row.status     || 'New',
+    niche:       row.niche      || '',
+    ethnicity:   row.audience_demographics || '',
+    audience:    row.audience_location     || '',
+    whyUs:       row.why_us          || '',
+    prevCollabs: row.prev_collabs    || '',
+    mediaKit:    row.media_kit       || '',
+    notes:       row.notes           || '',
+    driveFolder: null,
+  };
+}
+
+function mapSheetCreator(row) {
+  var platforms = [];
+  if (row.ig_handle)  platforms.push('Instagram');
+  if (row.tt_handle)  platforms.push('TikTok');
+  if (row.yt_handle)  platforms.push('YouTube');
+  if (platforms.length === 0) platforms.push('Instagram');
+  return {
+    id:          row.creator_id || ('c' + Date.now() + Math.random()),
+    gasId:       row.creator_id || '',
+    name:        row.full_name  || '',
+    handle:      row.creator_handle || '',
+    email:       row.email      || '',
+    phone:       row.phone      || '',
+    brand:       (row.brand || 'both').toLowerCase().replace(/\s/g,''),
+    platform:    platforms[0],
+    platforms:   platforms,
+    followers:   parseInt(row.ig_followers || row.tt_followers || row.yt_followers || 0) || 0,
+    country:     row.country    || '',
+    city:        row.city       || '',
+    ethnicity:   row.audience_demographics || '',
+    score:       parseFloat(row.reliability_score) || 0,
+    campaigns:   parseInt(row.total_campaigns) || 0,
+    lastCampaign:'--',
+    late:        row.late_flag === 'true' || row.late_flag === true,
+    dnc:         row.dnc_flag  === 'true' || row.dnc_flag  === true,
+    status:      row.status    || 'Active',
+    driveFolder: row.drive_folder_url || null,
+  };
+}
+
+function mapSheetCampaign(row) {
+  // content type is stored in notes as "[Content Type: X] notes"
+  var contentType = '';
+  var notes = row.notes || '';
+  var ctMatch = notes.match(/\[Content Type: ([^\]]+)\]/);
+  if (ctMatch) { contentType = ctMatch[1]; notes = notes.replace(ctMatch[0], '').trim(); }
+  return {
+    id:            row.campaign_id || ('p' + Date.now() + Math.random()),
+    gasId:         row.campaign_id || '',
+    creator:       row.creator_name || '',
+    brand:         row.brand || '2EROS',
+    campaign:      row.campaign_name || '',
+    contentType:   contentType,
+    orderNum:      row.shopify_order_num   || '',
+    tracking:      row.tracking_number     || '',
+    orderStatus:   row.shipment_status     || 'Approved to Send',
+    contentStatus: row.content_status      || 'Awaiting Content',
+    dueDate:       row.deliverable_due_date || '',
+    owner:         row.owner               || 'Unassigned',
+    sentDate:      row.created_at          || '',
+  };
+}
+
+// ══════════════════════════════════════════
+// DASHBOARD
+// ══════════════════════════════════════════
+function renderDashboard() {
+  renderDashboardBranded();
+}
+
+function toggleKpi(cardId, panelId) {
+  const card = document.getElementById(cardId);
+  const panel = document.getElementById(panelId);
+  if (!card || !panel) return;
+  panel.classList.toggle('open');
+  card.classList.toggle('expanded');
+}
+
+// ══════════════════════════════════════════
+// ETHNICITY CARDS
+// ══════════════════════════════════════════
+function renderEthnicityCards(all) {
+  const s = getSettings();
+  if (!all) all = [...filteredApps(), ...filteredCreators()];
+  const total = all.length;
+
+  // Count all ethnicities from settings
+  const ethCounts = {};
+  s.ethnicities.forEach(e => ethCounts[e] = 0);
+  all.forEach(p => {
+    if (p.ethnicity && ethCounts.hasOwnProperty(p.ethnicity)) ethCounts[p.ethnicity]++;
+    else if (p.ethnicity) ethCounts[p.ethnicity] = (ethCounts[p.ethnicity]||0)+1;
+  });
+
+  const grid = document.getElementById('ethCardsGrid');
+  grid.innerHTML = Object.entries(ethCounts).map(([eth, count]) => {
+    const color = ETH_COLORS[eth] || '#7a7268';
+    const pct = total > 0 ? Math.round(count/total*100) : 0;
+    const hasData = count > 0;
+    return `<div class="eth-card ${hasData?'has-data':''}" onclick="showEthDetail('${eth}', ${count})">
+      <div class="eth-card-top">
+        <div class="eth-card-left">
+          <div class="eth-dot" style="background:${color}"></div>
+          <div class="eth-card-name">${eth}</div>
+        </div>
+        <div class="eth-card-count" style="color:${hasData?color:'var(--stone)'}">${count}</div>
+      </div>
+      <div class="eth-card-bottom">
+        <div class="eth-card-pct">${pct}% of program${hasData?'':' · 0 influencers'}</div>
+        ${hasData ? `<div class="eth-card-cta">influencers · click to view ↗</div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function showEthDetail(ethnicity, count) {
+  if (count === 0) return;
+  currentEthGroup = ethnicity;
+  document.getElementById('ethModalTitle').textContent = ethnicity;
+  const people = [...MOCK.applications, ...MOCK.creators].filter(p => p.ethnicity === ethnicity);
+  const color = ETH_COLORS[ethnicity] || '#7a7268';
+  document.getElementById('ethModalContent').innerHTML = `
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
+      <div style="width:12px;height:12px;border-radius:50%;background:${color};flex-shrink:0"></div>
+      <span style="font-size:14px;color:var(--stone)">${count} influencer${count!==1?'s':''} in this group</span>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Name</th><th>Handle</th><th>Brand</th><th>Platform</th><th>Location</th><th>Status</th></tr></thead>
+      <tbody>
+        ${people.map(p=>`<tr>
+          <td><strong>${p.name}</strong></td>
+          <td style="font-size:12px">${handleLink(p.handle, p.platform, p.platforms)}</td>
+          <td>${brandChip(p.brand)}</td>
+          <td style="font-size:12px">${p.platform||'—'}</td>
+          <td style="font-size:12px">${p.city||''} ${p.country||''}</td>
+          <td>${statusChip(p.status||'Active')}</td>
+        </tr>`).join('')}
+      </tbody>
+    </table></div>`;
+  openModal('ethDetailModal');
+}
+
+function exportEthnicityCSV() {
+  const s = getSettings();
+  const all = [...MOCK.applications, ...MOCK.creators];
+  const ethCounts = {};
+  s.ethnicities.forEach(e => ethCounts[e] = 0);
+  all.forEach(p => { if (p.ethnicity) ethCounts[p.ethnicity] = (ethCounts[p.ethnicity]||0)+1; });
+  const total = all.length;
+  const rows = [['Ethnicity','Count','Percentage of Program']];
+  Object.entries(ethCounts).forEach(([e,c]) => rows.push([e, c, `${Math.round(c/total*100)}%`]));
+  downloadCSV(rows, 'ethnicity-representation');
+  showToast('CSV downloaded — import into Google Sheets via File → Import','success');
+}
+
+function exportEthGroupCSV() {
+  if (!currentEthGroup) return;
+  const people = [...MOCK.applications, ...MOCK.creators].filter(p=>p.ethnicity===currentEthGroup);
+  const rows = [['Name','Handle','Email','Brand','Platform','Location','Status']];
+  people.forEach(p => rows.push([p.name, p.handle||'', p.email||'', p.brand||'', p.platform||'', `${p.city||''} ${p.country||''}`, p.status||'']));
+  downloadCSV(rows, `ethnicity-${currentEthGroup.replace(/\W+/g,'-').toLowerCase()}`);
+  showToast('CSV downloaded','success');
+}
+
+// ══════════════════════════════════════════
+// APPLICATIONS
+// ══════════════════════════════════════════
+function renderApplications(apps) {
+  document.getElementById('applicationsTable').innerHTML = apps.map(a =>
+    `<tr>
+      <td>
+        <strong>${a.name}</strong>
+        <div style="margin-top:2px">${handleLink(a.handle, a.platform, a.platforms)}</div>
+        <div style="font-size:10px;color:var(--stone);margin-top:1px">${a.email}</div>
+      </td>
+      <td style="font-size:12px">${a.submitted}</td>
+      <td>${brandChip(a.brand)}</td>
+      <td style="font-size:12px">${a.platform}</td>
+      <td style="font-size:12px">${a.followersRaw || fmtNum(a.followers) || '—'}</td>
+      <td style="font-size:12px">${a.city}, ${a.country}</td>
+      <td style="font-size:12px">${a.ethnicity||'—'}</td>
+      <td>${statusChip(a.status)}</td>
+      <td>
+        <div style="display:flex;gap:4px">
+          <button class="btn btn-ghost btn-xs" onclick="openCreatorDetail(${a.id})">View</button>
+          <button class="btn btn-success btn-xs" onclick="quickApprove(${a.id})">✓</button>
+          <button class="btn btn-danger btn-xs" onclick="quickReject(${a.id})">✕</button>
+        </div>
+      </td>
+    </tr>`
+  ).join('');
+}
+function filterApplications() {
+  const status = (document.getElementById('filterAppStatus')||{}).value||'';
+  const brand  = (document.getElementById('filterAppBrand')||{}).value?.toLowerCase()||'';
+  const platform=(document.getElementById('filterAppPlatform')||{}).value||'';
+  const country=(document.getElementById('filterAppCountry')||{}).value||'';
+  const eth    = (document.getElementById('filterAppEthnicity')||{}).value||'';
+  let f = filteredApps();
+  if (status)   f = f.filter(a=>a.status===status);
+  if (brand)    f = f.filter(a=>a.brand?.toLowerCase()===brand);
+  if (platform) f = f.filter(a=>a.platform===platform);
+  if (country)  f = f.filter(a=>a.country===country);
+  if (eth)      f = f.filter(a=>a.ethnicity===eth);
+  renderApplications(f);
+}
+function quickApprove(id) {
+  const a = MOCK.applications.find(x=>x.id===id);
+  if (!a) return;
+  a.status = 'Approved';
+  // Promote to creator database locally
+  if (!MOCK.creators.find(c => c.handle === a.handle)) {
+    const newCreator = Object.assign({}, a, {
+      score:0, campaigns:0, lastCampaign:'--', late:false, dnc:false, status:'Active', driveFolder:null,
+    });
+    MOCK.creators.unshift(newCreator);
+    provisionCreatorDrive(newCreator);
+  }
+  loadData();
+  showToast(a.name + ' approved — saving to Sheets…', 'success');
+  // Save to GAS
+  if (a.gasId) {
+    callGAS('approveApplication', { applicationId: a.gasId, reviewedBy: 'Staff', notes: '' })
+      .then(function(r) {
+        if (r && r.driveFolderUrl) {
+          var c = MOCK.creators.find(x => x.handle === a.handle);
+          if (c) { c.driveFolder = r.driveFolderUrl; renderCreatorDb(filteredCreators()); }
+        }
+      })
+      .catch(function(e) { showToast('GAS save error: ' + e.message, 'error'); });
+  } else {
+    showToast('No GAS ID — sync from Sheets first to get real IDs', 'info');
+  }
+}
+function quickReject(id) {
+  const a = MOCK.applications.find(x=>x.id===id);
+  if (!a) return;
+  a.status = 'Rejected';
+  loadData();
+  showToast(a.name + ' rejected.', 'info');
+  if (a.gasId) callGAS('updateApplication', { applicationId: a.gasId, fields: { status: 'Rejected' } }).catch(function(){});
+}
+
+function openCreatorDetail(id) {
+  const a = MOCK.applications.find(x=>x.id===id) || MOCK.creators.find(x=>x.id===id);
+  if (!a) return;
+  document.getElementById('modalCreatorName').textContent = a.name;
+  document.getElementById('modalCreatorChips').innerHTML = `${brandChip(a.brand)} ${statusChip(a.status||'Active')}`;
+
+  const platList = a.platforms || (a.platform ? [a.platform] : []);
+  const platLinksHtml = platList.map(p => singleHandleLink(a.handle, p)).join('&nbsp;&nbsp;');
+
+  // Show raw follower range if available, otherwise formatted number
+  const followersDisplay = a.followersRaw || fmtNum(a.followers) || '—';
+
+  const fields = [
+    ['Handle',       platLinksHtml || a.handle || '—'],
+    ['Email',        a.email ? `<a href="mailto:${a.email}" style="color:var(--gold2)">${a.email}</a>` : '—'],
+    ['Phone',        a.phone || '—'],
+    ['Location',     `${a.city||''}, ${a.country||''}`],
+    ['Ethnicity',    a.ethnicity || 'Not stated'],
+    ['Platforms',    platList.join(', ') || '—'],
+    ['Followers',    followersDisplay],
+    ['Audience',     a.audience || '—'],
+    ['Niche',        a.niche || '—'],
+    ['Submitted',    a.submitted || '—'],
+    ['Score',        a.score || '—'],
+    ['Campaigns',    a.campaigns || '—'],
+    ['Drive Folder', driveFolderLink(a.driveFolder)],
+  ];
+
+  // Application-specific fields (only on applications, not creators)
+  if (a.whyUs)       fields.push(['Why Us',        a.whyUs]);
+  if (a.prevCollabs) fields.push(['Past Collabs',   a.prevCollabs]);
+  if (a.mediaKit)    fields.push(['Media Kit',      `<a href="${a.mediaKit}" target="_blank" style="color:var(--gold2)">View Kit</a>`]);
+  if (a.notes)       fields.push(['Notes',          a.notes]);
+
+  document.getElementById('modalDetailGrid').innerHTML = fields.map(([k,v]) =>
+    `<div class="detail-group"><span class="detail-label">${k}</span><span class="detail-value">${v}</span></div>`
+  ).join('');
+  openModal('creatorDetailModal');
+}
+function updateAppStatus(status) { showToast(`Status updated to: ${status}`,'success'); closeModal('creatorDetailModal'); }
+
+// ══════════════════════════════════════════
+// CREATOR DATABASE
+// ══════════════════════════════════════════
+function renderCreatorDb(creators) {
+  document.getElementById('creatorDbTable').innerHTML = creators.map(c =>
+    `<tr>
+      <td>
+        <strong>${c.name}</strong>
+        <div style="margin-top:2px">${handleLink(c.handle, c.platform, c.platforms)}</div>
+      </td>
+      <td>${brandChip(c.brand)}</td>
+      <td style="font-size:12px">${c.platform}</td>
+      <td style="font-size:12px">${c.city||''}, ${c.country||''}</td>
+      <td style="font-size:12px">${c.ethnicity||'—'}</td>
+      <td>
+        <div class="score-bar-wrap">
+          <div class="score-bar-track"><div class="score-bar-fill" style="width:${c.score*10}%;background:${c.score>=7?'var(--green)':c.score>=5?'var(--orange)':'var(--red)'}"></div></div>
+          <span style="font-size:12px;font-weight:600;color:${c.score>=7?'var(--green)':c.score>=5?'var(--orange)':'var(--red)'}">${c.score}</span>
+        </div>
+      </td>
+      <td style="font-size:12px">${c.campaigns}</td>
+      <td style="font-size:12px">${c.lastCampaign}</td>
+      <td>
+        ${c.late?'<span style="color:var(--orange)" title="Late">⚠</span> ':''}
+        ${c.dnc?'<span style="color:var(--red)" title="DNC">🚫</span>':''}
+        ${!c.late&&!c.dnc?'<span style="color:var(--green)">✓</span>':''}
+      </td>
+      <td>${driveFolderLink(c.driveFolder)}</td>
+      <td><button class="btn btn-ghost btn-xs" onclick="openCreatorDetail(${c.id})">View</button></td>
+    </tr>`
+  ).join('');
+}
+function filterDatabase() {
+  const brand   = (document.getElementById('filterDbBrand')||{}).value?.toLowerCase()||'';
+  const status  = (document.getElementById('filterDbStatus')||{}).value||'';
+  const platform= (document.getElementById('filterDbPlatform')||{}).value||'';
+  const country = (document.getElementById('filterDbCountry')||{}).value||'';
+  const eth     = (document.getElementById('filterDbEthnicity')||{}).value||'';
+  const score   = (document.getElementById('filterDbScore')||{}).value||'';
+  let f = filteredCreators();
+  if (brand)    f = f.filter(c=>c.brand?.toLowerCase()===brand);
+  if (status)   f = f.filter(c=>c.status===status);
+  if (platform) f = f.filter(c=>c.platform===platform);
+  if (country)  f = f.filter(c=>c.country===country);
+  if (eth)      f = f.filter(c=>c.ethnicity===eth);
+  if (score==='high') f = f.filter(c=>c.score>=8);
+  if (score==='mid')  f = f.filter(c=>c.score>=5&&c.score<8);
+  if (score==='low')  f = f.filter(c=>c.score<5);
+  renderCreatorDb(f);
+}
+function saveCreator() {
+  const name     = document.getElementById('ac-name').value.trim();
+  const handle   = document.getElementById('ac-handle').value.trim();
+  if (!name||!handle) { showToast('Name and handle are required.','error'); return; }
+  const loc      = document.getElementById('ac-location').value.split(',');
+  const platform = document.getElementById('ac-platform').value;
+  const email    = document.getElementById('ac-email').value;
+  const phone    = document.getElementById('ac-phone').value;
+  const brand    = document.getElementById('ac-brand').value;
+  const city     = (loc[0]||'').trim();
+  const country  = (loc[1]||'').trim();
+  const ethnicity= document.getElementById('ac-ethnicity').value;
+  const followers= parseInt(document.getElementById('ac-followers').value)||0;
+  const notes    = document.getElementById('ac-notes').value;
+
+  const newCreator = {
+    id:Date.now(), name, handle, email, phone, brand,
+    platform, platforms:[platform], followers, city, country, ethnicity,
+    score:0, campaigns:0, lastCampaign:'--', late:false, dnc:false, status:'Active', driveFolder:null,
+  };
+  MOCK.creators.unshift(newCreator);
+  renderCreatorDb(MOCK.creators);
+  renderEthnicityCards();
+  closeModal('addCreatorModal');
+  showToast(name + ' added — saving to Sheets...', 'success');
+
+  // Save to Google Sheets via GAS
+  callGAS('addCreator', { name, handle, email, phone, brand, platform, followers, city, country, ethnicity, notes })
+    .then(function(r) {
+      if (r && r.success) {
+        newCreator.gasId = r.creatorId;
+        if (r.driveFolderUrl) { newCreator.driveFolder = r.driveFolderUrl; renderCreatorDb(filteredCreators()); }
+        showToast(name + ' saved to Google Sheets', 'success');
+      } else {
+        showToast('Sheets save failed: ' + ((r&&r.error)||'unknown error'), 'error');
+      }
+    })
+    .catch(function(e) { showToast('Connection error: ' + e.message, 'error'); });
+
+  provisionCreatorDrive(newCreator);
+  ['ac-name','ac-handle','ac-email','ac-phone','ac-followers','ac-location','ac-notes'].forEach(function(id){const el=document.getElementById(id);if(el)el.value='';});
+}
+
+// ══════════════════════════════════════════
+// GIFTING
+// ══════════════════════════════════════════
+function renderGifting(campaigns) {
+  const fourWeeksAgo = new Date(Date.now()-28*24*60*60*1000);
+  document.getElementById('giftingTable').innerHTML = campaigns.map(c => {
+    const isOut = new Date(c.dueDate)<fourWeeksAgo && !['Posted','Completed'].includes(c.contentStatus);
+    return `<tr class="${isOut?'overdue-row':''}">
+      <td><strong>${c.creator}</strong>${isOut?` <span style="background:var(--red-dim);color:var(--red);font-size:9px;font-weight:600;padding:1px 5px;border-radius:3px;margin-left:4px">4wk+</span>`:''}</td>
+      <td>${brandChip(c.brand==='2EROS'?'2eros':'supawear')}</td>
+      <td style="font-size:12px">${c.campaign}</td>
+      <td><span style="background:var(--gold-dim);color:var(--gold2);padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600">${c.contentType||'—'}</span></td>
+      <td style="font-size:12px">${c.orderNum||'—'}</td>
+      <td>${chipFor(c.orderStatus)}</td>
+      <td>${chipFor(c.contentStatus)}</td>
+      <td style="font-size:12px;${isOverdue(c.dueDate)?'color:var(--red)':''}">${fmtDate(c.dueDate)}</td>
+      <td style="font-size:12px">${c.owner}</td>
+      <td>
+        <div style="display:flex;gap:4px">
+          <button class="btn btn-ghost btn-xs" onclick="openModal('trackingModal')">📦</button>
+          <button class="btn btn-outline btn-xs">✏</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+function filterGifting() {
+  const status=(document.getElementById('filterGiftStatus')||{}).value||'';
+  const brand =(document.getElementById('filterGiftBrand')||{}).value||'';
+  const type  =(document.getElementById('filterContentType')||{}).value||'';
+  const owner =(document.getElementById('filterGiftOwner')||{}).value||'';
+  let f=MOCK.campaigns;
+  if(status) f=f.filter(c=>c.contentStatus===status||c.orderStatus===status);
+  if(brand)  f=f.filter(c=>c.brand===brand);
+  if(type)   f=f.filter(c=>c.contentType===type);
+  if(owner)  f=f.filter(c=>c.owner===owner);
+  renderGifting(f);
+}
+function saveSendout() {
+  const creatorName = document.getElementById('so-creator').value;
+  if (!creatorName) { showToast('Please select a creator.','error'); return; }
+  const name = document.getElementById('so-name').value.trim();
+  if (!name) { showToast('Please enter a campaign name.','error'); return; }
+  const types = [...document.querySelectorAll('[name="contentType"]:checked')].map(i=>i.value);
+  if (!types.length) { showToast('Please select at least one content type.','error'); return; }
+
+  const brand    = document.getElementById('so-brand').value;
+  const orderNum = document.getElementById('so-order').value;
+  const dueDate  = document.getElementById('so-due').value;
+  const owner    = document.getElementById('so-owner').value;
+  const contentType = types.join(', ');
+
+  // Find creator record to get handle + gasId
+  const creatorRec = MOCK.creators.find(c => c.name === creatorName || c.handle === creatorName);
+
+  const newCampaign = {
+    id:Date.now(), creator:creatorName, brand, campaign:name, contentType,
+    orderNum, tracking:'', orderStatus:'Approved to Send', contentStatus:'Awaiting Content',
+    dueDate, owner, sentDate:new Date().toISOString().slice(0,10),
+  };
+  MOCK.campaigns.unshift(newCampaign);
+  renderGifting(MOCK.campaigns);
+  renderDashboard();
+  closeModal('newSendoutModal');
+  showToast('Send-out created for ' + creatorName + ' — saving to Sheets...', 'success');
+
+  // Save to Google Sheets via GAS
+  callGAS('createCampaign', {
+    campaignName:  name,
+    brand,
+    creatorId:     (creatorRec && creatorRec.gasId) || '',
+    creatorName,
+    creatorHandle: (creatorRec && creatorRec.handle) || '',
+    shopifyOrderNum: orderNum,
+    deliverableDueDate: dueDate,
+    owner,
+    contentType,
+  }).then(function(r) {
+    if (r && r.success) {
+      newCampaign.gasId = r.campaignId;
+      showToast('Send-out saved to Google Sheets', 'success');
+    } else {
+      showToast('Sheets save failed: ' + ((r&&r.error)||'unknown'), 'error');
+    }
+  }).catch(function(e) { showToast('Connection error: ' + e.message, 'error'); });
+
+  // Drive campaign subfolder
+  if (creatorRec) provisionCampaignSubfolder(creatorRec, name);
+}
+
+// ══════════════════════════════════════════
+// FOLLOW-UPS
+// ══════════════════════════════════════════
+function renderFollowups(fus) {
+  const urg=(document.getElementById('filterFuUrgency')||{}).value||'';
+  let f=urg?fus.filter(x=>x.urgency===urg):fus;
+  document.getElementById('followupsTable').innerHTML = f.map(f =>
+    `<tr>
+      <td><strong>${f.creator}</strong></td>
+      <td><span class="urg-${f.urgency.toLowerCase()}">${f.urgency}</span></td>
+      <td style="font-size:12px">${f.reason}</td>
+      <td style="color:${f.daysOverdue>14?'var(--red)':f.daysOverdue>7?'var(--orange)':'var(--gold2)'};font-weight:700">+${f.daysOverdue}d</td>
+      <td style="font-size:12px">${f.lastFollowup}</td>
+      <td style="font-size:12px">${f.count}</td>
+      <td style="font-size:12px;color:var(--stone)">${f.suggestedAction}</td>
+      <td>
+        <div style="display:flex;gap:4px">
+          <button class="btn btn-outline btn-xs" onclick="markFollowupDone(${f.id})">✓ Done</button>
+          <button class="btn btn-ghost btn-xs" onclick="showToast('Reminder sent via Gmail.','success')">📧</button>
+        </div>
+      </td>
+    </tr>`
+  ).join('');
+}
+function markFollowupDone(id){const idx=MOCK.followups.findIndex(f=>f.id===id);if(idx>-1){MOCK.followups.splice(idx,1);renderFollowups(MOCK.followups);renderDashboard();showToast('Follow-up marked done.','success');}}
+
+// ══════════════════════════════════════════
+// NOTES
+// ══════════════════════════════════════════
+function getNotes(){try{return JSON.parse(localStorage.getItem('portal-notes')||'[]');}catch(e){return[];}}
+function saveNotes(n){try{localStorage.setItem('portal-notes',JSON.stringify(n));}catch(e){}}
+function loadNotes(){
+  const notes=getNotes();
+  if(!notes.length){
+    const defaults=[
+      {id:1,title:'Creator Brief Template',body:'<b>Brand:</b> <br><b>Campaign:</b> <br><b>Content type:</b> <br><b>Hashtags:</b> <br><b>Tags:</b> <br><b>Deadline:</b>',date:'Today'},
+      {id:2,title:'Message Templates',body:'<i>Initial outreach:</i> "Hi [Name], we love your content…"<br><br><i>Follow-up:</i> "Just checking in on your recent post…"',date:'Today'},
+    ];
+    saveNotes(defaults);
+    renderNotes(defaults);
+  } else renderNotes(notes);
+}
+function renderNotes(notes){
+  const grid=document.getElementById('notesGrid');
+  grid.innerHTML='';
+  notes.forEach(n=>grid.appendChild(buildNoteCard(n)));
+  const addCard=document.createElement('div');
+  addCard.className='add-note-card';
+  addCard.onclick=addNote;
+  addCard.innerHTML='<div style="font-size:28px">+</div><div style="font-size:13px">Add a note</div>';
+  grid.appendChild(addCard);
+}
+function buildNoteCard(note){
+  const card=document.createElement('div');
+  card.className='note-card';
+  card.dataset.id=note.id;
+  card.innerHTML=`
+    <div class="note-card-header">
+      <input class="note-title-input" placeholder="Note title…" value="${(note.title||'').replace(/"/g,'&quot;')}" onchange="saveNoteCard(${note.id})">
+      <button onclick="deleteNote(${note.id})" style="background:none;border:none;cursor:pointer;color:var(--stone);font-size:14px;padding:2px 4px" title="Delete">✕</button>
+    </div>
+    <div class="note-toolbar">
+      <button class="note-tb-btn" onclick="noteCmd('bold')"><b>B</b></button>
+      <button class="note-tb-btn" onclick="noteCmd('italic')"><i>I</i></button>
+      <button class="note-tb-btn" onclick="noteCmd('underline')"><u>U</u></button>
+      <button class="note-tb-btn" onclick="noteCmd('strikeThrough')" style="text-decoration:line-through">S</button>
+      <select class="note-tb-select" onchange="noteCmd('fontSize',this.value)">
+        <option value="">Size</option>
+        <option value="1">Small</option><option value="3">Normal</option>
+        <option value="5">Large</option><option value="7">XL</option>
+      </select>
+      <button class="note-tb-btn" onclick="noteCmd('insertUnorderedList')">• List</button>
+      <button class="note-tb-btn" onclick="noteCmd('removeFormat')">Clear</button>
+    </div>
+    <div class="note-body-content" contenteditable="true" data-placeholder="Start typing…" oninput="debounceSave(${note.id},this)" id="note-body-${note.id}">${note.body||''}</div>
+    <div class="note-footer"><span class="note-date">${note.date||'Today'}</span></div>`;
+  return card;
+}
+function noteCmd(cmd,val){document.execCommand(cmd,false,val||null);}
+const saveTimers={};
+function debounceSave(id,el){clearTimeout(saveTimers[id]);saveTimers[id]=setTimeout(()=>saveNoteCard(id),800);}
+function saveNoteCard(id){
+  const notes=getNotes();const idx=notes.findIndex(n=>n.id===id);if(idx===-1)return;
+  const card=document.querySelector(`[data-id="${id}"]`);if(!card)return;
+  notes[idx].title=card.querySelector('.note-title-input').value;
+  notes[idx].body=document.getElementById(`note-body-${id}`).innerHTML;
+  notes[idx].date=new Date().toLocaleDateString('en-AU',{day:'numeric',month:'short'});
+  saveNotes(notes);
+}
+function addNote(){
+  const notes=getNotes();
+  const n={id:Date.now(),title:'New Note',body:'',date:'Today'};
+  notes.unshift(n);saveNotes(notes);renderNotes(notes);
+  setTimeout(()=>{const el=document.querySelector(`[data-id="${n.id}"] .note-title-input`);if(el){el.focus();el.select();}},50);
+}
+function deleteNote(id){if(!confirm('Delete this note?'))return;const notes=getNotes().filter(n=>n.id!==id);saveNotes(notes);renderNotes(notes);}
+
+// ══════════════════════════════════════════
+// SETTINGS PAGE
+// ══════════════════════════════════════════
+const SETTING_SECTIONS = [
+  { key:'ethnicities',     label:'Ethnicities',         desc:'Ethnicity options in forms, filters, and the dashboard representation section.' },
+  { key:'niches',          label:'Content Niches',       desc:'Niche/category options in the creator submission form and database filters.' },
+  { key:'countries',       label:'Countries',            desc:'Country dropdown in submission form and database filters.' },
+  { key:'audienceLocations',label:'Audience Locations',  desc:'Audience location options in the creator submission form.' },
+  { key:'contentTypes',    label:'Content Types',        desc:'Content type options for new send-outs. Updates the send-out modal and gifting filter.' },
+  { key:'platforms',       label:'Platforms',            desc:'Social media platform options across forms, filters, and send-out creator selection.' },
+  { key:'team',            label:'Team Members',         desc:'Staff names used in "Assign To" and "Owner" dropdowns.' },
+];
+
+function renderSettingsPage() {
+  const s = getSettings();
+  const grid = document.getElementById('settingsGrid');
+
+  // Initialise the password display (masked by default)
+  var pwEl = document.getElementById('pw-display');
+  if (pwEl) pwEl.textContent = Array(PORTAL_PASSWORD.length+1).join('●');
+  _pwVisible = false;
+  var pwBtn = document.getElementById('pw-toggle');
+  if (pwBtn) pwBtn.textContent = 'Show';
+  grid.innerHTML = SETTING_SECTIONS.map(sec => `
+    <div class="settings-card">
+      <div class="settings-card-header">
+        <div>
+          <h3>${sec.label}</h3>
+          <p>${sec.desc}</p>
+        </div>
+      </div>
+      <div class="settings-card-body">
+        <div class="settings-tag-wrap" id="stags-${sec.key}">
+          ${(s[sec.key]||[]).map(item => `
+            <span class="settings-tag">
+              ${item}
+              <button class="settings-tag-del" onclick="removeSettingItem('${sec.key}','${item.replace(/'/g,'\\\'')}')" title="Remove">×</button>
+            </span>`).join('')}
+        </div>
+        <div class="settings-add-row">
+          <input class="settings-input" type="text" id="sinput-${sec.key}" placeholder="Add new ${sec.label.toLowerCase().slice(0,-1)}…" onkeydown="if(event.key==='Enter')addSettingItem('${sec.key}')">
+          <button class="btn btn-primary btn-sm" onclick="addSettingItem('${sec.key}')">+ Add</button>
+        </div>
+        <div class="settings-note">Changes sync automatically to the Creator Submission form via shared browser storage.</div>
+      </div>
+    </div>`
+  ).join('');
+}
+
+function addSettingItem(key) {
+  const input = document.getElementById(`sinput-${key}`);
+  const val = input.value.trim();
+  if (!val) return;
+  const s = getSettings();
+  if (!s[key]) s[key] = [];
+  if (s[key].includes(val)) { showToast('This item already exists.','error'); return; }
+  s[key].push(val);
+  saveSettings(s);
+  input.value = '';
+  renderSettingsPage();
+  showToast(`"${val}" added to ${key}.`, 'success');
+}
+
+function removeSettingItem(key, val) {
+  const s = getSettings();
+  if (!s[key]) return;
+  s[key] = s[key].filter(i => i !== val);
+  saveSettings(s);
+  renderSettingsPage();
+  showToast('"' + val + '" removed.', 'info');
+}
+
+// Show/hide the current password in Settings
+var _pwVisible = false;
+function togglePwVisible() {
+  _pwVisible = !_pwVisible;
+  var el = document.getElementById('pw-display');
+  var btn = document.getElementById('pw-toggle');
+  if (el) el.textContent = _pwVisible ? PORTAL_PASSWORD : Array(PORTAL_PASSWORD.length+1).join('●');
+  if (btn) btn.textContent = _pwVisible ? 'Hide' : 'Show';
+}
+
+// ══════════════════════════════════════════
+// REPORTS
+// ══════════════════════════════════════════
+function buildReports() {
+  const monthly=[['Jan','8'],['Feb','12'],['Mar','9'],['Apr','15'],['May','11'],['Jun','7']];
+  document.getElementById('chart-monthly').innerHTML=monthly.map(([m,v])=>
+    `<div class="bar-row"><span>${m}</span><div class="bar-track"><div class="bar-fill" style="width:${parseInt(v)/15*100}%"></div></div><span>${v}</span></div>`).join('');
+  const brands=[['2EROS','28','var(--2eros)'],['Supawear','19','var(--supa)']];
+  document.getElementById('chart-brand').innerHTML=brands.map(([b,v,col])=>
+    `<div class="bar-row"><span>${b}</span><div class="bar-track"><div class="bar-fill" style="width:${parseInt(v)/28*100}%;background:${col}"></div></div><span>${v}</span></div>`).join('');
+  const top=[['@marcus.c','9.2'],['@beach.jordan','8.7'],['@fitsean_','7.1'],['@axel.v','5.9']];
+  document.getElementById('chart-creators').innerHTML=top.map(([h,sc])=>
+    `<div class="bar-row"><span>${h}</span><div class="bar-track"><div class="bar-fill" style="width:${parseFloat(sc)/10*100}%;background:var(--green)"></div></div><span>${sc}</span></div>`).join('');
+  document.getElementById('avoid-list').innerHTML=[
+    {name:'@ghosted_guy',reason:'2 missed deliverables',score:1.8},
+    {name:'@late_x3',reason:'3 overdue campaigns',score:3.0},
+  ].map(c=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:8px;background:var(--cream);border-radius:var(--r);margin-bottom:6px">
+    <div><div style="font-weight:600;font-size:13px">${c.name}</div><div style="font-size:10px;color:var(--stone)">${c.reason}</div></div>
+    <span style="color:var(--red);font-weight:700">${c.score}</span>
+  </div>`).join('');
+}
+
+// ══════════════════════════════════════════
+// EXPORT
+// ══════════════════════════════════════════
+function exportTableCSV(tableId, filename) {
+  const table = document.getElementById(tableId);
+  if (!table) return;
+  const rows = [];
+  const headers = [...table.closest('table').querySelectorAll('thead th')].map(th => th.textContent.trim()).filter(h=>h!=='Actions');
+  rows.push(headers);
+  table.querySelectorAll('tr').forEach(tr => {
+    const cells = [...tr.querySelectorAll('td')];
+    if (!cells.length) return;
+    const rowData = cells.slice(0, headers.length).map(td => td.innerText.replace(/\n/g,' ').trim());
+    rows.push(rowData);
+  });
+  downloadCSV(rows, filename);
+  showToast('CSV downloaded — open Google Sheets → File → Import to upload.','success');
+}
+
+function downloadCSV(rows, filename) {
+  const csv = rows.map(r => r.map(v => `"${String(v||'').replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `${filename}-${new Date().toISOString().slice(0,10)}.csv`; a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ══════════════════════════════════════════
+// PLATFORM URL HELPERS
+// ══════════════════════════════════════════
+const GAS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwQ6U_hWntuz9XonLEHcOlfO_cnPajfv1LnNPeTpSyfUSVl-nC6J9_f7uinbuiko7Ly/exec'; // Apps Script Web App URL
+
+const PLAT_META = {
+  Instagram: { icon: '📸', color: '#e1306c', url: h => `https://instagram.com/${h.replace(/^@/,'')}` },
+  TikTok:    { icon: '🎵', color: '#010101', url: h => `https://tiktok.com/@${h.replace(/^@/,'')}` },
+  YouTube:   { icon: '▶',  color: '#ff0000', url: h => `https://youtube.com/@${h.replace(/^@/,'')}` },
+  Facebook:  { icon: '🔵', color: '#1877f2', url: h => `https://facebook.com/${h.replace(/^@/,'')}` },
+  Pinterest: { icon: '📌', color: '#e60023', url: h => `https://pinterest.com/${h.replace(/^@/,'')}` },
+  Threads:   { icon: '🧵', color: '#000000', url: h => `https://threads.net/@${h.replace(/^@/,'')}` },
+};
+
+// Returns a single clickable handle link for a known platform
+function singleHandleLink(handle, platform) {
+  if (!handle || handle === '—') return handle || '—';
+  const meta = PLAT_META[platform];
+  if (!meta) return `<span style="font-size:11px;color:var(--stone)">${handle}</span>`;
+  const url = meta.url(handle);
+  return `<a href="${url}" target="_blank" rel="noopener" class="handle-link" onclick="event.stopPropagation()">
+    <span class="plat-icon">${meta.icon}</span>${handle}
+  </a>`;
+}
+
+// Returns a multi-platform picker button (dropdown) or single link
+// platforms = array of platform names, handle = primary @handle
+function handleLink(handle, platform, platforms) {
+  if (!handle || handle === '—') return '—';
+  const platList = (platforms && platforms.length) ? platforms : (platform ? [platform] : []);
+  if (platList.length <= 1) return singleHandleLink(handle, platList[0] || platform);
+
+  const uid = 'pp_' + Math.random().toString(36).slice(2,8);
+  const items = platList.map(p => {
+    const meta = PLAT_META[p];
+    if (!meta) return '';
+    const url = meta.url(handle);
+    return `<a href="${url}" target="_blank" rel="noopener" class="plat-picker-item" onclick="event.stopPropagation()">
+      <span class="pi">${meta.icon}</span>
+      <span class="pn">${p}</span>
+      <span class="ph">${handle}</span>
+    </a>`;
+  }).join('');
+
+  return `<div class="plat-picker-wrap" id="${uid}">
+    <button class="plat-picker-btn" onclick="event.stopPropagation();togglePlatPicker('${uid}')">
+      ${PLAT_META[platList[0]]?.icon||'🔗'} ${handle} <span style="font-size:9px;opacity:0.6">▾</span>
+    </button>
+    <div class="plat-picker-menu" id="${uid}_menu">${items}</div>
+  </div>`;
+}
+
+function togglePlatPicker(uid) {
+  const menu = document.getElementById(uid + '_menu');
+  if (!menu) return;
+  const isOpen = menu.classList.contains('open');
+  // Close all open pickers first
+  document.querySelectorAll('.plat-picker-menu.open').forEach(m => m.classList.remove('open'));
+  if (!isOpen) menu.classList.add('open');
+}
+// Close picker when clicking outside
+document.addEventListener('click', () => {
+  document.querySelectorAll('.plat-picker-menu.open').forEach(m => m.classList.remove('open'));
+});
+
+// Drive folder link HTML
+function driveFolderLink(url) {
+  if (!url) return `<span class="drive-link-pending">📁 No folder yet</span>`;
+  return `<a href="${url}" target="_blank" rel="noopener" class="drive-link" onclick="event.stopPropagation()">
+    📁 Drive Folder
+  </a>`;
+}
+
+// ══════════════════════════════════════════
+// GAS COMMUNICATION
+// ══════════════════════════════════════════
+async function callGAS(action, data) {
+  if (!GAS_ENDPOINT) return { success: false, error: 'GAS_ENDPOINT not set' };
+  try {
+    const res = await fetch(GAS_ENDPOINT, {
+      method: 'POST',
+      redirect: 'follow',
+      body: JSON.stringify({ action, data }),
+    });
+    if (!res.ok) {
+      return { success: false, error: 'HTTP ' + res.status };
+    }
+    const text = await res.text();
+    try {
+      return JSON.parse(text);
+    } catch(e) {
+      // GAS sometimes returns HTML error pages
+      console.error('GAS non-JSON response for action "' + action + '":', text.slice(0, 200));
+      return { success: false, error: 'Invalid response from server. Check Apps Script deployment.' };
+    }
+  } catch(e) {
+    return { success: false, error: e.message };
+  }
+}
+
+async function provisionCreatorDrive(creator) {
+  showToast('Creating Drive folder for ' + creator.handle + '...', 'info');
+
+  const result = await callGAS('createCreatorFolder', {
+    handle:    creator.handle,
+    email:     creator.email,
+    creatorId: String(creator.gasId || creator.id),
+  });
+
+  if (result.success && result.folderUrl) {
+    creator.driveFolder = result.folderUrl;
+    showToast('Drive folder created for ' + creator.handle, 'success');
+    renderCreatorDb(filteredCreators());
+  } else {
+    var msg = result.error || 'unknown error';
+    if (msg.includes('403') || msg.includes('permission') || msg.includes('access')) {
+      showToast('Drive not authorized — run authorizeDrive() in Apps Script editor first', 'error');
+    } else {
+      showToast('Drive folder failed: ' + msg, 'error');
+    }
+  }
+}
+}
+
+async function provisionCampaignSubfolder(creator, campaignName) {
+  if (!creator || !creator.driveFolder) return; // no folder yet, skip
+  showToast(`Creating campaign subfolder for ${creator.handle}…`, 'info');
+  const result = await callGAS('createCampaignSubfolder', {
+    handle:     creator.handle,
+    campaignName,
+    creatorId:  String(creator.id),
+  });
+  if (result.success) {
+    showToast(`Subfolder "${campaignName}" created in ${creator.handle}'s Drive`, 'success');
+  }
+}
+
+
+function brandChip(b){
+  const bl=b?.toLowerCase();
+  if(bl==='2eros'||b==='2EROS') return `<span class="chip chip-2eros">2EROS</span>`;
+  if(bl==='supawear'||b==='Supawear') return `<span class="chip chip-supa">Supawear</span>`;
+  return `<span class="chip chip-both">Both</span>`;
+}
+function statusChip(s){
+  const map={'New':'new','Under Review':'review','Approved':'approved','Rejected':'rejected','On Hold':'hold','Need More Info':'review','Active':'approved','Inactive':'hold','DNC':'rejected'};
+  return `<span class="chip chip-${map[s]||'pending'}">${s}</span>`;
+}
+function chipFor(s){
+  const map={'Completed':'completed','Posted':'completed','Overdue':'overdue','Fulfilled':'shipped','Tracking Received':'shipped','Delivered':'approved','Awaiting Content':'review','Content Submitted':'pending','Order Created':'new','Approved to Send':'new','Missed Deliverable':'rejected'};
+  return `<span class="chip chip-${map[s]||'pending'}">${s}</span>`;
+}
+function fmtNum(n){if(!n)return'—';if(n>=1000000)return(n/1000000).toFixed(1)+'M';if(n>=1000)return(n/1000).toFixed(1)+'K';return n;}
+function fmtDate(d){if(!d)return'—';try{return new Date(d).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'});}catch(e){return d;}}
+function isOverdue(d){if(!d)return false;return new Date(d)<new Date();}
+function saveTracking(){closeModal('trackingModal');showToast('Tracking updated.','success');}
+</script>
+</body>
+</html>
