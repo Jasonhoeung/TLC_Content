@@ -1365,30 +1365,47 @@ function syncFromSheets() {
 // ── FIELD MAPPERS ─────────────────────────
 // Map Google Sheet row objects (keyed by column header) to portal format
 
+function parseFollowerRange(val) {
+  // Converts range strings like "50k-100k" or "100k-250k" to a number
+  if (!val) return 0;
+  if (typeof val === 'number') return val;
+  var s = String(val).toLowerCase().trim();
+  // Take the lower bound of range
+  var lower = s.split('-')[0].replace('+','').trim();
+  if (lower.endsWith('k')) return Math.round(parseFloat(lower) * 1000) || 0;
+  if (lower.endsWith('m')) return Math.round(parseFloat(lower) * 1000000) || 0;
+  return parseInt(lower) || 0;
+}
+
 function mapSheetApplication(row) {
   var platforms = [];
-  if (row.ig_handle)  platforms.push('Instagram');
-  if (row.tt_handle)  platforms.push('TikTok');
-  if (row.yt_handle)  platforms.push('YouTube');
+  if (row.ig_handle) platforms.push('Instagram');
+  if (row.tt_handle) platforms.push('TikTok');
+  if (row.yt_handle) platforms.push('YouTube');
   if (platforms.length === 0) platforms.push('Instagram');
   return {
-    id:        row.application_id || ('a' + Date.now() + Math.random()),
-    gasId:     row.application_id || '',
-    name:      row.full_name      || '',
-    handle:    row.creator_handle || '',
-    email:     row.email          || '',
-    phone:     row.phone          || '',
-    submitted: row.submitted_at ? new Date(row.submitted_at).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'}) : '--',
-    brand:     (row.brand || 'both').toLowerCase().replace(/\s/g,'').replace('2eros','2eros').replace('supawear','supawear'),
-    platform:  platforms[0],
-    platforms: platforms,
-    followers: parseInt(row.ig_followers || row.tt_followers || row.yt_followers || 0) || 0,
-    country:   row.country  || '',
-    city:      row.city     || '',
-    status:    row.status   || 'New',
-    niche:     row.niche    || '',
-    ethnicity: row.audience_demographics || '',
-    audience:  row.audience_location     || '',
+    id:          row.application_id || ('a' + Date.now() + Math.random()),
+    gasId:       row.application_id || '',
+    name:        row.full_name       || '',
+    handle:      row.creator_handle  || '',
+    email:       row.email           || '',
+    phone:       row.phone           || '',
+    submitted:   row.submitted_at ? new Date(row.submitted_at).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'}) : '--',
+    brand:       (row.brand || 'both').toLowerCase().replace(/\s/g,''),
+    platform:    platforms[0],
+    platforms:   platforms,
+    followers:   parseFollowerRange(row.ig_followers),
+    followersRaw: row.ig_followers || '',
+    country:     row.country    || '',
+    city:        row.city       || '',
+    status:      row.status     || 'New',
+    niche:       row.niche      || '',
+    ethnicity:   row.audience_demographics || '',
+    audience:    row.audience_location     || '',
+    whyUs:       row.why_us          || '',
+    prevCollabs: row.prev_collabs    || '',
+    mediaKit:    row.media_kit       || '',
+    notes:       row.notes           || '',
     driveFolder: null,
   };
 }
@@ -1561,7 +1578,7 @@ function renderApplications(apps) {
       <td style="font-size:12px">${a.submitted}</td>
       <td>${brandChip(a.brand)}</td>
       <td style="font-size:12px">${a.platform}</td>
-      <td style="font-size:12px">${fmtNum(a.followers)}</td>
+      <td style="font-size:12px">${a.followersRaw || fmtNum(a.followers) || '—'}</td>
       <td style="font-size:12px">${a.city}, ${a.country}</td>
       <td style="font-size:12px">${a.ethnicity||'—'}</td>
       <td>${statusChip(a.status)}</td>
@@ -1632,23 +1649,33 @@ function openCreatorDetail(id) {
   document.getElementById('modalCreatorName').textContent = a.name;
   document.getElementById('modalCreatorChips').innerHTML = `${brandChip(a.brand)} ${statusChip(a.status||'Active')}`;
 
-  // Build platform links for all listed platforms
   const platList = a.platforms || (a.platform ? [a.platform] : []);
   const platLinksHtml = platList.map(p => singleHandleLink(a.handle, p)).join('&nbsp;&nbsp;');
 
+  // Show raw follower range if available, otherwise formatted number
+  const followersDisplay = a.followersRaw || fmtNum(a.followers) || '—';
+
   const fields = [
-    ['Handle', platLinksHtml || a.handle || '—'],
-    ['Email', a.email ? `<a href="mailto:${a.email}" style="color:var(--gold2)">${a.email}</a>` : '—'],
-    ['Location', `${a.city||''}, ${a.country||''}`],
-    ['Ethnicity', a.ethnicity||'Not stated'],
-    ['Platforms', platList.join(', ')||'—'],
-    ['Followers', fmtNum(a.followers)||'—'],
-    ['Niche', a.niche||'—'],
-    ['Score', a.score||'—'],
-    ['Submitted', a.submitted||'—'],
-    ['Campaigns', a.campaigns||'—'],
+    ['Handle',       platLinksHtml || a.handle || '—'],
+    ['Email',        a.email ? `<a href="mailto:${a.email}" style="color:var(--gold2)">${a.email}</a>` : '—'],
+    ['Phone',        a.phone || '—'],
+    ['Location',     `${a.city||''}, ${a.country||''}`],
+    ['Ethnicity',    a.ethnicity || 'Not stated'],
+    ['Platforms',    platList.join(', ') || '—'],
+    ['Followers',    followersDisplay],
+    ['Audience',     a.audience || '—'],
+    ['Niche',        a.niche || '—'],
+    ['Submitted',    a.submitted || '—'],
+    ['Score',        a.score || '—'],
+    ['Campaigns',    a.campaigns || '—'],
     ['Drive Folder', driveFolderLink(a.driveFolder)],
   ];
+
+  // Application-specific fields (only on applications, not creators)
+  if (a.whyUs)       fields.push(['Why Us',        a.whyUs]);
+  if (a.prevCollabs) fields.push(['Past Collabs',   a.prevCollabs]);
+  if (a.mediaKit)    fields.push(['Media Kit',      `<a href="${a.mediaKit}" target="_blank" style="color:var(--gold2)">View Kit</a>`]);
+  if (a.notes)       fields.push(['Notes',          a.notes]);
 
   document.getElementById('modalDetailGrid').innerHTML = fields.map(([k,v]) =>
     `<div class="detail-group"><span class="detail-label">${k}</span><span class="detail-value">${v}</span></div>`
@@ -2078,7 +2105,7 @@ function downloadCSV(rows, filename) {
 // ══════════════════════════════════════════
 // PLATFORM URL HELPERS
 // ══════════════════════════════════════════
-const GAS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxmrRSCUFDjDfCg-xF3GQQSuDRkdTNBFTDf_9J8Cl_LotPja8ITE5-YcP1GakyQ2Bke/exec'; // Apps Script Web App URL
+const GAS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwQ6U_hWntuz9XonLEHcOlfO_cnPajfv1LnNPeTpSyfUSVl-nC6J9_f7uinbuiko7Ly/exec'; // Apps Script Web App URL
 
 const PLAT_META = {
   Instagram: { icon: '📸', color: '#e1306c', url: h => `https://instagram.com/${h.replace(/^@/,'')}` },
