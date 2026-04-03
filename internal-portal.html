@@ -433,13 +433,15 @@ tbody tr.cursor { cursor: pointer; }
       <div class="login-logo-mark">TL</div>
       <div style="font-family:var(--serif);font-size:12px;color:var(--stone);letter-spacing:2px;text-transform:uppercase;margin-bottom:20px">The Lifestyle Co</div>
       <h1>Staff Portal</h1>
-      <p>Sign in with your Google account to access the Influencer Management System.</p>
-      <button class="google-btn" onclick="handleGoogleLogin()">
-        <svg width="16" height="16" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 01-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 009 18z"/><path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 013.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 000 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 00.957 4.958L3.964 6.29C4.672 4.163 6.656 3.58 9 3.58z"/></svg>
-        Continue with Google
-      </button>
-      <button class="login-demo-btn" onclick="loginDemo()">→ Enter Demo Mode</button>
-      <div class="login-note">Access restricted to @thelifestyleco.com.au accounts</div>
+      <p>Enter your password to access the Influencer Management System.</p>
+      <div style="margin-bottom:16px;text-align:left">
+        <div style="font-size:10px;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:var(--stone);margin-bottom:8px">Password</div>
+        <input id="loginPasswordInput" type="password" class="form-input" placeholder="Enter password"
+          style="width:100%;font-size:15px;"
+          onkeydown="if(event.key==='Enter')checkPassword()">
+        <div id="loginError" style="display:none;font-size:12px;color:#c0392b;margin-top:6px">Incorrect password. Please try again.</div>
+      </div>
+      <button class="google-btn" onclick="checkPassword()" style="margin-bottom:0">Sign In</button>
     </div>
   </div>
 </div>
@@ -699,6 +701,33 @@ tbody tr.cursor { cursor: pointer; }
         <div style="background:var(--gold-dim);border:1px solid rgba(201,169,110,0.3);border-radius:var(--r);padding:12px 16px;margin-bottom:20px;font-size:13px;color:var(--gold2)">
           ✦ Changes save automatically and sync to the Creator Submission form via shared browser storage. Both files must be opened from the same server.
         </div>
+
+        <!-- Password Card -->
+        <div class="settings-card" style="margin-bottom:20px;max-width:420px">
+          <div class="settings-card-header">
+            <div>
+              <h3>Portal Password</h3>
+              <p>Password required to access this staff portal.</p>
+            </div>
+          </div>
+          <div class="settings-card-body">
+            <div class="form-group" style="margin-bottom:12px">
+              <label class="form-label">Current Password</label>
+              <input class="form-input" type="password" id="pw-current" placeholder="Current password" autocomplete="current-password">
+            </div>
+            <div class="form-group" style="margin-bottom:12px">
+              <label class="form-label">New Password</label>
+              <input class="form-input" type="password" id="pw-new" placeholder="New password" autocomplete="new-password">
+            </div>
+            <div class="form-group" style="margin-bottom:14px">
+              <label class="form-label">Confirm New Password</label>
+              <input class="form-input" type="password" id="pw-confirm" placeholder="Confirm new password" autocomplete="new-password">
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="changePortalPassword()">Update Password</button>
+            <div class="settings-note" style="margin-top:10px">Password is stored in this browser only. All staff members need to update their own browser if the password changes.</div>
+          </div>
+        </div>
+
         <div class="settings-grid" id="settingsGrid"></div>
       </div>
 
@@ -936,15 +965,37 @@ const MOCK = {
 let currentEthGroup = null;
 
 // ══════════════════════════════════════════
-// LOGIN
+// PASSWORD AUTH
+// Default password: TLC321!
+// Change via Settings page inside the portal.
+// Session persists until the browser tab is closed (sessionStorage).
 // ══════════════════════════════════════════
-function handleGoogleLogin() {
-  showToast('Redirecting to Google… (Demo mode active)','info');
-  setTimeout(() => loginDemo(), 1200);
+const DEFAULT_PASSWORD = 'TLC321!';
+
+function getStoredPassword() {
+  try { return localStorage.getItem('tlc-portal-password') || DEFAULT_PASSWORD; }
+  catch(e) { return DEFAULT_PASSWORD; }
 }
-function loginDemo() {
-  document.getElementById('loginScreen').style.display = 'none';
-  document.getElementById('portalApp').style.display = 'flex';
+
+function checkPassword() {
+  const input = document.getElementById('loginPasswordInput');
+  const err   = document.getElementById('loginError');
+  if (!input) return;
+  if (input.value === getStoredPassword()) {
+    try { sessionStorage.setItem('tlc-authed', '1'); } catch(e) {}
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('portalApp').style.display = 'flex';
+    initPortal();
+    input.value = '';
+    err.style.display = 'none';
+  } else {
+    err.style.display = 'block';
+    input.focus();
+    input.select();
+  }
+}
+
+function initPortal() {
   document.getElementById('dashDate').textContent = new Date().toLocaleDateString('en-AU',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
   propagateSettings();
   loadData();
@@ -952,6 +1003,28 @@ function loginDemo() {
   loadNotes();
   renderSettingsPage();
 }
+
+function handleGoogleLogin() {}
+function loginDemo() {}
+
+document.addEventListener('DOMContentLoaded', function() {
+  // If already authenticated this session, skip login
+  try {
+    if (sessionStorage.getItem('tlc-authed') === '1') {
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('portalApp').style.display = 'flex';
+      initPortal();
+      return;
+    }
+  } catch(e) {}
+  // Otherwise show login
+  document.getElementById('loginScreen').style.display = 'block';
+  document.getElementById('portalApp').style.display = 'none';
+  setTimeout(function() {
+    var inp = document.getElementById('loginPasswordInput');
+    if (inp) inp.focus();
+  }, 100);
+});
 
 // ══════════════════════════════════════════
 // NAVIGATION
@@ -1214,16 +1287,152 @@ function buildFilters() {
 // ══════════════════════════════════════════
 // LOAD DATA
 // ══════════════════════════════════════════
+// ══════════════════════════════════════════
+// LOAD DATA — fetches live from Google Sheets
+// Falls back to demo data if GAS unavailable
+// ══════════════════════════════════════════
 function loadData() {
+  // Render demo data immediately so page looks alive
   renderDashboard();
   renderApplications(filteredApps());
   renderCreatorDb(filteredCreators());
   renderGifting(filteredCampaigns());
   renderFollowups(MOCK.followups);
+
+  // Then fetch real data from GAS in the background
+  if (!GAS_ENDPOINT) return;
+  callGAS('getPortalData', {}).then(function(result) {
+    if (!result || !result.success) return;
+    var changed = false;
+    if (result.applications && result.applications.length > 0) {
+      MOCK.applications = result.applications.map(mapSheetApplication);
+      changed = true;
+    }
+    if (result.creators && result.creators.length > 0) {
+      MOCK.creators = result.creators.map(mapSheetCreator);
+      changed = true;
+    }
+    if (result.campaigns && result.campaigns.length > 0) {
+      MOCK.campaigns = result.campaigns.map(mapSheetCampaign);
+      changed = true;
+    }
+    if (changed) {
+      renderDashboard();
+      renderApplications(filteredApps());
+      renderCreatorDb(filteredCreators());
+      renderGifting(filteredCampaigns());
+      showToast('Live data loaded from Google Sheets', 'success');
+    }
+  }).catch(function(e) {
+    console.log('GAS load error:', e);
+  });
 }
+
 function syncFromSheets() {
-  showToast('Syncing from Google Sheets… (Demo: using mock data)','info');
-  setTimeout(() => { loadData(); showToast('Data refreshed.','success'); }, 1200);
+  showToast('Syncing from Google Sheets…','info');
+  MOCK.applications = MOCK_DEMO.applications.slice();
+  MOCK.creators     = MOCK_DEMO.creators.slice();
+  MOCK.campaigns    = MOCK_DEMO.campaigns.slice();
+  if (!GAS_ENDPOINT) { loadData(); showToast('No endpoint set — showing demo data','info'); return; }
+  callGAS('getPortalData', {}).then(function(result) {
+    if (result && result.success) {
+      if (result.applications && result.applications.length > 0) MOCK.applications = result.applications.map(mapSheetApplication);
+      if (result.creators     && result.creators.length > 0)     MOCK.creators     = result.creators.map(mapSheetCreator);
+      if (result.campaigns    && result.campaigns.length > 0)    MOCK.campaigns    = result.campaigns.map(mapSheetCampaign);
+    }
+    renderDashboard();
+    renderApplications(filteredApps());
+    renderCreatorDb(filteredCreators());
+    renderGifting(filteredCampaigns());
+    showToast('Synced from Google Sheets','success');
+  }).catch(function(e) {
+    showToast('Sync failed — showing demo data','info');
+    loadData();
+  });
+}
+
+// ── FIELD MAPPERS ─────────────────────────
+// Map Google Sheet row objects (keyed by column header) to portal format
+
+function mapSheetApplication(row) {
+  var platforms = [];
+  if (row.ig_handle)  platforms.push('Instagram');
+  if (row.tt_handle)  platforms.push('TikTok');
+  if (row.yt_handle)  platforms.push('YouTube');
+  if (platforms.length === 0) platforms.push('Instagram');
+  return {
+    id:        row.application_id || ('a' + Date.now() + Math.random()),
+    gasId:     row.application_id || '',
+    name:      row.full_name      || '',
+    handle:    row.creator_handle || '',
+    email:     row.email          || '',
+    phone:     row.phone          || '',
+    submitted: row.submitted_at ? new Date(row.submitted_at).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'}) : '--',
+    brand:     (row.brand || 'both').toLowerCase().replace(/\s/g,'').replace('2eros','2eros').replace('supawear','supawear'),
+    platform:  platforms[0],
+    platforms: platforms,
+    followers: parseInt(row.ig_followers || row.tt_followers || row.yt_followers || 0) || 0,
+    country:   row.country  || '',
+    city:      row.city     || '',
+    status:    row.status   || 'New',
+    niche:     row.niche    || '',
+    ethnicity: row.audience_demographics || '',
+    audience:  row.audience_location     || '',
+    driveFolder: null,
+  };
+}
+
+function mapSheetCreator(row) {
+  var platforms = [];
+  if (row.ig_handle)  platforms.push('Instagram');
+  if (row.tt_handle)  platforms.push('TikTok');
+  if (row.yt_handle)  platforms.push('YouTube');
+  if (platforms.length === 0) platforms.push('Instagram');
+  return {
+    id:          row.creator_id || ('c' + Date.now() + Math.random()),
+    gasId:       row.creator_id || '',
+    name:        row.full_name  || '',
+    handle:      row.creator_handle || '',
+    email:       row.email      || '',
+    phone:       row.phone      || '',
+    brand:       (row.brand || 'both').toLowerCase().replace(/\s/g,''),
+    platform:    platforms[0],
+    platforms:   platforms,
+    followers:   parseInt(row.ig_followers || row.tt_followers || row.yt_followers || 0) || 0,
+    country:     row.country    || '',
+    city:        row.city       || '',
+    ethnicity:   row.audience_demographics || '',
+    score:       parseFloat(row.reliability_score) || 0,
+    campaigns:   parseInt(row.total_campaigns) || 0,
+    lastCampaign:'--',
+    late:        row.late_flag === 'true' || row.late_flag === true,
+    dnc:         row.dnc_flag  === 'true' || row.dnc_flag  === true,
+    status:      row.status    || 'Active',
+    driveFolder: row.drive_folder_url || null,
+  };
+}
+
+function mapSheetCampaign(row) {
+  // content type is stored in notes as "[Content Type: X] notes"
+  var contentType = '';
+  var notes = row.notes || '';
+  var ctMatch = notes.match(/\[Content Type: ([^\]]+)\]/);
+  if (ctMatch) { contentType = ctMatch[1]; notes = notes.replace(ctMatch[0], '').trim(); }
+  return {
+    id:            row.campaign_id || ('p' + Date.now() + Math.random()),
+    gasId:         row.campaign_id || '',
+    creator:       row.creator_name || '',
+    brand:         row.brand || '2EROS',
+    campaign:      row.campaign_name || '',
+    contentType:   contentType,
+    orderNum:      row.shopify_order_num   || '',
+    tracking:      row.tracking_number     || '',
+    orderStatus:   row.shipment_status     || 'Approved to Send',
+    contentStatus: row.content_status      || 'Awaiting Content',
+    dueDate:       row.deliverable_due_date || '',
+    owner:         row.owner               || 'Unassigned',
+    sentDate:      row.created_at          || '',
+  };
 }
 
 // ══════════════════════════════════════════
@@ -1373,26 +1582,38 @@ function quickApprove(id) {
   const a = MOCK.applications.find(x=>x.id===id);
   if (!a) return;
   a.status = 'Approved';
-  // Promote to creator database if not already there
+  // Promote to creator database locally
   if (!MOCK.creators.find(c => c.handle === a.handle)) {
-    const newCreator = {
-      id: Date.now(), name: a.name, handle: a.handle,
-      email: a.email, phone: a.phone||'',
-      brand: a.brand, platform: a.platform,
-      platforms: a.platforms || [a.platform],
-      followers: a.followers, city: a.city, country: a.country,
-      ethnicity: a.ethnicity, niche: a.niche,
-      score: 0, campaigns: 0, lastCampaign: '—',
-      late: false, dnc: false, status: 'Active', driveFolder: null,
-    };
+    const newCreator = Object.assign({}, a, {
+      score:0, campaigns:0, lastCampaign:'--', late:false, dnc:false, status:'Active', driveFolder:null,
+    });
     MOCK.creators.unshift(newCreator);
-    // Async: create Drive folder
     provisionCreatorDrive(newCreator);
   }
   loadData();
-  showToast(`${a.name} approved — Drive folder being created`, 'success');
+  showToast(a.name + ' approved — saving to Sheets…', 'success');
+  // Save to GAS
+  if (a.gasId) {
+    callGAS('approveApplication', { applicationId: a.gasId, reviewedBy: 'Staff', notes: '' })
+      .then(function(r) {
+        if (r && r.driveFolderUrl) {
+          var c = MOCK.creators.find(x => x.handle === a.handle);
+          if (c) { c.driveFolder = r.driveFolderUrl; renderCreatorDb(filteredCreators()); }
+        }
+      })
+      .catch(function(e) { showToast('GAS save error: ' + e.message, 'error'); });
+  } else {
+    showToast('No GAS ID — sync from Sheets first to get real IDs', 'info');
+  }
 }
-function quickReject(id)  { const a=MOCK.applications.find(x=>x.id===id); if(a){a.status='Rejected';loadData();showToast(`${a.name} rejected.`,'info');} }
+function quickReject(id) {
+  const a = MOCK.applications.find(x=>x.id===id);
+  if (!a) return;
+  a.status = 'Rejected';
+  loadData();
+  showToast(a.name + ' rejected.', 'info');
+  if (a.gasId) callGAS('updateApplication', { applicationId: a.gasId, fields: { status: 'Rejected' } }).catch(function(){});
+}
 
 function openCreatorDetail(id) {
   const a = MOCK.applications.find(x=>x.id===id) || MOCK.creators.find(x=>x.id===id);
@@ -1476,32 +1697,46 @@ function filterDatabase() {
   renderCreatorDb(f);
 }
 function saveCreator() {
-  const name = document.getElementById('ac-name').value.trim();
-  const handle = document.getElementById('ac-handle').value.trim();
+  const name     = document.getElementById('ac-name').value.trim();
+  const handle   = document.getElementById('ac-handle').value.trim();
   if (!name||!handle) { showToast('Name and handle are required.','error'); return; }
-  const loc = document.getElementById('ac-location').value.split(',');
+  const loc      = document.getElementById('ac-location').value.split(',');
   const platform = document.getElementById('ac-platform').value;
+  const email    = document.getElementById('ac-email').value;
+  const phone    = document.getElementById('ac-phone').value;
+  const brand    = document.getElementById('ac-brand').value;
+  const city     = (loc[0]||'').trim();
+  const country  = (loc[1]||'').trim();
+  const ethnicity= document.getElementById('ac-ethnicity').value;
+  const followers= parseInt(document.getElementById('ac-followers').value)||0;
+  const notes    = document.getElementById('ac-notes').value;
+
   const newCreator = {
-    id:Date.now(), name, handle,
-    email:document.getElementById('ac-email').value,
-    phone:document.getElementById('ac-phone').value,
-    brand:document.getElementById('ac-brand').value,
-    platform,
-    platforms: [platform],
-    followers:parseInt(document.getElementById('ac-followers').value)||0,
-    city:(loc[0]||'').trim(), country:(loc[1]||'').trim(),
-    ethnicity:document.getElementById('ac-ethnicity').value,
-    score:0, campaigns:0, lastCampaign:'—', late:false, dnc:false, status:'Active',
-    driveFolder: null,
+    id:Date.now(), name, handle, email, phone, brand,
+    platform, platforms:[platform], followers, city, country, ethnicity,
+    score:0, campaigns:0, lastCampaign:'--', late:false, dnc:false, status:'Active', driveFolder:null,
   };
   MOCK.creators.unshift(newCreator);
   renderCreatorDb(MOCK.creators);
   renderEthnicityCards();
   closeModal('addCreatorModal');
-  showToast(`${name} added — Drive folder being created`, 'success');
-  // Async: provision Drive folder
+  showToast(name + ' added — saving to Sheets...', 'success');
+
+  // Save to Google Sheets via GAS
+  callGAS('addCreator', { name, handle, email, phone, brand, platform, followers, city, country, ethnicity, notes })
+    .then(function(r) {
+      if (r && r.success) {
+        newCreator.gasId = r.creatorId;
+        if (r.driveFolderUrl) { newCreator.driveFolder = r.driveFolderUrl; renderCreatorDb(filteredCreators()); }
+        showToast(name + ' saved to Google Sheets', 'success');
+      } else {
+        showToast('Sheets save failed: ' + ((r&&r.error)||'unknown error'), 'error');
+      }
+    })
+    .catch(function(e) { showToast('Connection error: ' + e.message, 'error'); });
+
   provisionCreatorDrive(newCreator);
-  ['ac-name','ac-handle','ac-email','ac-phone','ac-followers','ac-location','ac-notes'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  ['ac-name','ac-handle','ac-email','ac-phone','ac-followers','ac-location','ac-notes'].forEach(function(id){const el=document.getElementById(id);if(el)el.value='';});
 }
 
 // ══════════════════════════════════════════
@@ -1543,29 +1778,55 @@ function filterGifting() {
   renderGifting(f);
 }
 function saveSendout() {
-  const creatorName=document.getElementById('so-creator').value;
-  if(!creatorName){showToast('Please select a creator.','error');return;}
-  const name=document.getElementById('so-name').value.trim();
-  if(!name){showToast('Please enter a campaign name.','error');return;}
-  const types=[...document.querySelectorAll('[name="contentType"]:checked')].map(i=>i.value);
-  if(!types.length){showToast('Please select at least one content type.','error');return;}
+  const creatorName = document.getElementById('so-creator').value;
+  if (!creatorName) { showToast('Please select a creator.','error'); return; }
+  const name = document.getElementById('so-name').value.trim();
+  if (!name) { showToast('Please enter a campaign name.','error'); return; }
+  const types = [...document.querySelectorAll('[name="contentType"]:checked')].map(i=>i.value);
+  if (!types.length) { showToast('Please select at least one content type.','error'); return; }
+
+  const brand    = document.getElementById('so-brand').value;
+  const orderNum = document.getElementById('so-order').value;
+  const dueDate  = document.getElementById('so-due').value;
+  const owner    = document.getElementById('so-owner').value;
+  const contentType = types.join(', ');
+
+  // Find creator record to get handle + gasId
+  const creatorRec = MOCK.creators.find(c => c.name === creatorName || c.handle === creatorName);
+
   const newCampaign = {
-    id:Date.now(), creator:creatorName, brand:document.getElementById('so-brand').value,
-    campaign:name, contentType:types.join(', '),
-    orderNum:document.getElementById('so-order').value, tracking:'',
-    orderStatus:'Approved to Send', contentStatus:'Awaiting Content',
-    dueDate:document.getElementById('so-due').value,
-    owner:document.getElementById('so-owner').value,
-    sentDate:new Date().toISOString().slice(0,10),
+    id:Date.now(), creator:creatorName, brand, campaign:name, contentType,
+    orderNum, tracking:'', orderStatus:'Approved to Send', contentStatus:'Awaiting Content',
+    dueDate, owner, sentDate:new Date().toISOString().slice(0,10),
   };
   MOCK.campaigns.unshift(newCampaign);
   renderGifting(MOCK.campaigns);
   renderDashboard();
   closeModal('newSendoutModal');
-  showToast(`Send-out created for ${creatorName}.`,'success');
-  // Async: create campaign subfolder in creator's Drive folder
-  const creator = MOCK.creators.find(c => c.name === creatorName || c.handle === creatorName);
-  if (creator) provisionCampaignSubfolder(creator, name);
+  showToast('Send-out created for ' + creatorName + ' — saving to Sheets...', 'success');
+
+  // Save to Google Sheets via GAS
+  callGAS('createCampaign', {
+    campaignName:  name,
+    brand,
+    creatorId:     (creatorRec && creatorRec.gasId) || '',
+    creatorName,
+    creatorHandle: (creatorRec && creatorRec.handle) || '',
+    shopifyOrderNum: orderNum,
+    deliverableDueDate: dueDate,
+    owner,
+    contentType,
+  }).then(function(r) {
+    if (r && r.success) {
+      newCampaign.gasId = r.campaignId;
+      showToast('Send-out saved to Google Sheets', 'success');
+    } else {
+      showToast('Sheets save failed: ' + ((r&&r.error)||'unknown'), 'error');
+    }
+  }).catch(function(e) { showToast('Connection error: ' + e.message, 'error'); });
+
+  // Drive campaign subfolder
+  if (creatorRec) provisionCampaignSubfolder(creatorRec, name);
 }
 
 // ══════════════════════════════════════════
@@ -1727,7 +1988,30 @@ function removeSettingItem(key, val) {
   s[key] = s[key].filter(i => i !== val);
   saveSettings(s);
   renderSettingsPage();
-  showToast(`"${val}" removed.`, 'info');
+  showToast('"' + val + '" removed.', 'info');
+}
+
+function changePortalPassword() {
+  const current = document.getElementById('pw-current').value;
+  const next    = document.getElementById('pw-new').value.trim();
+  const confirm = document.getElementById('pw-confirm').value.trim();
+
+  if (current !== getStoredPassword()) {
+    showToast('Current password is incorrect.', 'error'); return;
+  }
+  if (!next) {
+    showToast('New password cannot be empty.', 'error'); return;
+  }
+  if (next !== confirm) {
+    showToast('New passwords do not match.', 'error'); return;
+  }
+  try { localStorage.setItem('tlc-portal-password', next); } catch(e) {
+    showToast('Could not save password.', 'error'); return;
+  }
+  document.getElementById('pw-current').value = '';
+  document.getElementById('pw-new').value = '';
+  document.getElementById('pw-confirm').value = '';
+  showToast('Password updated. Share the new password with your team.', 'success');
 }
 
 // ══════════════════════════════════════════
