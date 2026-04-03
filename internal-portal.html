@@ -1302,7 +1302,15 @@ function loadData() {
   // Then fetch real data from GAS in the background
   if (!GAS_ENDPOINT) return;
   callGAS('getPortalData', {}).then(function(result) {
-    if (!result || !result.success) return;
+    if (!result || !result.success) {
+      var err = (result && result.error) || 'unknown error';
+      if (err.includes('Unknown action')) {
+        showToast('Portal needs a new Apps Script deployment — see setup guide', 'error');
+      } else {
+        showToast('GAS error: ' + err, 'error');
+      }
+      return;
+    }
     var changed = false;
     if (result.applications && result.applications.length > 0) {
       MOCK.applications = result.applications.map(mapSheetApplication);
@@ -1322,8 +1330,11 @@ function loadData() {
       renderCreatorDb(filteredCreators());
       renderGifting(filteredCampaigns());
       showToast('Live data loaded from Google Sheets', 'success');
+    } else {
+      showToast('Connected to Sheets — no data yet', 'info');
     }
   }).catch(function(e) {
+    showToast('Could not reach Apps Script: ' + e.message, 'error');
     console.log('GAS load error:', e);
   });
 }
@@ -2067,7 +2078,7 @@ function downloadCSV(rows, filename) {
 // ══════════════════════════════════════════
 // PLATFORM URL HELPERS
 // ══════════════════════════════════════════
-const GAS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwemURSWzDKk-G6t_hn0zKPbx3KfdSbhK_FMvPQO5wvQuSxwGMi2yS45NC38Mwv_JwX/exec'; // Apps Script Web App URL
+const GAS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxmrRSCUFDjDfCg-xF3GQQSuDRkdTNBFTDf_9J8Cl_LotPja8ITE5-YcP1GakyQ2Bke/exec'; // Apps Script Web App URL
 
 const PLAT_META = {
   Instagram: { icon: '📸', color: '#e1306c', url: h => `https://instagram.com/${h.replace(/^@/,'')}` },
@@ -2138,39 +2149,54 @@ function driveFolderLink(url) {
 }
 
 // ══════════════════════════════════════════
-// GOOGLE DRIVE FOLDER CREATION
+// GAS COMMUNICATION
 // ══════════════════════════════════════════
 async function callGAS(action, data) {
   if (!GAS_ENDPOINT) return { success: false, error: 'GAS_ENDPOINT not set' };
   try {
     const res = await fetch(GAS_ENDPOINT, {
       method: 'POST',
+      redirect: 'follow',
       body: JSON.stringify({ action, data }),
     });
-    return await res.json();
+    if (!res.ok) {
+      return { success: false, error: 'HTTP ' + res.status };
+    }
+    const text = await res.text();
+    try {
+      return JSON.parse(text);
+    } catch(e) {
+      // GAS sometimes returns HTML error pages
+      console.error('GAS non-JSON response for action "' + action + '":', text.slice(0, 200));
+      return { success: false, error: 'Invalid response from server. Check Apps Script deployment.' };
+    }
   } catch(e) {
     return { success: false, error: e.message };
   }
 }
 
 async function provisionCreatorDrive(creator) {
-  // Update UI immediately to show "creating..."
-  showToast(`Creating Drive folder for ${creator.handle}…`, 'info');
+  showToast('Creating Drive folder for ' + creator.handle + '...', 'info');
 
   const result = await callGAS('createCreatorFolder', {
-    handle:  creator.handle,
-    email:   creator.email,
-    creatorId: String(creator.id),
+    handle:    creator.handle,
+    email:     creator.email,
+    creatorId: String(creator.gasId || creator.id),
   });
 
   if (result.success && result.folderUrl) {
     creator.driveFolder = result.folderUrl;
-    showToast(`Drive folder created for ${creator.handle}`, 'success');
-    // Refresh whichever table is showing
+    showToast('Drive folder created for ' + creator.handle, 'success');
     renderCreatorDb(filteredCreators());
   } else {
-    showToast(`Drive folder creation failed: ${result.error || 'check GAS logs'}`, 'error');
+    var msg = result.error || 'unknown error';
+    if (msg.includes('403') || msg.includes('permission') || msg.includes('access')) {
+      showToast('Drive not authorized — run authorizeDrive() in Apps Script editor first', 'error');
+    } else {
+      showToast('Drive folder failed: ' + msg, 'error');
+    }
   }
+}
 }
 
 async function provisionCampaignSubfolder(creator, campaignName) {
