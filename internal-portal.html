@@ -1,0 +1,1769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Staff Portal -- The Lifestyle Co</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:      #0d0d0d;
+  --cream:    #f7f4ef;
+  --warm:     #ede8e0;
+  --gold:     #c9a96e;
+  --gold2:    #b8915a;
+  --gold-dim: rgba(201,169,110,0.12);
+  --stone:    #7a7268;
+  --light:    #ffffff;
+  --border:   rgba(0,0,0,0.10);
+  --border2:  rgba(0,0,0,0.05);
+  --blue:     #3b82f6;  --blue-dim: rgba(59,130,246,0.10);
+  --green:    #22c55e;  --grn-dim:  rgba(34,197,94,0.10);
+  --red:      #ef4444;  --red-dim:  rgba(239,68,68,0.10);
+  --orange:   #f97316;  --org-dim:  rgba(249,115,22,0.10);
+  --purple:   #a855f7;  --pur-dim:  rgba(168,85,247,0.10);
+  --teal:     #14b8a6;  --teal-dim: rgba(20,184,166,0.10);
+  --2eros:    #3b82f6;  --supa:     #e05b6a;
+  --serif:    'Cormorant Garamond', Georgia, serif;
+  --sans:     'Outfit', system-ui, sans-serif;
+  --shadow:   0 2px 12px rgba(0,0,0,0.06);
+  --shadow-lg:0 8px 32px rgba(0,0,0,0.10);
+  --r: 6px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--sans); background: var(--cream); color: var(--ink); font-size: 15px; line-height: 1.5; overflow-x: hidden; }
+
+/* ── LAYOUT ── */
+.portal { display: flex; min-height: 100vh; }
+.sidebar {
+  width: 220px; flex-shrink: 0; background: var(--light);
+  border-right: 1px solid var(--border); display: flex; flex-direction: column;
+  position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; transition: transform 0.25s;
+}
+.sidebar-logo { padding: 18px 16px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+.logo-mark { width: 34px; height: 34px; background: var(--gold); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-family: var(--serif); font-size: 16px; font-weight: 600; color: var(--ink); }
+.logo-text { font-family: var(--serif); font-size: 15px; font-weight: 600; color: var(--ink); }
+.logo-sub  { font-size: 10px; color: var(--stone); }
+.brand-toggle { padding: 10px 12px; border-bottom: 1px solid var(--border); }
+.brand-toggle-label { font-size: 9px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--stone); margin-bottom: 6px; display:block; }
+.brand-tabs { display: grid; grid-template-columns: repeat(3,1fr); gap: 4px; }
+.brand-tab { padding: 5px 4px; border-radius: var(--r); border: 1px solid var(--border); background: none; color: var(--stone); font-family: var(--sans); font-size: 9px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
+.brand-tab.active        { border-color: var(--gold); color: var(--gold2); background: var(--gold-dim); }
+.brand-tab.active.eros   { border-color: var(--2eros); color: var(--2eros); background: var(--blue-dim); }
+.brand-tab.active.supa   { border-color: var(--supa);  color: var(--supa);  background: var(--red-dim); }
+.sidebar-nav { flex: 1; padding: 8px; overflow-y: auto; }
+.nav-section { margin-bottom: 16px; }
+.nav-section-label { font-size: 9px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--stone); padding: 0 8px; margin-bottom: 3px; }
+.nav-item { display: flex; align-items: center; gap: 9px; padding: 9px 10px; border-radius: var(--r); font-size: 13px; font-weight: 400; color: var(--stone); cursor: pointer; transition: all 0.15s; margin-bottom: 1px; border: none; background: none; width: 100%; text-align: left; }
+.nav-item:hover { background: var(--cream); color: var(--ink); }
+.nav-item.active { background: var(--gold-dim); color: var(--gold2); font-weight: 500; }
+.nav-icon { font-size: 13px; width: 18px; text-align: center; flex-shrink: 0; }
+.nav-badge { margin-left: auto; background: var(--red); color: white; font-size: 9px; font-weight: 600; padding: 1px 6px; border-radius: 99px; min-width: 18px; text-align: center; }
+.sidebar-footer { padding: 10px; border-top: 1px solid var(--border); }
+.user-row { display: flex; align-items: center; gap: 8px; padding: 8px; border-radius: var(--r); cursor: pointer; }
+.user-row:hover { background: var(--cream); }
+.user-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--gold-dim); border: 1px solid var(--gold); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: var(--gold2); }
+.user-name { font-size: 12px; font-weight: 500; }
+.user-role { font-size: 10px; color: var(--stone); }
+.main { flex: 1; margin-left: 220px; display: flex; flex-direction: column; min-height: 100vh; }
+.topbar { background: var(--light); border-bottom: 1px solid var(--border); padding: 11px 24px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 50; }
+.topbar-title { font-family: var(--serif); font-size: 18px; font-weight: 500; color: var(--ink); }
+.topbar-crumb { font-size: 11px; color: var(--stone); }
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+.search-input { background: var(--cream); border: 1px solid var(--border); border-radius: var(--r); padding: 7px 12px 7px 28px; font-size: 13px; color: var(--ink); width: 200px; outline: none; transition: all 0.2s; font-family: var(--sans); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 20 20' fill='none'%3E%3Ccircle cx='9' cy='9' r='6' stroke='%237a7268' stroke-width='1.5'/%3E%3Cpath d='M15 15l-3-3' stroke='%237a7268' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: 8px center; }
+.search-input:focus { border-color: var(--gold); width: 240px; background-color: var(--light); }
+.sidebar-toggle { display: none; }
+.page-content { padding: 24px; flex: 1; }
+.page-section { display: none; }
+.page-section.active { display: block; }
+
+/* ── BUTTONS ── */
+.btn { display: inline-flex; align-items: center; gap: 6px; border: none; border-radius: var(--r); cursor: pointer; font-family: var(--sans); font-weight: 500; transition: all 0.18s; text-decoration: none; font-size: 13px; }
+.btn-primary { background: var(--gold); color: var(--ink); padding: 9px 18px; }
+.btn-primary:hover { background: var(--gold2); }
+.btn-ink { background: var(--ink); color: var(--light); padding: 9px 18px; }
+.btn-ink:hover { background: #333; }
+.btn-outline { background: none; border: 1px solid var(--border); color: var(--stone); padding: 7px 14px; font-size: 12px; }
+.btn-outline:hover { border-color: var(--gold); color: var(--gold2); }
+.btn-ghost { background: none; color: var(--stone); padding: 6px 10px; font-size: 12px; }
+.btn-ghost:hover { color: var(--ink); background: var(--cream); }
+.btn-success { background: var(--grn-dim); color: var(--green); border: 1px solid rgba(34,197,94,0.3); padding: 5px 10px; font-size: 11px; }
+.btn-danger  { background: var(--red-dim); color: var(--red); border: 1px solid rgba(239,68,68,0.3); padding: 5px 10px; font-size: 11px; }
+.btn-sm { padding: 6px 12px; font-size: 12px; }
+.btn-xs { padding: 4px 8px; font-size: 11px; }
+.btn-export { background: var(--ink); color: var(--light); border: none; border-radius: var(--r); padding: 8px 16px; font-size: 12px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-family: var(--sans); transition: all 0.2s; }
+.btn-export:hover { background: #333; }
+
+/* ── SECTION HEADER ── */
+.section-hd { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; gap: 16px; }
+.section-hd h2 { font-family: var(--serif); font-size: 26px; font-weight: 400; color: var(--ink); }
+.section-hd p  { font-size: 12px; color: var(--stone); margin-top: 2px; }
+.section-actions { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+
+/* ── KPI CARDS ── */
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(175px, 1fr)); gap: 14px; margin-bottom: 24px; }
+.kpi-card { background: var(--light); border: 1px solid var(--border); border-radius: var(--r); padding: 18px 20px; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden; }
+.kpi-card:hover { box-shadow: var(--shadow); transform: translateY(-1px); }
+.kpi-accent { border-top: 3px solid var(--gold); }
+.kpi-blue   { border-top: 3px solid var(--blue); }
+.kpi-green  { border-top: 3px solid var(--green); }
+.kpi-red    { border-top: 3px solid var(--red); }
+.kpi-purple { border-top: 3px solid var(--purple); }
+.kpi-teal   { border-top: 3px solid var(--teal); }
+.kpi-orange { border-top: 3px solid var(--orange); }
+.kpi-label { font-size: 10px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--stone); margin-bottom: 8px; }
+.kpi-value { font-family: var(--serif); font-size: 38px; font-weight: 300; line-height: 1; color: var(--ink); margin-bottom: 4px; }
+.kpi-sub   { font-size: 11px; color: var(--stone); }
+.kpi-expand-icon { position: absolute; top: 12px; right: 12px; font-size: 11px; color: var(--stone); transition: transform 0.2s; }
+.kpi-card.expanded .kpi-expand-icon { transform: rotate(180deg); }
+.kpi-panel { display: none; background: var(--light); border: 1px solid var(--border); border-top: none; border-bottom-left-radius: var(--r); border-bottom-right-radius: var(--r); padding: 12px 14px; margin-top: -1px; }
+.kpi-panel.open { display: block; }
+.kpi-panel-row { display: flex; align-items: center; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid var(--border2); font-size: 12px; color: var(--stone); }
+.kpi-panel-row:last-child { border-bottom: none; }
+.kpi-panel-row strong { color: var(--ink); font-weight: 500; }
+
+/* ── CARDS ── */
+.card { background: var(--light); border: 1px solid var(--border); border-radius: var(--r); margin-bottom: 16px; box-shadow: var(--shadow); }
+.card-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--border); cursor: pointer; }
+.card-header h3 { font-family: var(--serif); font-size: 18px; font-weight: 400; color: var(--ink); }
+.card-body { padding: 16px 18px; }
+
+/* ── TABLES ── */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead th { font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--stone); padding: 10px 12px; border-bottom: 1px solid var(--border); text-align: left; white-space: nowrap; }
+tbody td { padding: 10px 12px; border-bottom: 1px solid var(--border2); vertical-align: middle; }
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover { background: var(--cream); }
+tbody tr.overdue-row { background: rgba(239,68,68,0.03); }
+tbody tr.overdue-row td:first-child { border-left: 3px solid var(--red); padding-left: 9px; }
+tbody tr.cursor { cursor: pointer; }
+
+/* ── CHIPS ── */
+.chip { display: inline-block; padding: 2px 9px; border-radius: 99px; font-size: 10px; font-weight: 600; white-space: nowrap; }
+.chip-2eros    { background: var(--blue-dim); color: var(--2eros); border: 1px solid rgba(59,130,246,0.2); }
+.chip-supa     { background: var(--red-dim);  color: var(--supa);  border: 1px solid rgba(224,91,106,0.2); }
+.chip-both     { background: var(--pur-dim);  color: var(--purple); border: 1px solid rgba(168,85,247,0.2); }
+.chip-new      { background: var(--blue-dim); color: var(--blue);   border: 1px solid rgba(59,130,246,0.2); }
+.chip-approved { background: var(--grn-dim);  color: var(--green);  border: 1px solid rgba(34,197,94,0.2); }
+.chip-pending  { background: var(--gold-dim); color: var(--gold2);  border: 1px solid rgba(201,169,110,0.3); }
+.chip-review   { background: var(--org-dim);  color: var(--orange); border: 1px solid rgba(249,115,22,0.2); }
+.chip-rejected { background: var(--red-dim);  color: var(--red);    border: 1px solid rgba(239,68,68,0.2); }
+.chip-hold     { background: var(--pur-dim);  color: var(--purple); border: 1px solid rgba(168,85,247,0.2); }
+.chip-completed{ background: var(--grn-dim);  color: var(--green);  border: 1px solid rgba(34,197,94,0.2); }
+.chip-overdue  { background: var(--red-dim);  color: var(--red);    border: 1px solid rgba(239,68,68,0.2); }
+.chip-shipped  { background: var(--teal-dim); color: var(--teal);   border: 1px solid rgba(20,184,166,0.2); }
+
+/* ── FILTERS ── */
+.filter-bar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; align-items: center; }
+.filter-select { background: var(--light); border: 1px solid var(--border); border-radius: var(--r); padding: 7px 28px 7px 10px; font-size: 12px; color: var(--stone); cursor: pointer; outline: none; appearance: none; font-family: var(--sans); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%237a7268' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 8px center; }
+.filter-select:focus { border-color: var(--gold); color: var(--ink); }
+.filter-label { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--stone); }
+
+/* ── FORM ── */
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-group.full { grid-column: 1 / -1; }
+.form-label { font-size: 10px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--stone); }
+.form-input, .form-select, .form-textarea { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--r); background: var(--cream); color: var(--ink); font-family: var(--sans); font-size: 14px; font-weight: 300; outline: none; transition: border-color 0.2s; -webkit-appearance: none; }
+.form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--gold); background: var(--light); }
+.form-select { cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%237a7268' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 30px; }
+.form-select option { background: var(--light); }
+.form-textarea { resize: vertical; min-height: 80px; }
+.form-hint { font-size: 11px; color: var(--stone); }
+.form-divider { grid-column: 1/-1; height: 1px; background: var(--border); margin: 4px 0; }
+.form-section-label { grid-column: 1/-1; font-family: var(--serif); font-size: 20px; font-weight: 400; color: var(--ink); padding-top: 4px; }
+.req { color: var(--gold); }
+
+/* Content type checkboxes */
+.content-type-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px,1fr)); gap: 8px; }
+.ct-check { position: relative; }
+.ct-check input { position: absolute; opacity: 0; width:0; height:0; }
+.ct-check-lbl { display: flex; align-items: center; gap: 8px; padding: 9px 12px; border: 1px solid var(--border); border-radius: var(--r); font-size: 12px; color: var(--stone); cursor: pointer; transition: all 0.15s; background: var(--cream); }
+.ct-check-lbl::before { content: ''; width: 14px; height: 14px; border: 1px solid var(--border); border-radius: 3px; flex-shrink: 0; transition: all 0.15s; }
+.ct-check input:checked + .ct-check-lbl { border-color: var(--gold); background: var(--gold-dim); color: var(--ink); font-weight: 500; }
+.ct-check input:checked + .ct-check-lbl::before { background: var(--gold); border-color: var(--gold); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='8' viewBox='0 0 10 8'%3E%3Cpath fill='%230d0d0d' d='M1 4l3 3 5-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: center; }
+
+/* ── MODAL ── */
+.modal-overlay { display: none; position: fixed; inset: 0; z-index: 200; background: rgba(13,13,13,0.5); backdrop-filter: blur(4px); align-items: center; justify-content: center; padding: 24px; }
+.modal-overlay.active { display: flex; }
+.modal { background: var(--light); border-radius: 8px; width: 100%; max-width: 640px; max-height: 90vh; overflow-y: auto; box-shadow: var(--shadow-lg); }
+.modal-header { display: flex; align-items: flex-start; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid var(--border); gap: 16px; position: sticky; top: 0; background: var(--light); z-index: 1; }
+.modal-header h2 { font-family: var(--serif); font-size: 24px; font-weight: 400; color: var(--ink); }
+.modal-close { background: none; border: none; font-size: 18px; cursor: pointer; color: var(--stone); padding: 2px 6px; border-radius: 4px; }
+.modal-close:hover { background: var(--cream); }
+.modal-body { padding: 20px 24px; }
+.modal-footer { display: flex; justify-content: flex-end; gap: 10px; padding: 14px 24px; border-top: 1px solid var(--border); }
+
+/* ── SCORE BAR ── */
+.score-bar-wrap { display: flex; align-items: center; gap: 8px; }
+.score-bar-track { flex: 1; height: 4px; background: var(--border); border-radius: 2px; }
+.score-bar-fill  { height: 100%; border-radius: 2px; }
+
+/* ── SENDOUT BARS ── */
+.sendout-bar-wrap { margin: 8px 0; }
+.sendout-bar-label { display: flex; justify-content: space-between; font-size: 11px; color: var(--stone); margin-bottom: 4px; }
+.sendout-bar-track { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+.sendout-bar-fill  { height: 100%; border-radius: 4px; background: var(--gold); transition: width 0.5s; }
+
+/* ── URGENCY ── */
+.urg-high   { background:var(--red-dim); color:var(--red); padding:2px 8px; border-radius:4px; font-size:10px; font-weight:600; }
+.urg-medium { background:var(--org-dim); color:var(--orange); padding:2px 8px; border-radius:4px; font-size:10px; font-weight:600; }
+.urg-low    { background:var(--grn-dim); color:var(--green); padding:2px 8px; border-radius:4px; font-size:10px; font-weight:600; }
+
+/* ── OUTSTANDING ALERT ── */
+.outstanding-alert { background: var(--red-dim); border: 1px solid rgba(239,68,68,0.25); border-radius: var(--r); padding: 8px 12px; font-size: 12px; color: var(--red); font-weight: 500; display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+
+/* ══════════════════════════════════════════
+   ETHNICITY REPRESENTATION SECTION
+══════════════════════════════════════════ */
+.eth-section {
+  background: var(--light); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 24px; margin-bottom: 20px; box-shadow: var(--shadow);
+}
+.eth-section-header {
+  display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 6px; gap: 16px;
+}
+.eth-section-title {
+  font-family: var(--sans); font-size: 12px; font-weight: 600;
+  letter-spacing: 0.25em; text-transform: uppercase; color: var(--ink);
+}
+.eth-section-sub { font-size: 12px; color: var(--stone); margin-bottom: 20px; }
+.eth-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+}
+.eth-card {
+  background: var(--cream); border: 1px solid var(--border);
+  border-radius: 10px; padding: 16px 14px;
+  cursor: pointer; transition: all 0.2s; position: relative;
+  min-height: 110px; display: flex; flex-direction: column; justify-content: space-between;
+}
+.eth-card:hover { box-shadow: var(--shadow); transform: translateY(-2px); border-color: var(--border); }
+.eth-card.has-data { background: var(--light); }
+.eth-card.has-data:hover { border-color: var(--gold); }
+.eth-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.eth-card-left { display: flex; align-items: flex-start; gap: 8px; }
+.eth-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; margin-top: 3px; }
+.eth-card-name { font-size: 13px; font-weight: 500; color: var(--ink); line-height: 1.3; }
+.eth-card.empty .eth-card-name { color: var(--stone); }
+.eth-card-count { font-family: var(--serif); font-size: 28px; font-weight: 300; line-height: 1; flex-shrink: 0; }
+.eth-card.empty .eth-card-count { color: var(--stone); font-size: 22px; }
+.eth-card-bottom { display: flex; flex-direction: column; gap: 2px; }
+.eth-card-pct { font-size: 11px; color: var(--stone); font-weight: 300; }
+.eth-card-cta { font-size: 10px; color: var(--gold2); font-weight: 500; display: flex; align-items: center; gap: 3px; }
+.eth-card.empty .eth-card-cta { display: none; }
+
+/* ══════════════════════════════════════════
+   SETTINGS PAGE
+══════════════════════════════════════════ */
+.settings-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 20px; }
+.settings-card { background: var(--light); border: 1px solid var(--border); border-radius: var(--r); box-shadow: var(--shadow); overflow: hidden; }
+.settings-card-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; justify-content: space-between; }
+.settings-card-header h3 { font-family: var(--serif); font-size: 20px; font-weight: 400; color: var(--ink); }
+.settings-card-header p { font-size: 11px; color: var(--stone); margin-top: 2px; }
+.settings-card-body { padding: 16px 20px; }
+.settings-tag-wrap { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; min-height: 28px; }
+.settings-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--cream); border: 1px solid var(--border);
+  border-radius: 99px; padding: 4px 10px 4px 12px;
+  font-size: 12px; font-weight: 400; color: var(--ink);
+}
+.settings-tag-del {
+  background: none; border: none; cursor: pointer;
+  color: var(--stone); font-size: 14px; line-height: 1;
+  padding: 0; display: flex; align-items: center;
+  border-radius: 50%; width: 16px; height: 16px; justify-content: center;
+  transition: all 0.15s;
+}
+.settings-tag-del:hover { background: var(--red-dim); color: var(--red); }
+.settings-add-row { display: flex; gap: 8px; }
+.settings-input { flex: 1; padding: 8px 12px; border: 1px solid var(--border); border-radius: var(--r); background: var(--cream); color: var(--ink); font-family: var(--sans); font-size: 13px; outline: none; }
+.settings-input:focus { border-color: var(--gold); background: var(--light); }
+.settings-note { font-size: 11px; color: var(--stone); margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border2); line-height: 1.5; }
+
+/* ── NOTES PAGE ── */
+.notes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 18px; }
+.note-card { background: var(--light); border: 1px solid var(--border); border-radius: 10px; box-shadow: var(--shadow); display: flex; flex-direction: column; min-height: 240px; transition: box-shadow 0.2s; }
+.note-card:hover { box-shadow: var(--shadow-lg); }
+.note-card-top { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 10px; border-bottom: 1px solid var(--border2); gap: 10px; }
+.note-heading { flex: 1; border: none; background: none; font-family: var(--serif); font-size: 20px; font-weight: 400; color: var(--ink); outline: none; min-width: 0; }
+.note-heading::placeholder { color: rgba(122,114,104,0.4); }
+.note-actions { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+.note-tb-btn { background: none; border: 1px solid var(--border); border-radius: 4px; padding: 3px 8px; font-size: 11px; cursor: pointer; color: var(--stone); font-family: var(--sans); transition: all 0.15s; line-height: 1.4; }
+.note-tb-btn:hover { background: var(--cream); color: var(--ink); border-color: var(--gold); }
+.note-del-btn { background: none; border: 1px solid transparent; border-radius: 4px; padding: 3px 7px; font-size: 14px; cursor: pointer; color: var(--stone); line-height: 1; transition: all 0.15s; }
+.note-del-btn:hover { background: var(--red-dim); color: var(--red); border-color: rgba(239,68,68,0.3); }
+.note-divider { height: 1px; background: linear-gradient(to right, var(--gold), transparent); margin: 0 16px; opacity: 0.4; }
+.note-body { flex: 1; padding: 12px 16px; outline: none; font-size: 14px; color: var(--stone); line-height: 1.75; font-weight: 300; min-height: 120px; }
+.note-body:empty::before { content: attr(data-placeholder); color: rgba(122,114,104,0.35); pointer-events: none; }
+.note-footer { display: flex; align-items: center; gap: 6px; padding: 8px 16px; border-top: 1px solid var(--border2); }
+.note-tag { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold2); background: var(--gold-dim); border-radius: 4px; padding: 2px 7px; }
+.note-date { font-size: 10px; color: var(--stone); margin-left: auto; }
+.add-note-card { background: none; border: 2px dashed var(--border); border-radius: 10px; min-height: 240px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; color: var(--stone); gap: 8px; }
+.add-note-card:hover { border-color: var(--gold); color: var(--gold2); background: var(--gold-dim); }
+.add-note-icon { width: 40px; height: 40px; border-radius: 50%; border: 2px dashed currentColor; display: flex; align-items: center; justify-content: center; font-size: 22px; line-height: 1; }
+
+/* ── REPORT BARS ── */
+.bar-chart { display: flex; flex-direction: column; gap: 8px; }
+.bar-row { display: grid; grid-template-columns: 90px 1fr 36px; align-items: center; gap: 8px; font-size: 11px; color: var(--stone); }
+.bar-track { height: 6px; background: var(--warm); border-radius: 3px; overflow: hidden; }
+.bar-fill  { height: 100%; border-radius: 3px; background: var(--gold); }
+.report-period-btn { padding:5px 12px;border:1px solid var(--border);border-radius:99px;background:none;font-family:var(--sans);font-size:12px;color:var(--stone);cursor:pointer;transition:all 0.15s; }
+.report-period-btn:hover { border-color:var(--gold);color:var(--gold2); }
+.report-period-btn.active { background:var(--ink);color:var(--light);border-color:var(--ink); }
+.rpt-kpi { background:var(--light);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px; }
+.rpt-kpi-val { font-family:var(--serif);font-size:36px;font-weight:300;color:var(--ink);line-height:1; }
+.rpt-kpi-lbl { font-size:10px;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:var(--stone);margin-bottom:6px; }
+
+/* ── FEATURE CARDS ── */
+.feature-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+.feature-creator-card { background: var(--light); border: 1px solid var(--border); border-radius: var(--r); padding: 18px; cursor: pointer; transition: all 0.2s; }
+.feature-creator-card:hover { box-shadow: var(--shadow); transform: translateY(-1px); }
+.fc-name { font-family: var(--serif); font-size: 18px; font-weight: 400; color: var(--ink); margin-bottom: 2px; }
+.fc-handle { font-size: 11px; color: var(--stone); margin-bottom: 10px; }
+
+/* ── PLATFORM HANDLE LINKS ── */
+.handle-link {
+  display: inline-flex; align-items: center; gap: 4px;
+  color: var(--stone); font-size: 11px; text-decoration: none;
+  border-bottom: 1px dashed rgba(122,114,104,0.4); cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+.handle-link:hover { color: var(--gold2); border-color: var(--gold2); }
+.handle-link .plat-icon { font-size: 11px; }
+
+/* Multi-platform picker */
+.plat-picker-wrap { position: relative; display: inline-block; }
+.plat-picker-btn {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 11px; color: var(--stone); background: none; border: none;
+  border-bottom: 1px dashed rgba(122,114,104,0.4); cursor: pointer;
+  padding: 0; font-family: var(--sans); transition: color 0.15s;
+}
+.plat-picker-btn:hover { color: var(--gold2); border-color: var(--gold2); }
+.plat-picker-menu {
+  display: none; position: absolute; top: calc(100% + 6px); left: 0; z-index: 300;
+  background: var(--light); border: 1px solid var(--border); border-radius: var(--r);
+  box-shadow: var(--shadow-lg); min-width: 180px; overflow: hidden;
+}
+.plat-picker-menu.open { display: block; }
+.plat-picker-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 14px; font-size: 12px; color: var(--stone);
+  text-decoration: none; transition: background 0.12s;
+  border-bottom: 1px solid var(--border2);
+}
+.plat-picker-item:last-child { border-bottom: none; }
+.plat-picker-item:hover { background: var(--cream); color: var(--ink); }
+.plat-picker-item .pi { font-size: 13px; width: 18px; text-align: center; flex-shrink: 0; }
+.plat-picker-item .pn { font-weight: 500; flex: 1; }
+.plat-picker-item .ph { color: var(--stone); font-size: 11px; }
+
+/* Drive folder link */
+.drive-link {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11px; color: var(--green); text-decoration: none;
+  background: var(--grn-dim); border: 1px solid rgba(34,197,94,0.25);
+  border-radius: 4px; padding: 2px 8px; font-weight: 500;
+  transition: all 0.15s;
+}
+.drive-link:hover { background: rgba(34,197,94,0.18); }
+.drive-link-pending {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11px; color: var(--stone);
+  background: var(--cream); border: 1px solid var(--border);
+  border-radius: 4px; padding: 2px 8px;
+}
+.drive-creating {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11px; color: var(--orange);
+  background: var(--org-dim); border: 1px solid rgba(249,115,22,0.25);
+  border-radius: 4px; padding: 2px 8px; font-weight: 500;
+}
+.fc-stats { display: flex; gap: 16px; }
+.fc-stat { text-align: center; }
+.fc-stat-val { font-size: 16px; font-weight: 600; color: var(--ink); }
+.fc-stat-lbl { font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--stone); }
+
+/* ── LOGIN ── */
+.login-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; background: var(--cream); }
+.login-card { background: var(--light); border: 1px solid var(--border); border-radius: 8px; padding: 48px 40px; width: 100%; max-width: 380px; text-align: center; box-shadow: var(--shadow-lg); }
+.login-logo-mark { width: 52px; height: 52px; background: var(--gold); border-radius: 14px; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-family: var(--serif); font-size: 22px; font-weight: 500; color: var(--ink); }
+.login-card h1 { font-family: var(--serif); font-size: 28px; font-weight: 400; margin-bottom: 8px; }
+.login-card p  { font-size: 14px; color: var(--stone); margin-bottom: 28px; font-weight: 300; }
+.google-btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 12px 20px; background: var(--ink); color: var(--light); border: none; border-radius: var(--r); font-family: var(--sans); font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s; margin-bottom: 12px; }
+.google-btn:hover { background: #333; }
+.login-demo-btn { width: 100%; background: none; border: 1px solid var(--border); color: var(--stone); border-radius: var(--r); padding: 10px; font-size: 13px; cursor: pointer; transition: all 0.2s; font-family: var(--sans); }
+.login-demo-btn:hover { border-color: var(--gold); color: var(--gold2); }
+.login-note { font-size: 11px; color: var(--stone); margin-top: 12px; }
+
+/* ── TOAST ── */
+.toast-wrap { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
+.toast { display: flex; align-items: center; gap: 10px; padding: 11px 16px; border-radius: 6px; font-size: 13px; font-weight: 500; min-width: 220px; background: var(--light); border: 1px solid var(--border); box-shadow: var(--shadow-lg); animation: toastIn 0.25s ease; }
+.toast.success { border-color: rgba(34,197,94,.4); }
+.toast.error   { border-color: rgba(239,68,68,.4); }
+.toast.info    { border-color: rgba(201,169,110,.4); }
+@keyframes toastIn { from { opacity:0; transform:translateX(12px); } to { opacity:1; transform:translateX(0); } }
+
+/* ── DETAIL MODAL ── */
+.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.detail-group { display: flex; flex-direction: column; gap: 3px; }
+.detail-label { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--stone); }
+.detail-value { font-size: 13px; color: var(--ink); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1200px) { .eth-cards-grid { grid-template-columns: repeat(4, 1fr); } }
+@media (max-width: 900px) {
+  .sidebar { transform: translateX(-220px); }
+  .sidebar.open { transform: translateX(0); box-shadow: var(--shadow-lg); }
+  .main { margin-left: 0; }
+  .sidebar-toggle { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; background: var(--cream); border: 1px solid var(--border); border-radius: var(--r); font-size: 16px; cursor: pointer; }
+  .eth-cards-grid { grid-template-columns: repeat(3, 1fr); }
+  .detail-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .page-content { padding: 16px; }
+  .kpi-grid { grid-template-columns: 1fr 1fr; }
+  .form-grid { grid-template-columns: 1fr; }
+  .eth-cards-grid { grid-template-columns: repeat(2, 1fr); }
+  .settings-grid { grid-template-columns: 1fr; }
+}
+
+/* ── Addition 2: Tier badges ─────────────────────────────── */
+.tier-badge { display:inline-block; font-size:9px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; padding:2px 7px; border-radius:3px; vertical-align:middle; }
+.tier-starter  { background:rgba(122,114,104,0.15); color:var(--stone); }
+.tier-growth   { background:rgba(59,130,246,0.12);  color:#1d4ed8; }
+.tier-featured { background:rgba(201,169,110,0.2);  color:var(--gold2); }
+</style>
+</head>
+<body>
+<div class="toast-wrap" id="toastContainer"></div>
+
+<!-- ── LOGIN ── -->
+<div id="loginScreen" style="display:none; position:fixed; inset:0; z-index:9999; background:#f7f4ef; align-items:center; justify-content:center;">
+  <div style="background:#fff; border:1px solid rgba(0,0,0,0.1); border-radius:10px; padding:48px 40px; width:100%; max-width:360px; text-align:center; box-shadow:0 8px 32px rgba(0,0,0,0.10);">
+    <div style="width:48px; height:48px; background:#c9a96e; border-radius:10px; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; font-family:Georgia,serif; font-size:20px; color:#0d0d0d;">TL</div>
+    <div style="font-family:Georgia,serif; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:#7a7268; margin-bottom:24px;">The Lifestyle Co</div>
+    <h1 style="font-family:Georgia,serif; font-size:26px; font-weight:400; color:#0d0d0d; margin-bottom:8px;">Staff Portal</h1>
+    <p style="font-size:14px; color:#7a7268; margin-bottom:28px; font-weight:300;">Enter your password to continue.</p>
+    <input id="loginPasswordInput" type="password" placeholder="Password"
+      style="width:100%; padding:12px 14px; border:1px solid rgba(0,0,0,0.15); border-radius:6px; font-size:15px; font-family:system-ui,sans-serif; outline:none; margin-bottom:10px; box-sizing:border-box; background:#f7f4ef; color:#0d0d0d;"
+      onkeydown="if(event.key==='Enter')checkPassword()">
+    <div id="loginError" style="display:none; color:#c0392b; font-size:13px; margin-bottom:10px;">Incorrect password. Please try again.</div>
+    <button onclick="checkPassword()"
+      style="width:100%; padding:12px; background:#0d0d0d; color:#fff; border:none; border-radius:6px; font-size:14px; font-weight:500; font-family:system-ui,sans-serif; cursor:pointer;">
+      Sign In
+    </button>
+  </div>
+</div>
+
+<!-- ── PORTAL ── -->
+<div id="portalApp" class="portal" style="display:none">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">TL</div>
+      <div><div class="logo-text">The Lifestyle Co</div><div class="logo-sub">Influencer Portal</div></div>
+    </div>
+    <div class="brand-toggle">
+      <span class="brand-toggle-label">Active Brand</span>
+      <div class="brand-tabs">
+        <button class="brand-tab eros active" onclick="setBrand('2eros',this)">2EROS</button>
+        <button class="brand-tab supa" onclick="setBrand('supawear',this)">SUPA</button>
+        <button class="brand-tab both" onclick="setBrand('both',this)">BOTH</button>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-label">Overview</div>
+        <button class="nav-item active" onclick="showPage('dashboard',this)"><span class="nav-icon">◻</span> Dashboard</button>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-label">Creators</div>
+        <button class="nav-item" onclick="showPage('applications',this)"><span class="nav-icon">📥</span> Applications<span class="nav-badge" id="badge-apps">3</span></button>
+        <button class="nav-item" onclick="showPage('database',this)"><span class="nav-icon">👥</span> Creator Database</button>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-label">Campaigns</div>
+        <button class="nav-item" onclick="showPage('gifting',this)"><span class="nav-icon">📦</span> Gifting Tracker</button>
+        <button class="nav-item" onclick="showPage('followups',this)"><span class="nav-icon">🔔</span> Follow-ups<span class="nav-badge" id="badge-fu">5</span></button>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-label">Workspace</div>
+        <button class="nav-item" onclick="showPage('notes',this)"><span class="nav-icon">📝</span> Notes</button>
+        <button class="nav-item" onclick="showPage('reports',this)"><span class="nav-icon">📊</span> Reports</button>
+        <button class="nav-item" onclick="showPage('settings',this)"><span class="nav-icon">⚙</span> Settings</button>
+      </div>
+    </nav>
+    <div class="sidebar-footer" style="padding:10px 12px;border-top:1px solid var(--border)">
+      <div style="font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--stone);text-align:center;opacity:0.6">The Lifestyle Co &middot; Staff Portal</div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <button class="sidebar-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+      <div>
+        <div class="topbar-title" id="pageTitle">Dashboard</div>
+        <div class="topbar-crumb" id="pageCrumb">The Lifestyle Co / Influencer Portal</div>
+      </div>
+      <div class="topbar-right">
+        <input class="search-input" type="search" placeholder="Search creators…">
+        <button class="btn btn-primary btn-sm" onclick="openModal('newSendoutModal')">+ New Send-out</button>
+      </div>
+    </div>
+
+    <div class="page-content">
+
+      <!-- ══ DASHBOARD ══ -->
+      <div class="page-section active" id="page-dashboard">
+        <div class="section-hd">
+          <div><h2>Dashboard</h2><p id="dashBrandLabel">All Brands · <span id="dashDate"></span></p></div>
+          <button class="btn btn-outline btn-sm" onclick="loadData()">↻ Refresh</button>
+        </div>
+
+        <div id="outstandingAlert" style="display:none" class="outstanding-alert">⚠ <span id="outstandingText"></span></div>
+
+        <div class="kpi-grid" id="kpiGrid"></div>
+
+        <!-- Ethnicity Representation -->
+        <div class="eth-section">
+          <div class="eth-section-header">
+            <div>
+              <div class="eth-section-title">Ethnicity &amp; Background -- Program Representation</div>
+              <div class="eth-section-sub">Click any card to see the influencers in that group</div>
+            </div>
+            <button class="btn-export" onclick="exportEthnicityCSV()">
+              <svg width="13" height="13" viewBox="0 0 20 20" fill="none"><path d="M17 13v4H3v-4M10 3v10M6 9l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Export → Google Sheets
+            </button>
+          </div>
+          <div class="eth-cards-grid" id="ethCardsGrid"></div>
+        </div>
+
+        <!-- Send-out type tracker -->
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-header" onclick="toggleCard('sendoutTypeCard')">
+            <h3>Send-out Types -- Completion Tracker</h3><span>▾</span>
+          </div>
+          <div id="sendoutTypeCard" class="card-body">
+            <div id="sendoutTypeBars"></div>
+          </div>
+        </div>
+
+        <!-- Recent + Overdue -->
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px">
+          <div class="card">
+            <div class="card-header" onclick="toggleCard('recentAppsCard')">
+              <h3>Recent Applications</h3>
+              <div style="display:flex;gap:8px;align-items:center">
+                <button class="btn btn-ghost btn-xs" onclick="event.stopPropagation();showPage('applications',document.querySelector('[onclick*=applications]'))">View all</button>
+                <span>▾</span>
+              </div>
+            </div>
+            <div id="recentAppsCard" class="card-body" style="padding:0">
+              <div class="table-wrap"><table>
+                <thead><tr><th>Creator</th><th>Brand</th><th>Status</th></tr></thead>
+                <tbody id="recentAppsTable"></tbody>
+              </table></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header" onclick="toggleCard('overdueCard')">
+              <h3>Overdue Actions</h3>
+              <div style="display:flex;gap:8px;align-items:center">
+                <button class="btn btn-ghost btn-xs" onclick="event.stopPropagation();showPage('followups',document.querySelector('[onclick*=followups]'))">View all</button>
+                <span>▾</span>
+              </div>
+            </div>
+            <div id="overdueCard" class="card-body" style="padding:0">
+              <div class="table-wrap"><table>
+                <thead><tr><th>Creator</th><th>Issue</th><th>Days</th></tr></thead>
+                <tbody id="overdueTable"></tbody>
+              </table></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Feature Focus -->
+        <div style="margin-bottom:8px">
+          <div style="font-size:10px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:4px">Feature Focus</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+            <h3 style="font-family:var(--serif);font-size:20px;font-weight:400">Top Performing Creators</h3>
+            <button class="btn btn-outline btn-sm" onclick="showPage('database',document.querySelector('[onclick*=database]'))">View All</button>
+          </div>
+          <div class="feature-grid" id="featureCreatorsGrid"></div>
+        </div>
+      </div>
+
+      <!-- ══ APPLICATIONS ══ -->
+      <div class="page-section" id="page-applications">
+        <div class="section-hd">
+          <div><h2>Applications</h2><p>Review and process creator submissions</p></div>
+          <div class="section-actions">
+            <button class="btn-export btn-sm" onclick="exportTableCSV('applicationsTable','applications')">
+              <svg width="12" height="12" viewBox="0 0 20 20" fill="none"><path d="M17 13v4H3v-4M10 3v10M6 9l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Export CSV
+            </button>
+            <button class="btn btn-outline btn-sm" onclick="syncFromSheets()">↻ Sync</button>
+          </div>
+        </div>
+        <div class="filter-bar" id="appFilters"></div>
+        <div class="card">
+          <div class="table-wrap"><table>
+            <thead><tr><th>Creator</th><th>Submitted</th><th>Brand</th><th>Tier</th><th>Platform</th><th>Followers</th><th>Location</th><th>Ethnicity</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="applicationsTable"></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- ══ CREATOR DATABASE ══ -->
+      <div class="page-section" id="page-database">
+        <div class="section-hd">
+          <div><h2>Creator Database</h2><p>All approved and active creators</p></div>
+          <div class="section-actions">
+            <button class="btn-export" onclick="exportTableCSV('creatorDbTable','creators')">
+              <svg width="12" height="12" viewBox="0 0 20 20" fill="none"><path d="M17 13v4H3v-4M10 3v10M6 9l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Export → Google Sheets
+            </button>
+            <button class="btn btn-primary btn-sm" onclick="openModal('addCreatorModal')">+ Add Creator</button>
+          </div>
+        </div>
+        <div class="filter-bar" id="dbFilters"></div>
+        <div class="card">
+          <div class="table-wrap"><table>
+            <thead><tr><th>Creator</th><th>Brand</th><th>Tier</th><th>Platform</th><th>Location</th><th>Ethnicity</th><th>Score</th><th>Campaigns</th><th>Last Campaign</th><th>Flags</th><th>Drive</th><th>Sales (AUD)</th><th>Commission (AUD)</th><th>Actions</th></tr></thead>
+            <tbody id="creatorDbTable"></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- ══ GIFTING TRACKER ══ -->
+      <div class="page-section" id="page-gifting">
+        <div class="section-hd">
+          <div><h2>Gifting Tracker</h2><p>Orders, shipment and content tracking</p></div>
+          <div class="section-actions">
+            <button class="btn-export btn-sm" onclick="exportTableCSV('giftingTable','sendouts')">
+              <svg width="12" height="12" viewBox="0 0 20 20" fill="none"><path d="M17 13v4H3v-4M10 3v10M6 9l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Export CSV
+            </button>
+            <button class="btn btn-primary btn-sm" onclick="openModal('newSendoutModal')">+ New Send-out</button>
+          </div>
+        </div>
+        <div class="filter-bar" id="giftFilters"></div>
+        <div class="card">
+          <div class="table-wrap"><table>
+            <thead><tr><th>Creator</th><th>Brand</th><th>Tier</th><th>Campaign</th><th>Content Type</th><th>Order #</th><th>Status</th><th>Due Date</th><th>Owner</th><th>Notes</th><th>Actions</th></tr></thead>
+            <tbody id="giftingTable"></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- ══ FOLLOW-UPS ══ -->
+      <div class="page-section" id="page-followups">
+        <div class="section-hd">
+          <div><h2>Follow-ups</h2><p>Creators needing action or reminders</p></div>
+          <button class="btn-export btn-sm" onclick="exportTableCSV('followupsTable','followups')">Export CSV</button>
+        </div>
+        <div class="filter-bar">
+          <select class="filter-select" id="filterFuUrgency" onchange="renderFollowups(MOCK.followups)">
+            <option value="">All Urgency</option><option>High</option><option>Medium</option><option>Low</option>
+          </select>
+        </div>
+        <div class="card">
+          <div class="table-wrap"><table>
+            <thead><tr><th>Creator</th><th>Urgency</th><th>Reason</th><th>Days Over</th><th>Last Follow-up</th><th>Count</th><th>Suggested Action</th><th>Actions</th></tr></thead>
+            <tbody id="followupsTable"></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- ══ NOTES ══ -->
+      <div class="page-section" id="page-notes">
+        <div class="section-hd">
+          <div><h2>Notes</h2><p>Briefs, templates, campaign ideas and reminders</p></div>
+          <button class="btn btn-primary btn-sm" onclick="addNote()">+ New Note</button>
+        </div>
+        <div id="templatesSection" style="margin-bottom:20px"></div>
+        <div style="font-size:11px;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:var(--stone);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)">Free Notes</div>
+        <div class="notes-grid" id="notesGrid">
+          <div class="add-note-card" onclick="addNote()">
+            <div class="add-note-icon">+</div>
+            <div style="font-size:13px;font-weight:500">New note</div>
+            <div style="font-size:11px;color:var(--stone)">Click to create</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ REPORTS ══ -->
+      <div class="page-section" id="page-reports">
+        <div class="section-hd">
+          <div><h2>Reports</h2><p>Send-out and creator performance</p></div>
+        </div>
+
+        <!-- Period filter -->
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px;flex-wrap:wrap">
+          <span style="font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--stone)">Period:</span>
+          <button class="report-period-btn active" onclick="setReportPeriod('month',this)">This Month</button>
+          <button class="report-period-btn" onclick="setReportPeriod('quarter',this)">This Quarter</button>
+          <button class="report-period-btn" onclick="setReportPeriod('half',this)">6 Months</button>
+          <button class="report-period-btn" onclick="setReportPeriod('year',this)">This Year</button>
+          <button class="report-period-btn" onclick="setReportPeriod('all',this)">All Time</button>
+          <div style="display:flex;align-items:center;gap:6px;margin-left:8px">
+            <span style="font-size:11px;color:var(--stone)">Custom:</span>
+            <input type="date" id="rpt-from" class="form-input" style="padding:5px 8px;font-size:12px;width:130px" onchange="setReportPeriod('custom',null)">
+            <span style="font-size:11px;color:var(--stone)">to</span>
+            <input type="date" id="rpt-to" class="form-input" style="padding:5px 8px;font-size:12px;width:130px" onchange="setReportPeriod('custom',null)">
+          </div>
+        </div>
+
+        <!-- KPI summary cards -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-bottom:24px" id="reportKpis"></div>
+
+        <!-- Charts grid -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px">
+          <div class="card"><div class="card-header" onclick="toggleCard('rptSendouts')"><h3>Send-outs by Month</h3><span>&#9662;</span></div><div id="rptSendouts" class="card-body"><div class="bar-chart" id="chart-sendouts"></div></div></div>
+          <div class="card"><div class="card-header" onclick="toggleCard('rptBrand')"><h3>Send-outs by Brand</h3><span>&#9662;</span></div><div id="rptBrand" class="card-body"><div class="bar-chart" id="chart-brand"></div></div></div>
+          <div class="card"><div class="card-header" onclick="toggleCard('rptContent')"><h3>Content Type Breakdown</h3><span>&#9662;</span></div><div id="rptContent" class="card-body"><div class="bar-chart" id="chart-content-type"></div></div></div>
+          <div class="card"><div class="card-header" onclick="toggleCard('chartTopCreators')"><h3>Top Reliable Creators</h3><span>&#9662;</span></div><div id="chartTopCreators" class="card-body"><div class="bar-chart" id="chart-creators"></div></div></div>
+          <div class="card"><div class="card-header" onclick="toggleCard('chartAvoid')"><h3>Creators to Avoid</h3><span>&#9662;</span></div><div id="chartAvoid" class="card-body"><div id="avoid-list"></div></div></div>
+        </div>
+      </div>
+
+      <!-- ══ SETTINGS ══ -->
+      <div class="page-section" id="page-settings">
+        <div class="section-hd">
+          <div><h2>Settings</h2><p>Manage dropdown options across the portal and creator submission form</p></div>
+          <button class="btn btn-outline btn-sm" onclick="resetSettings()">↺ Reset to Defaults</button>
+        </div>
+        <div style="background:var(--gold-dim);border:1px solid rgba(201,169,110,0.3);border-radius:var(--r);padding:12px 16px;margin-bottom:20px;font-size:13px;color:var(--gold2)">
+          ✦ Changes save automatically and sync to the Creator Submission form via shared browser storage. Both files must be opened from the same server.
+        </div>
+
+        <!-- Password Card -->
+        <div class="settings-card" style="margin-bottom:20px;max-width:500px">
+          <div class="settings-card-header">
+            <div>
+              <h3>Portal Password</h3>
+              <p>Password required to access this staff portal.</p>
+            </div>
+          </div>
+          <div class="settings-card-body">
+            <div style="margin-bottom:14px">
+              <div class="form-label" style="margin-bottom:6px">Current password</div>
+              <div style="display:flex;align-items:center;gap:10px">
+                <code id="pw-display" style="background:var(--warm);border:1px solid var(--border);border-radius:var(--r);padding:8px 14px;font-size:15px;letter-spacing:0.1em;flex:1;font-family:monospace"></code>
+                <button class="btn btn-outline btn-sm" onclick="togglePwVisible()" id="pw-toggle">Show</button>
+              </div>
+            </div>
+            <div style="background:var(--blue-dim);border:1px solid var(--blue-bd,rgba(59,130,246,0.2));border-radius:var(--r);padding:12px 14px;font-size:13px;color:#1e3a5f;line-height:1.7">
+              <strong>To change the password:</strong><br>
+              1. Download <code>internal-portal.html</code> from GitHub<br>
+              2. Open it in a text editor (Notepad / TextEdit)<br>
+              3. Find this line near the top of the &lt;script&gt; section:<br>
+              <code style="display:block;margin:6px 0;background:rgba(0,0,0,0.06);padding:5px 8px;border-radius:4px;">var PORTAL_PASSWORD = 'TLC321!';</code>
+              4. Replace <code>TLC321!</code> with your new password<br>
+              5. Save the file and re-upload it to GitHub
+            </div>
+            <div class="settings-note" style="margin-top:10px">The password is shared across your whole team -- everyone uses the same one. Session stays active until the browser tab is closed.</div>
+          </div>
+        </div>
+
+        <div class="settings-grid" id="settingsGrid"></div>
+      </div>
+
+    </div><!-- /page-content -->
+  </div><!-- /main -->
+</div><!-- /portal -->
+
+<!-- ══ MODALS ══ -->
+
+<!-- Creator Detail -->
+<div class="modal-overlay" id="creatorDetailModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div><h2 id="modalCreatorName">Creator</h2><div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap" id="modalCreatorChips"></div></div>
+      <button class="modal-close" onclick="closeModal('creatorDetailModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="detail-grid" id="modalDetailGrid"></div>
+      <div style="margin-top:20px"><div class="form-group"><label class="form-label">Internal Notes</label><textarea class="form-textarea" id="modalNotes" placeholder="Add notes…" style="min-height:80px"></textarea></div></div>
+      <div style="margin-top:18px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <label class="form-label" style="margin:0">Communication Log</label>
+          <button class="btn btn-ghost btn-xs" onclick="toggleCommEntryForm()">+ Log Contact</button>
+        </div>
+        <div id="commLogEntries" style="max-height:180px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;margin-bottom:6px"></div>
+        <div id="commEntryForm" style="display:none">
+          <textarea class="form-textarea" id="commEntryText" placeholder="Log what was communicated, agreed, or noted..." style="min-height:56px;font-size:12px;margin-bottom:6px"></textarea>
+          <div style="display:flex;gap:6px">
+            <button class="btn btn-primary btn-xs" onclick="saveCommEntry()">Save</button>
+            <button class="btn btn-outline btn-xs" onclick="document.getElementById('commEntryForm').style.display='none'">Cancel</button>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:14px"><div class="form-group"><label class="form-label">Assign To</label><select class="form-select" id="modalOwner"><option>Unassigned</option><option>Sarah</option><option>James</option></select></div></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger btn-sm" onclick="updateAppStatus('Rejected')">✕ Reject</button>
+      <button class="btn btn-outline btn-sm" onclick="updateAppStatus('On Hold')">⏸ Hold</button>
+      <button class="btn btn-outline btn-sm" onclick="updateAppStatus('Need More Info')">? More Info</button>
+      <button class="btn btn-success btn-sm" onclick="updateAppStatus('Approved')">✓ Approve</button>
+    </div>
+  </div>
+</div>
+
+<!-- Ethnicity detail modal -->
+<div class="modal-overlay" id="ethDetailModal">
+  <div class="modal" style="max-width:560px">
+    <div class="modal-header">
+      <h2 id="ethModalTitle">Ethnicity Group</h2>
+      <button class="modal-close" onclick="closeModal('ethDetailModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="ethModalContent"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-export" onclick="exportEthGroupCSV()">Export Group CSV</button>
+      <button class="btn btn-outline" onclick="closeModal('ethDetailModal')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- New Send-out -->
+<div class="modal-overlay" id="newSendoutModal">
+  <div class="modal">
+    <div class="modal-header"><h2>New Send-out</h2><button class="modal-close" onclick="closeModal('newSendoutModal')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-grid" style="gap:14px">
+        <div class="form-group"><label class="form-label">Creator <span class="req">*</span></label><select class="form-select" id="so-creator"><option value="">Select creator…</option><option>Marcus C.</option><option>Jordan A.</option><option>Sean F.</option></select></div>
+        <div class="form-group"><label class="form-label">Brand <span class="req">*</span></label><select class="form-select" id="so-brand"><option>2EROS</option><option>Supawear</option></select></div>
+        <div class="form-group"><label class="form-label">Campaign Name <span class="req">*</span></label><input class="form-input" type="text" id="so-name" placeholder="e.g. Summer 2025 Seeding"></div>
+        <div class="form-group"><label class="form-label">Shopify Order #</label><input class="form-input" type="text" id="so-order" placeholder="e.g. #1234"><span class="form-hint">⚡ Will auto-link to Shopify</span></div>
+        <div class="form-group full">
+          <label class="form-label">Content Type Request <span class="req">*</span></label>
+          <div class="content-type-grid" id="soContentTypes"></div>
+        </div>
+        <div class="form-group"><label class="form-label">Due Date</label><input class="form-input" type="date" id="so-due"></div>
+        <div class="form-group"><label class="form-label">Owner</label><select class="form-select" id="so-owner" ></select></div>
+        <div class="form-group full"><label class="form-label">Notes</label><textarea class="form-textarea" id="so-notes" placeholder="Product details, brief, deliverables…"></textarea></div>
+      </div>
+    </div>
+        <div id="overdueWarning" style="display:none;background:#fef2f2;border:1px solid #ef4444;border-radius:8px;padding:12px 16px;margin:8px 0 0">
+          <div style="color:#991b1b;font-weight:600;font-size:13px;margin-bottom:6px">&#9888; Outstanding deliverable</div>
+          <div id="overdueWarningDetail" style="font-size:12px;color:#991b1b;margin-bottom:8px"></div>
+          <label style="display:flex;align-items:flex-start;gap:8px;cursor:pointer;font-size:12px;color:#7f1d1d">
+            <input type="checkbox" id="overdueAcknowledge" style="margin-top:2px;flex-shrink:0">
+            <span>I acknowledge this creator has an outstanding deliverable and want to proceed anyway</span>
+          </label>
+        </div>
+        <div class="form-group full" style="margin-top:10px"><label class="form-label">Deliverable Brief <span style="font-size:10px;color:var(--stone);font-weight:400">(auto-fills by tier — edit if needed)</span></label><textarea class="form-textarea" id="so-brief" placeholder="Auto-fills when a creator is selected..." style="min-height:90px;font-size:12px"></textarea></div>
+    <div class="modal-footer"><button class="btn btn-outline" onclick="closeModal('newSendoutModal')">Cancel</button><button class="btn btn-primary" onclick="saveSendout()">Create Send-out</button></div>
+  </div>
+</div>
+
+<!-- Add Creator -->
+<div class="modal-overlay" id="addCreatorModal">
+  <div class="modal">
+    <div class="modal-header"><h2>Add Creator</h2><button class="modal-close" onclick="closeModal('addCreatorModal')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-grid" style="gap:14px">
+        <div class="form-group"><label class="form-label">Full Name <span class="req">*</span></label><input class="form-input" type="text" id="ac-name" placeholder="Creator's full name"></div>
+        <div class="form-group"><label class="form-label">Handle <span class="req">*</span></label><input class="form-input" type="text" id="ac-handle" placeholder="@handle"></div>
+        <div class="form-group"><label class="form-label">Email <span class="req">*</span></label><input class="form-input" type="email" id="ac-email" placeholder="creator@example.com"></div>
+        <div class="form-group"><label class="form-label">Phone</label><input class="form-input" type="tel" id="ac-phone" placeholder="+61 400 000 000"></div>
+        <div class="form-group"><label class="form-label">Brand</label><select class="form-select" id="ac-brand"><option value="2eros">2EROS</option><option value="supawear">Supawear</option><option value="both">Both</option></select></div>
+        <div class="form-group"><label class="form-label">Tier</label><select class="form-select" id="ac-tier"><option value="Starter">Starter</option><option value="Growth">Growth</option><option value="Featured">Featured</option></select></div>
+        <div class="form-group"><label class="form-label">Platform</label><select class="form-select" id="ac-platform"></select></div>
+        <div class="form-group"><label class="form-label">Followers</label><input class="form-input" type="number" id="ac-followers" placeholder="0"></div>
+        <div class="form-group"><label class="form-label">City, Country</label><input class="form-input" type="text" id="ac-location" placeholder="Sydney, Australia"></div>
+        <div class="form-group full"><label class="form-label">Ethnicity / Background</label><select class="form-select" id="ac-ethnicity"></select></div>
+        <div class="form-group full"><label class="form-label">Notes</label><textarea class="form-textarea" id="ac-notes" placeholder="Any additional notes…"></textarea></div>
+      </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-outline" onclick="closeModal('addCreatorModal')">Cancel</button><button class="btn btn-primary" onclick="saveCreator()">Add Creator</button></div>
+  </div>
+</div>
+
+<!-- Send-out Update Modal -->
+<div class="modal-overlay" id="updateSendoutModal">
+  <div class="modal" style="max-width:520px">
+    <div class="modal-header"><h2 id="updateModalTitle">Update Send-out</h2><button class="modal-close" onclick="closeModal('updateSendoutModal')">&#10005;</button></div>
+    <div class="modal-body">
+      <div class="form-grid" style="gap:14px">
+        <div class="form-group"><label class="form-label">Tracking Number</label><input class="form-input" type="text" id="upd-tracking" placeholder="JD000123456789"><div class="form-hint">Entering a tracking number automatically sets status to Tracking Received</div></div>
+        <div class="form-group"><label class="form-label">Carrier</label><select class="form-select" id="upd-carrier"><option value="">Select carrier...</option><option>Australia Post</option><option>DHL</option><option>FedEx</option><option>UPS</option><option>Other</option></select></div>
+        <div class="form-group full"><label class="form-label">Status <span style="font-size:10px;color:var(--stone);font-weight:400">(auto-set when tracking added)</span></label>
+          <select class="form-select" id="upd-status">
+            <option value="Approved to Send">Approved to Send</option>
+            <option value="Order Created">Order Created</option>
+            <option value="Fulfilled">Fulfilled</option>
+            <option value="Tracking Received">Tracking Received</option>
+            <option value="Delivered">Delivered</option>
+            <option value="Awaiting Content">Awaiting Content</option>
+            <option value="Content Submitted">Content Submitted</option>
+            <option value="Posted">Posted</option>
+            <option value="Completed">Completed</option>
+            <option value="Missed Deliverable">Missed Deliverable</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Due Date</label><input class="form-input" type="date" id="upd-due"></div>
+        <div class="form-group"><label class="form-label">Owner</label><select class="form-select" id="upd-owner"></select></div>
+        <div class="form-group full"><label class="form-label">Stories Highlight or Post URL</label><input class="form-input" type="text" id="upd-posts" placeholder="https://instagram.com/p/..."></div>
+        <div id="performanceFields" style="display:none;grid-column:1/-1">
+          <div style="font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--stone);margin-bottom:10px;padding-top:8px;border-top:1px solid var(--border)">Content Performance</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px">
+            <div class="form-group"><label class="form-label">Reach</label><input class="form-input" type="number" id="upd-reach" placeholder="0" min="0"></div>
+            <div class="form-group"><label class="form-label">Likes</label><input class="form-input" type="number" id="upd-likes" placeholder="0" min="0"></div>
+            <div class="form-group"><label class="form-label">Saves</label><input class="form-input" type="number" id="upd-saves" placeholder="0" min="0"></div>
+          </div>
+        </div>
+        <div class="form-group full"><label class="form-label">Notes</label><textarea class="form-textarea" id="upd-notes" placeholder="Product sent, brief details, any issues..." style="min-height:80px"></textarea></div>
+      </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-outline" onclick="closeModal('updateSendoutModal')">Cancel</button><button class="btn btn-primary" onclick="saveUpdate()">Save Update</button></div>
+  </div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────────────────────
+// THE LIFESTYLE CO — INTERNAL PORTAL
+// v3 — includes all 7 brief additions
+// ─────────────────────────────────────────────────────────────
+
+var PORTAL_PASSWORD = 'TLC321!';
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbzzH1Hwu6y4_2PF5-pgWfyA6CyICtuZDwknnM6SUcOP9lAa1PCi5VEvhC-ZA8rJLrIhIA/exec';
+
+// ── ADDITION 7: TEMPLATE DATA ────────────────────────────────
+// Hardcoded — never written to or read from Google Sheets
+var _templateBrand = '2eros'; // local to templates section
+
+var TEMPLATES = {
+  '2eros': [
+    {id:'T01',name:'Cold outreach — never heard of 2EROS',cat:'Outreach',context:'Use when approaching a creator who has not previously engaged with 2EROS.',
+     text:'Hey [FIRST NAME] 👋\n\nWe\'re 2EROS — an Australian-designed men\'s swimwear and underwear brand built around premium fabrics, real diversity, and quality that lasts.\n\nWe\'ve been following your content and think our upcoming [DROP NAME] drop would be a natural fit for you.\n\nWe\'d love to gift you a piece from the collection — no strings attached. If you love it, we\'d be grateful for a post. If it\'s not for you, no worries at all.\n\nKeen? Just reply with your shipping details and size and we\'ll get it moving. 🙌',
+     note:'Keep it short. Don\'t list deliverables in the first message — save that for after they say yes.'},
+    {id:'T02',name:'Warm outreach — has engaged with 2EROS before',cat:'Outreach',context:'Use when the creator has previously liked, commented, tagged, or purchased from 2EROS.',
+     text:'Hey [FIRST NAME] — we noticed you\'ve been following 2EROS and we love your content.\n\nWe\'d love to make it official and gift you our new [DROP NAME] — it\'s [ONE LINE: e.g. made from premium Modal, cooling and soft].\n\nIf you\'d like to share it with your audience, we\'d love that too. Just reply with your shipping details and size and we\'ll send it your way. 🙌',
+     note:'Reference how they engaged if possible — "we saw you tagged us in..." It shows you\'re paying attention.'},
+    {id:'T03',name:'Application approved — welcome to the programme',cat:'Outreach',context:'Send after approving a creator application from the submission form.',
+     text:'Hey [FIRST NAME] 🙌\n\nGreat news — we\'d love to welcome you to the 2EROS creator programme as a [TIER] partner.\n\nHere\'s what that means for you:\n— Gifted pieces from 2EROS to create content with\n[Growth/Featured only: — An affiliate link to earn commission on every sale you drive]\n— We reshare all creator content we love to our @2eros community (94K followers)\n\nOur first drop for you is [DROP NAME]. Can you confirm your shipping address and preferred size?\n\nWelcome to the team. 🤙'},
+    {id:'T04',name:'Polite application decline',cat:'Outreach',context:'Always reply to every application — leaving someone on read damages brand reputation.',
+     text:'Hey [FIRST NAME],\n\nThanks for applying to the 2EROS creator programme — we really appreciate you taking the time.\n\nWe\'ve reviewed your application and while your content is great, we\'re not the right fit for a partnership right now. This can change as our programme grows, so please don\'t take it personally.\n\nUse [DISCOUNT CODE] for 10% off your next 2EROS order — our way of saying thanks for reaching out. 🙏',
+     note:'Always include a discount code on decline — turns a rejection into a potential customer.'},
+    {id:'T05',name:'Gift dispatched',cat:'Logistics',context:'Send the moment the order ships. Always include the tracking number.',
+     text:'Hey [FIRST NAME] 📦\n\nYour 2EROS gift is on its way!\n\nItem: [PRODUCT NAME + COLOUR + SIZE]\nTracking: [TRACKING NUMBER]\nCarrier: [CARRIER]\nEst. delivery: [DATE RANGE]\n\nOnce it arrives, here\'s what we\'d love:\n— 1 Reel featuring the product naturally in your content\n— [2 / 3 / 3–4] Stories or feed posts — whichever works for your content style\n— If you post Stories, please save them to a \'2EROS\' Highlight on your profile so we can verify\n— Tag @2eros in all content. Gifted disclosure required on each post.\n\nAll content by [DUE DATE].\n\nCan\'t wait to see what you create. 🙌'},
+    {id:'T06',name:'Affiliate link delivery',cat:'Logistics',context:'Send to Growth and Featured creators alongside or shortly after the gift dispatch message.',
+     text:'Hey [FIRST NAME],\n\nHere\'s your personal 2EROS affiliate link — add it to your bio, Stories, or posts and earn [COMMISSION %] commission on every sale:\n\n[AFFILIATE LINK]\n\nTrack your earnings any time through your Shopify Collabs dashboard. Any questions, just reply here. 💪'},
+    {id:'T07',name:'Follow-up #1 — friendly check-in (Day 10)',cat:'Follow-up',context:'Send at Day 10 after estimated delivery — 4 days before deadline. Warm, not a chase.',
+     text:'Hey [FIRST NAME] 👋\n\nJust checking in — hope your 2EROS [PRODUCT NAME] arrived safely and you\'re loving it!\n\nFriendly reminder that content is due by [DUE DATE]. Let us know if you need anything from us — a different angle, more info on the product, anything at all. 🙌'},
+    {id:'T08',name:'Follow-up #2 — overdue (Day 14+)',cat:'Follow-up',context:'Send at Day 14 or later if content has not been posted. Polite but clear.',
+     text:'Hey [FIRST NAME],\n\nFollowing up on the 2EROS [PRODUCT NAME] we sent — content was due [DUE DATE] and we haven\'t seen it go up yet.\n\nWe understand life gets busy — if you need more time or have hit a snag, just let us know and we\'ll work something out. If the product isn\'t right for your content right now, just say so — no hard feelings at all.\n\nWe just need to know either way so we can plan our next drops. Thanks [FIRST NAME] 🙏',
+     note:'Always give them an out. Log this contact in the Communication Log.'},
+    {id:'T09',name:'Final notice — placing on hold',cat:'Follow-up',context:'Use after two unanswered follow-ups. Update status to "Missed Deliverable" after sending.',
+     text:'Hey [FIRST NAME],\n\nWe\'ve sent a couple of follow-ups about the 2EROS [PRODUCT NAME] gifted on [DATE] and haven\'t heard back.\n\nWe\'ll be pausing future 2EROS gifting until the agreed content goes up or we hear from you. This isn\'t personal — it\'s how we keep the programme fair for all our creator partners.\n\nIf circumstances have changed or you\'d like to make it right, just reply here and we\'ll sort it out together.',
+     note:'Update status to "Missed Deliverable" in the portal after sending. This triggers the overdue block on future send-outs.'},
+    {id:'T10',name:'Content received — thank you + reshare notice',cat:'Relationship',context:'Send as soon as you see the content go live. Reply fast — creators notice.',
+     text:'Hey [FIRST NAME] 🔥\n\nJust saw the post — it looks incredible. Exactly the kind of content the 2EROS community loves. We\'re resharing it to our @2eros Stories right now and will tag you in.\n\n[Optional: "We\'d love to feature this on our main feed too — would that be okay?"]\n\nSeriously, thank you. Already looking forward to the next drop together. 🙌'},
+    {id:'T11',name:'Feature notification — content going on the 2EROS feed',cat:'Relationship',context:'Always ask before reposting to the main 2EROS feed — even with blanket permission in the brief.',
+     text:'Hey [FIRST NAME] 👋\n\nWe\'d love to feature your recent post on the @2eros Instagram feed — your content is exactly what our community responds to.\n\nWe\'ll credit you with your handle in the caption. Just reply with a thumbs up and we\'ll get it scheduled. 🙌\n\nThanks for being such a great part of the 2EROS story.'},
+    {id:'T12',name:'Tier upgrade',cat:'Relationship',context:'Send when upgrading a creator\'s tier. Sets new expectations and makes them feel valued.',
+     text:'Hey [FIRST NAME] 🎉\n\nWe\'ve been really impressed with your content and how you\'ve shown up for 2EROS — so we\'re upgrading you to [NEW TIER] tier in our creator programme.\n\nWhat that means for you going forward:\n[List new tier benefits — e.g. priority product access, affiliate commission, paid campaign consideration]\n\nThis is our way of saying the relationship matters and we want to invest in creators who are genuinely aligned with who we are.\n\nMore to come very soon. 🙌'},
+    {id:'T13',name:'Re-engagement — creator has gone quiet',cat:'Relationship',context:'For creators who were active but haven\'t engaged in 60+ days. Forward-looking, not a complaint.',
+     text:'Hey [FIRST NAME] 👋\n\nIt\'s been a little while — just wanted to check in and see how you\'re going.\n\nWe\'ve got some new 2EROS drops coming up that we think you\'d love, and we\'d love to have you involved again if the timing works.\n\nNo pressure at all — just didn\'t want to go too long without saying hi. Let us know if you\'re keen and we\'ll share what\'s coming 🙌'},
+    {id:'T14',name:'UGC permission request — organic tagger',cat:'Admin',context:'Use when a customer (not in the programme) tags @2eros organically and you want to reshare to the main feed.',
+     text:'Hey [FIRST NAME] 👋\n\nWe just came across your post and honestly love it — you\'ve styled our [PRODUCT NAME] perfectly.\n\nWould you mind if we reshared this to the @2eros Instagram? We\'d credit you with your handle in the caption. Your content would be seen by our whole community 🙌\n\nJust reply with a yes and we\'ll get it up. Thank you!',
+     note:'Always get explicit permission before posting UGC to the main feed. Screenshot the DM reply as consent record.'},
+    {id:'T15',name:'Address and size confirmation',cat:'Admin',context:'Use when you need shipping details before creating a send-out.',
+     text:'Hey [FIRST NAME] 🙌\n\nReady to get your 2EROS gift moving — just need two things:\n\n1. Your full shipping address (including postcode and country)\n2. Your size — we recommend going up one size if it\'s your first 2EROS order. Size guide at 2eros.com/pages/size-guide\n\nThat\'s it — we\'ll get it ordered and send you tracking as soon as it ships.'}
+  ],
+  'supawear': [
+    {id:'T01',name:'Cold outreach — never heard of SUPAWEAR',cat:'Outreach',context:'Use when approaching a creator who has not previously engaged with SUPAWEAR.',
+     text:'Hey [FIRST NAME] 👋\n\nWe\'re SUPAWEAR — a performance and lifestyle underwear brand built for men who take both their training and their style seriously.\n\nWe\'ve been following your content and think our [DROP NAME] collection would be a natural fit for you.\n\nWe\'d love to gift you a piece — no strings attached. If you love it and want to share it with your audience, we\'d be grateful. If it\'s not for you, no pressure at all.\n\nKeen? Just reply with your shipping details and size and we\'ll get it moving. 🙌',
+     note:'Keep it short. Don\'t list deliverables in the first message.'},
+    {id:'T02',name:'Warm outreach — has engaged with SUPAWEAR before',cat:'Outreach',context:'Use when the creator has previously liked, commented, tagged, or purchased from SUPAWEAR.',
+     text:'Hey [FIRST NAME] — we noticed you\'ve been following SUPAWEAR and we love what you create.\n\nWe\'d love to make it official and send you our new [DROP NAME] — it\'s [ONE LINE: e.g. engineered for performance with a premium feel].\n\nIf you\'d like to share it with your audience, we\'d love that too. Just reply with your shipping details and size and we\'ll send it over. 🙌'},
+    {id:'T03',name:'Application approved — welcome to the programme',cat:'Outreach',context:'Send after approving a creator application.',
+     text:'Hey [FIRST NAME] 🙌\n\nGreat news — we\'d love to welcome you to the SUPAWEAR creator programme as a [TIER] partner.\n\nHere\'s what that means for you:\n— Gifted pieces from SUPAWEAR to create content with\n[Growth/Featured only: — An affiliate link to earn commission on every sale you drive]\n— We reshare creator content we love to our @supawear community\n\nOur first drop for you is [DROP NAME]. Can you confirm your shipping address and preferred size?\n\nWelcome to the team. 🤙'},
+    {id:'T04',name:'Polite application decline',cat:'Outreach',context:'Always reply to every application.',
+     text:'Hey [FIRST NAME],\n\nThanks for applying to the SUPAWEAR creator programme — we really appreciate you taking the time.\n\nWe\'ve reviewed your application and while your content is great, we\'re not the right fit for a partnership right now. This can change as our programme grows.\n\nUse [DISCOUNT CODE] for 10% off your next SUPAWEAR order — our way of saying thanks for reaching out. 🙏'},
+    {id:'T05',name:'Gift dispatched',cat:'Logistics',context:'Send the moment the order ships.',
+     text:'Hey [FIRST NAME] 📦\n\nYour SUPAWEAR gift is on its way!\n\nItem: [PRODUCT NAME + COLOUR + SIZE]\nTracking: [TRACKING NUMBER]\nCarrier: [CARRIER]\nEst. delivery: [DATE RANGE]\n\nOnce it arrives, here\'s what we\'d love:\n— 1 Reel featuring the product naturally in your content\n— [2 / 3 / 3–4] Stories or feed posts — whichever suits your style\n— If you post Stories, please save them to a \'SUPAWEAR\' Highlight on your profile so we can verify\n— Tag @supawear in all content. Gifted disclosure required on each post.\n\nAll content by [DUE DATE].\n\nCan\'t wait to see what you create. 🙌'},
+    {id:'T06',name:'Affiliate link delivery',cat:'Logistics',context:'Send to Growth and Featured creators alongside or after the gift dispatch message.',
+     text:'Hey [FIRST NAME],\n\nHere\'s your personal SUPAWEAR affiliate link — add it to your bio, Stories, or posts and earn [COMMISSION %] commission on every sale:\n\n[AFFILIATE LINK]\n\nTrack your earnings any time through your Shopify Collabs dashboard. Any questions, just reply here. 💪'},
+    {id:'T07',name:'Follow-up #1 — friendly check-in (Day 10)',cat:'Follow-up',context:'Send at Day 10 after estimated delivery. Warm, not a chase.',
+     text:'Hey [FIRST NAME] 👋\n\nJust checking in — hope your SUPAWEAR [PRODUCT NAME] arrived safely and you\'re putting it to good use!\n\nFriendly reminder that content is due by [DUE DATE]. Let us know if you need anything from us. 🙌'},
+    {id:'T08',name:'Follow-up #2 — overdue (Day 14+)',cat:'Follow-up',context:'Send at Day 14 or later if content has not been posted.',
+     text:'Hey [FIRST NAME],\n\nFollowing up on the SUPAWEAR [PRODUCT NAME] we sent — content was due [DUE DATE] and we haven\'t seen it go up yet.\n\nIf you need more time or have hit a snag, just let us know. If the product isn\'t right for your content right now, just say so — no hard feelings.\n\nWe just need to know either way so we can plan our next drops. Thanks [FIRST NAME] 🙏',
+     note:'Always give them an out. Log this contact in the Communication Log.'},
+    {id:'T09',name:'Final notice — placing on hold',cat:'Follow-up',context:'Use after two unanswered follow-ups. Update status to "Missed Deliverable" after sending.',
+     text:'Hey [FIRST NAME],\n\nWe\'ve sent a couple of follow-ups about the SUPAWEAR [PRODUCT NAME] gifted on [DATE] and haven\'t heard back.\n\nWe\'ll be pausing future SUPAWEAR gifting until the agreed content goes up or we hear from you. This isn\'t personal — it\'s how we keep the programme fair for everyone.\n\nIf circumstances have changed or you\'d like to make it right, just reply and we\'ll sort it out.',
+     note:'Update status to "Missed Deliverable" in the portal after sending.'},
+    {id:'T10',name:'Content received — thank you + reshare notice',cat:'Relationship',context:'Send as soon as you see the content go live.',
+     text:'Hey [FIRST NAME] 🔥\n\nJust saw the post — it looks great. Exactly what the SUPAWEAR community loves to see. We\'re resharing it to our @supawear Stories right now and will tag you in.\n\n[Optional: "We\'d love to feature this on our main feed too — would that be okay?"]\n\nThank you — already looking forward to the next drop together. 🙌'},
+    {id:'T11',name:'Feature notification — content going on the SUPAWEAR feed',cat:'Relationship',context:'Always ask before reposting to the main SUPAWEAR feed.',
+     text:'Hey [FIRST NAME] 👋\n\nWe\'d love to feature your recent post on the @supawear Instagram feed — it\'s exactly the kind of content our community connects with.\n\nWe\'ll credit you with your handle in the caption. Just reply with a thumbs up and we\'ll get it scheduled. 🙌'},
+    {id:'T12',name:'Tier upgrade',cat:'Relationship',context:'Send when upgrading a creator\'s tier in the SUPAWEAR programme.',
+     text:'Hey [FIRST NAME] 🎉\n\nWe\'ve been really impressed with how you\'ve shown up for SUPAWEAR — so we\'re upgrading you to [NEW TIER] tier in our creator programme.\n\nWhat that means going forward:\n[List new tier benefits]\n\nWe want to invest in creators who are genuinely aligned with what SUPAWEAR stands for — and you\'re one of them.\n\nMore to come soon. 🙌'},
+    {id:'T13',name:'Re-engagement — creator has gone quiet',cat:'Relationship',context:'For creators inactive for 60+ days. Forward-looking, not a complaint.',
+     text:'Hey [FIRST NAME] 👋\n\nIt\'s been a little while — just wanted to check in and see how you\'re going.\n\nWe\'ve got some new SUPAWEAR drops coming up that we think you\'d love, and we\'d love to have you involved again if the timing works.\n\nNo pressure at all — just didn\'t want to go too long without reaching out. Let us know if you\'re keen 🙌'},
+    {id:'T14',name:'UGC permission request — organic tagger',cat:'Admin',context:'Use when a customer tags @supawear organically and you want to reshare to the main feed.',
+     text:'Hey [FIRST NAME] 👋\n\nWe just came across your post and love it — you\'re wearing our [PRODUCT NAME] perfectly.\n\nWould you mind if we reshared this to the @supawear Instagram? We\'d credit you with your handle in the caption 🙌\n\nJust reply with a yes and we\'ll get it up. Thank you!',
+     note:'Screenshot the DM reply as consent record.'},
+    {id:'T15',name:'Address and size confirmation',cat:'Admin',context:'Use when you need shipping details before creating a SUPAWEAR send-out.',
+     text:'Hey [FIRST NAME] 🙌\n\nReady to get your SUPAWEAR gift moving — just need two things:\n\n1. Your full shipping address (including postcode and country)\n2. Your size — check our size guide at [SUPAWEAR SITE URL]/pages/size-guide if you\'re not sure\n\nThat\'s it — we\'ll get it ordered and send you tracking as soon as it ships.'}
+  ]
+};
+
+var CAT_COLOURS = {
+  Outreach:     {bg:'#E3F2FD',color:'#1565C0'},
+  Logistics:    {bg:'#E8F5E9',color:'#2E7D32'},
+  'Follow-up':  {bg:'#FFF3E0',color:'#E65100'},
+  Relationship: {bg:'#F3E5F5',color:'#6A1B9A'},
+  Admin:        {bg:'#F5F5F5',color:'#424242'}
+};
+
+function renderTemplates() {
+  var el = document.getElementById('templatesSection'); if (!el) return;
+  var brand = ACTIVE_BRAND === 'both' ? _templateBrand : ACTIVE_BRAND;
+
+  // Build header with brand tab switcher when BOTH is active
+  var header = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">'
+    + '<div><div style="font-size:11px;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:var(--stone);margin-bottom:2px">Message Templates</div>'
+    + '<div style="font-size:12px;color:var(--stone)">Copy to clipboard. Fill in [VARIABLES] before sending.</div></div>';
+
+  if (ACTIVE_BRAND === 'both') {
+    header += '<div style="background:var(--warm);border-radius:6px;padding:2px;display:flex;gap:2px">'
+      + '<button id="tplTab2eros" onclick="setTemplateBrand(\'2eros\',this)" style="padding:4px 12px;font-size:11px;font-weight:600;border:none;border-radius:4px;cursor:pointer;background:'+(brand==='2eros'?'var(--ink)':'transparent')+';color:'+(brand==='2eros'?'#fff':'var(--stone)')+'">2EROS</button>'
+      + '<button id="tplTabSupa" onclick="setTemplateBrand(\'supawear\',this)" style="padding:4px 12px;font-size:11px;font-weight:600;border:none;border-radius:4px;cursor:pointer;background:'+(brand==='supawear'?'#8B0000':'transparent')+';color:'+(brand==='supawear'?'#fff':'var(--stone)')+'">Supawear</button>'
+      + '</div>';
+  }
+  header += '</div>';
+
+  var templates = TEMPLATES[brand] || TEMPLATES['2eros'];
+  var brandColor = brand === 'supawear' ? '#8B0000' : 'var(--ink)';
+  var brandLabel = brand === 'supawear' ? 'SUPAWEAR' : '2EROS';
+
+  // Group by category
+  var groups = {};
+  templates.forEach(function(t) {
+    if (!groups[t.cat]) groups[t.cat] = [];
+    groups[t.cat].push(t);
+  });
+
+  var cards = Object.keys(groups).map(function(cat) {
+    var cc = CAT_COLOURS[cat] || {bg:'#f5f5f5',color:'#333'};
+    var groupHtml = '<div style="font-size:10px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:var(--stone);margin-bottom:8px;margin-top:16px">'+esc(cat)+'</div>';
+    groupHtml += groups[cat].map(function(t) {
+      var highlightedText = t.text.replace(/\[([^\]]+)\]/g, '<span style="color:#1565C0;font-weight:500">[$1]</span>');
+      var noteHtml = t.note ? '<div style="font-size:11px;color:#888;font-style:italic;margin-top:10px;padding-top:8px;border-top:1px solid var(--border)">'+esc(t.note)+'</div>' : '';
+      var tId = 'tpl_'+brand+'_'+t.id;
+      return '<div style="background:var(--light);border:1px solid var(--border);border-left:3px solid '+brandColor+';border-radius:8px;overflow:hidden;margin-bottom:10px">'
+        + '<div style="background:var(--warm);padding:10px 14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;border-bottom:1px solid var(--border)">'
+        + '<div style="font-size:13px;font-weight:600;color:var(--ink)">'+esc(t.id)+' · '+esc(t.name)+'</div>'
+        + '<div style="display:flex;gap:6px;align-items:center">'
+        + '<span style="font-size:10px;padding:2px 8px;border-radius:8px;font-weight:500;background:'+cc.bg+';color:'+cc.color+'">'+esc(cat)+'</span>'
+        + '<span style="font-size:10px;padding:2px 8px;border-radius:8px;font-weight:600;background:'+brandColor+';color:#fff">'+brandLabel+'</span>'
+        + '<button onclick="copyTemplate(\''+tId+'\')" style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:5px;border:1px solid var(--border);background:var(--light);cursor:pointer;color:var(--ink)" id="copybtn_'+tId+'">Copy</button>'
+        + '</div></div>'
+        + '<div style="padding:14px 16px">'
+        + '<div style="font-size:12px;color:#888;font-style:italic;margin-bottom:10px;line-height:1.5">'+esc(t.context)+'</div>'
+        + '<div id="'+tId+'" style="font-size:13px;color:var(--ink);line-height:1.8;white-space:pre-wrap">'+highlightedText+'</div>'
+        + noteHtml
+        + '</div></div>';
+    }).join('');
+    return groupHtml;
+  }).join('');
+
+  el.innerHTML = header + cards;
+}
+
+function setTemplateBrand(brand, btn) {
+  _templateBrand = brand;
+  renderTemplates();
+}
+
+function copyTemplate(tId) {
+  var el = document.getElementById(tId); if (!el) return;
+  var text = el.innerText || el.textContent;
+  var btn = document.getElementById('copybtn_'+tId);
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(function() {
+      if (btn) { btn.textContent='Copied!'; btn.style.background='var(--green)'; btn.style.color='#fff'; btn.style.borderColor='var(--green)'; }
+      setTimeout(function() { if(btn){btn.textContent='Copy';btn.style.background='';btn.style.color='';btn.style.borderColor='';} }, 2000);
+    });
+  } else {
+    var ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    if (btn) { btn.textContent='Copied!'; setTimeout(function(){btn.textContent='Copy';},2000); }
+  }
+}
+
+// ── SETTINGS ────────────────────────────────────────────────
+var DEFAULT_SETTINGS = {
+  ethnicities: ['White / Caucasian','African / Black','East Asian','South Asian','Southeast Asian','Middle Eastern','Latino / Hispanic','Mixed / Multiracial','Indigenous / First Nations','Pacific Islander','Aboriginal or Torres Strait Islander'],
+  niches: ['Fashion & Style','Fitness & Gym','Lifestyle','Travel','Health & Wellness','LGBTQ+ Content','Body Positivity','Swimwear / Beach','Dance & Performance','Photography','Comedy & Entertainment','Food & Hospitality','Luxury','Resortwear','Underwear'],
+  countries: ['Australia','United States','United Kingdom','Canada','New Zealand','Germany','France','Netherlands','Singapore','Brazil','South Africa','Japan','Thailand'],
+  audienceLocations: ['Australia','United States','United Kingdom','Canada','New Zealand','Europe (broad)','Asia','Middle East','Latin America','Global / Mixed'],
+  contentTypes: ['Try On','Vibe / Aesthetic','Social Proof / Testimonial','Unboxing','Educational'],
+  platforms: ['Instagram','TikTok','YouTube','Facebook','Pinterest','Threads'],
+  team: ['Unassigned','Sarah','James']
+};
+
+var ETH_COLORS = {
+  'White / Caucasian':'#ef4444','African / Black':'#a855f7','East Asian':'#3b82f6',
+  'South Asian':'#22c55e','Southeast Asian':'#c9a96e','Middle Eastern':'#14b8a6',
+  'Latino / Hispanic':'#f97316','Mixed / Multiracial':'#8b5cf6',
+  'Indigenous / First Nations':'#06b6d4','Pacific Islander':'#84cc16',
+  'Aboriginal or Torres Strait Islander':'#f59e0b','Prefer not to say':'#94a3b8'
+};
+
+function getSettings() {
+  try { return JSON.parse(localStorage.getItem('tlc-settings')||'null')||JSON.parse(JSON.stringify(DEFAULT_SETTINGS)); }
+  catch(e) { return JSON.parse(JSON.stringify(DEFAULT_SETTINGS)); }
+}
+function saveSettings(settings) { localStorage.setItem('tlc-settings',JSON.stringify(settings)); applySettings(); }
+function resetSettings() { if(!confirm('Reset all settings to defaults?')) return; localStorage.removeItem('tlc-settings'); applySettings(); renderSettingsPage(); toast('Settings reset','success'); }
+
+// ── DEMO DATA ────────────────────────────────────────────────
+var DATA = {
+  applications: [
+    {id:'a1',gasId:'',name:'Marcus Chen',handle:'@marcus.c',email:'marcus@example.com',submitted:'28 Mar 2025',brand:'2eros',platform:'Instagram',platforms:['Instagram'],followers:52000,followersRaw:'52k',country:'Australia',city:'Sydney',status:'New',niche:'Fitness',ethnicity:'East Asian',audience:'Australia',tier:'Growth',whyUs:'',prevCollabs:'',mediaKit:'',notes:'',driveFolder:null},
+    {id:'a2',gasId:'',name:'Jordan Avery',handle:'@beach.jordan',email:'jordan@example.com',submitted:'25 Mar 2025',brand:'supawear',platform:'TikTok',platforms:['TikTok','Instagram'],followers:120000,followersRaw:'120k',country:'United States',city:'LA',status:'New',niche:'Lifestyle',ethnicity:'African / Black',audience:'United States',tier:'Featured',whyUs:'',prevCollabs:'',mediaKit:'',notes:'',driveFolder:null},
+    {id:'a3',gasId:'',name:'Noah Williams',handle:'@noahfit',email:'noah@example.com',submitted:'10 Mar 2025',brand:'supawear',platform:'Instagram',platforms:['Instagram'],followers:67000,followersRaw:'67k',country:'New Zealand',city:'Auckland',status:'New',niche:'Body Positivity',ethnicity:'Mixed / Multiracial',audience:'New Zealand',tier:'Starter',whyUs:'',prevCollabs:'',mediaKit:'',notes:'',driveFolder:null}
+  ],
+  creators: [
+    {id:'c1',gasId:'',name:'Marcus Chen',handle:'@marcus.c',email:'marcus@example.com',brand:'2eros',platform:'Instagram',platforms:['Instagram'],followers:52000,country:'Australia',city:'Sydney',ethnicity:'East Asian',tier:'Growth',score:9.2,campaigns:4,lastCampaign:'Feb 2025',late:false,dnc:false,status:'Active',driveFolder:'https://drive.google.com/drive/folders/example101',salesAUD:0,commissionAUD:0},
+    {id:'c2',gasId:'',name:'Jordan Avery',handle:'@beach.jordan',email:'jordan@example.com',brand:'supawear',platform:'TikTok',platforms:['TikTok','Instagram'],followers:120000,country:'United States',city:'LA',ethnicity:'African / Black',tier:'Featured',score:8.7,campaigns:3,lastCampaign:'Mar 2025',late:false,dnc:false,status:'Active',driveFolder:'https://drive.google.com/drive/folders/example102',salesAUD:0,commissionAUD:0},
+    {id:'c3',gasId:'',name:'Sean Fitzgerald',handle:'@fitsean_',email:'sean@example.com',brand:'both',platform:'Instagram',platforms:['Instagram','YouTube'],followers:38000,country:'Australia',city:'Melbourne',ethnicity:'White / Caucasian',tier:'Starter',score:7.1,campaigns:2,lastCampaign:'Jan 2025',late:true,dnc:false,status:'Active',driveFolder:null,salesAUD:0,commissionAUD:0}
+  ],
+  campaigns: [
+    {id:'p1',gasId:'',creator:'Marcus Chen',brand:'2EROS',campaign:'Summer 25 Seeding',contentType:'Try On',orderNum:'#1089',tracking:'AUS123456',carrier:'Australia Post',orderStatus:'Delivered',contentStatus:'Posted',dueDate:'2025-02-28',owner:'Sarah',sentDate:'2025-01-15',notes:'',postUrl:'',brief:'',reach:0,likes:0,saves:0,highlightUrl:''},
+    {id:'p2',gasId:'',creator:'Jordan Avery',brand:'Supawear',campaign:'Pride Drop',contentType:'Vibe / Aesthetic',orderNum:'#1094',tracking:'DHL987654',carrier:'DHL',orderStatus:'Delivered',contentStatus:'Awaiting Content',dueDate:'2025-03-10',owner:'James',sentDate:'2025-02-01',notes:'',postUrl:'',brief:'',reach:0,likes:0,saves:0,highlightUrl:''},
+    {id:'p3',gasId:'',creator:'Sean Fitzgerald',brand:'2EROS',campaign:'Resort Gifting',contentType:'Unboxing',orderNum:'#1101',tracking:'',carrier:'',orderStatus:'Fulfilled',contentStatus:'Awaiting Content',dueDate:'2025-02-01',owner:'Sarah',sentDate:'2025-01-05',notes:'',postUrl:'',brief:'',reach:0,likes:0,saves:0,highlightUrl:''}
+  ],
+  followups: [
+    {id:301,creator:'Jordan Avery',urgency:'High',reason:'No Content Submitted',daysOverdue:32,lastFollowup:'25 Mar 2025',count:2,suggestedAction:'Send final reminder'},
+    {id:302,creator:'Sean Fitzgerald',urgency:'High',reason:'Overdue',daysOverdue:58,lastFollowup:'20 Mar 2025',count:3,suggestedAction:'Mark as missed deliverable'}
+  ]
+};
+
+var ACTIVE_BRAND = 'both';
+var _detailCurrentId = null;
+var _updateSendoutId = null;
+var _reportPeriod = 'month';
+var currentEthGroup = null;
+
+// ── AUTH ─────────────────────────────────────────────────────
+function checkPassword() {
+  var input = document.getElementById('loginPasswordInput');
+  var err   = document.getElementById('loginError');
+  if (!input) return;
+  if (input.value === PORTAL_PASSWORD) {
+    try { sessionStorage.setItem('tlc-authed','1'); } catch(e) {}
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('portalApp').style.display = 'flex';
+    input.value = '';
+    if (err) err.style.display = 'none';
+    bootPortal();
+  } else {
+    if (err) err.style.display = 'block';
+    input.select(); input.focus();
+  }
+}
+
+function bootPortal() {
+  var el = document.getElementById('dashDate');
+  if (el) el.textContent = new Date().toLocaleDateString('en-AU',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  applySettings();
+  renderAll();
+  buildReports();
+  loadNotes();
+  renderSettingsPage();
+  loadLiveData();
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  var authed = false;
+  try { authed = sessionStorage.getItem('tlc-authed') === '1'; } catch(e) {}
+  if (authed) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('portalApp').style.display = 'flex';
+    bootPortal();
+  } else {
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('portalApp').style.display = 'none';
+    setTimeout(function() { var i = document.getElementById('loginPasswordInput'); if (i) i.focus(); }, 80);
+  }
+});
+
+// ── GAS ──────────────────────────────────────────────────────
+function callGAS(action, payload) {
+  return fetch(GAS_URL, {
+    method: 'POST', redirect: 'follow',
+    headers: {'Content-Type':'text/plain'},
+    body: JSON.stringify({action:action, data:payload||{}})
+  }).then(function(r) { return r.text(); })
+  .then(function(t) {
+    var clean = (t||'').trim().replace(/^\uFEFF/,'');
+    if (!clean) return {success:false,error:'Empty response'};
+    try { return JSON.parse(clean); }
+    catch(e) { return {success:false,error:'Non-JSON response — redeploy Apps Script as New version'}; }
+  }).catch(function(e) { return {success:false,error:e.message}; });
+}
+
+// ── STATUS PILL ──────────────────────────────────────────────
+function setSheetsStatus(state, msg) {
+  var dot=document.getElementById('sheetsStatusDot'), text=document.getElementById('sheetsStatusText'), pill=document.getElementById('sheetsStatus');
+  if (!dot||!text||!pill) return;
+  var map={connecting:{color:'#c9a96e',bg:'#fef9ec',border:'rgba(201,169,110,0.4)',label:msg||'Connecting...'},connected:{color:'#22c55e',bg:'#f0fdf4',border:'rgba(34,197,94,0.4)',label:msg||'Sheets Connected'},error:{color:'#ef4444',bg:'#fef2f2',border:'rgba(239,68,68,0.4)',label:msg||'Sheets Error'},empty:{color:'#3b82f6',bg:'#eff6ff',border:'rgba(59,130,246,0.4)',label:msg||'Connected — No Data'}};
+  var st=map[state]||map.connecting;
+  dot.style.background=st.color; text.textContent=st.label; pill.style.background=st.bg; pill.style.borderColor=st.border;
+}
+
+function testSheetsConnection() {
+  setSheetsStatus('connecting','Testing...');
+  callGAS('getPortalData',{}).then(function(r) {
+    console.log('GAS raw response:',JSON.stringify(r));
+    if (!r||!r.success){setSheetsStatus('error','Error');toast('Sheets error: '+((r&&r.error)||'unknown'),'error');return;}
+    var apps=Array.isArray(r.applications)?r.applications:[], creas=Array.isArray(r.creators)?r.creators:[], camps=Array.isArray(r.campaigns)?r.campaigns:[];
+    if(apps.length>0) console.log('First application:',JSON.stringify(apps[0]));
+    DATA.applications=apps.map(mapApp); DATA.creators=creas.map(mapCreator); DATA.campaigns=camps.map(mapCampaign);
+    renderAll(); applySettings();
+    var total=apps.length+creas.length+camps.length;
+    setSheetsStatus(total>0?'connected':'empty','Connected');
+    toast(apps.length+' applications · '+creas.length+' creators · '+camps.length+' campaigns loaded','success');
+  });
+}
+
+function loadLiveData() {
+  setSheetsStatus('connecting');
+  callGAS('getPortalData',{}).then(function(r) {
+    if (!r||!r.success){setSheetsStatus('error','Error');toast('Sheets: '+((r&&r.error)||'unknown'),'error');return;}
+    var apps=Array.isArray(r.applications)?r.applications:[], creas=Array.isArray(r.creators)?r.creators:[], camps=Array.isArray(r.campaigns)?r.campaigns:[];
+    DATA.applications=apps.map(mapApp); DATA.creators=creas.map(mapCreator); DATA.campaigns=camps.map(mapCampaign);
+    var total=apps.length+creas.length+camps.length;
+    setSheetsStatus(total>0?'connected':'empty','Connected');
+    try{renderAll();applySettings();}catch(e){console.error('Render error:',e);toast('Loaded but render error: '+e.message,'error');}
+    if(total>0) toast(apps.length+' applications · '+creas.length+' creators · '+camps.length+' campaigns','success');
+    else toast('Connected — no data yet','info');
+  });
+}
+function syncFromSheets(){toast('Syncing...','info');loadLiveData();}
+
+// ── FIELD MAPPERS ─────────────────────────────────────────────
+function s(v){return String(v==null?'':v).trim();}
+function normBrand(b){var bl=s(b).toLowerCase().replace(/\s/g,'');if(bl==='2eros')return'2eros';if(bl==='supawear')return'supawear';return'both';}
+function parsePlats(row){var p=[];if(s(row.ig_handle))p.push('Instagram');if(s(row.tt_handle))p.push('TikTok');if(s(row.yt_handle))p.push('YouTube');return p.length?p:['Instagram'];}
+function parseFollowers(val){if(!val)return 0;if(typeof val==='number')return val;var str=s(val).toLowerCase().split('-')[0].replace('+','').trim();if(str.slice(-1)==='k')return Math.round(parseFloat(str)*1000)||0;if(str.slice(-1)==='m')return Math.round(parseFloat(str)*1000000)||0;return parseInt(str)||0;}
+function normTier(t){var v=s(t);return v==='Growth'||v==='Featured'?v:'Starter';}
+
+function mapApp(row){
+  var plats=parsePlats(row);
+  return {id:s(row.application_id)||('a'+Date.now()+Math.random()),gasId:s(row.application_id),name:s(row.full_name),handle:s(row.creator_handle),email:s(row.email),phone:s(row.phone),
+    submitted:s(row.submitted_at)?(function(d){try{return new Date(d).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'});}catch(e){return s(d);}})(row.submitted_at):'--',
+    brand:normBrand(row.brand),platform:plats[0],platforms:plats,followers:parseFollowers(row.ig_followers),followersRaw:s(row.ig_followers),
+    country:s(row.country),city:s(row.city),status:s(row.status)||'New',niche:s(row.niche),ethnicity:s(row.audience_demographics),audience:s(row.audience_location),
+    tier:normTier(row.tier),whyUs:s(row.why_us),prevCollabs:s(row.prev_collabs),mediaKit:s(row.media_kit),notes:s(row.notes),driveFolder:null};
+}
+function mapCreator(row){
+  var plats=parsePlats(row);
+  return {id:s(row.creator_id)||('c'+Date.now()+Math.random()),gasId:s(row.creator_id),name:s(row.full_name),handle:s(row.creator_handle),email:s(row.email),phone:s(row.phone),
+    brand:normBrand(row.brand),platform:plats[0],platforms:plats,followers:parseFollowers(row.ig_followers||row.tt_followers||row.yt_followers),
+    country:s(row.country),city:s(row.city),ethnicity:s(row.audience_demographics),tier:normTier(row.tier),
+    score:parseFloat(row.reliability_score)||0,campaigns:parseInt(row.total_campaigns)||0,lastCampaign:'--',
+    late:s(row.late_flag)==='true'||row.late_flag===true,dnc:s(row.dnc_flag)==='true'||row.dnc_flag===true,
+    status:s(row.status)||'Active',driveFolder:s(row.drive_folder_url)||null,
+    salesAUD:parseFloat(row.sales_aud)||0,commissionAUD:parseFloat(row.commission_aud)||0};
+}
+function mapCampaign(row){
+  var notes=s(row.notes),ct=s(row.content_type);
+  var ctm=notes.match(/\[Content Type: ([^\]]+)\]/);
+  if(ctm){ct=ct||ctm[1];notes=notes.replace(ctm[0],'').trim();}
+  return {id:s(row.campaign_id)||('p'+Date.now()+Math.random()),gasId:s(row.campaign_id),creator:s(row.creator_name),brand:s(row.brand)||'2EROS',campaign:s(row.campaign_name),contentType:ct,
+    orderNum:s(row.shopify_order_num),tracking:s(row.tracking_number),carrier:s(row.carrier),orderStatus:s(row.shipment_status)||'Approved to Send',contentStatus:s(row.content_status)||'Awaiting Content',
+    dueDate:s(row.deliverable_due_date),owner:s(row.owner)||'Unassigned',sentDate:s(row.created_at),notes:notes,postUrl:s(row.post_url),brief:s(row.brief),
+    reach:parseInt(row.reach)||0,likes:parseInt(row.likes)||0,saves:parseInt(row.saves)||0,highlightUrl:s(row.highlight_url)};
+}
+
+// ── ADDITION 2: TIER BADGE ────────────────────────────────────
+function tierBadge(tier) {
+  var map={Starter:{cls:'tier-starter',lbl:'Starter'},Growth:{cls:'tier-growth',lbl:'Growth'},Featured:{cls:'tier-featured',lbl:'Featured'}};
+  var t=map[tier]||map.Starter;
+  return '<span class="tier-badge '+t.cls+'">'+t.lbl+'</span>';
+}
+
+// ── ADDITION 3: DELIVERABLE BRIEF AUTO-POPULATE ───────────────
+function getDefaultBrief(tier, brand) {
+  var handle = (brand==='Supawear'||brand==='supawear') ? '@supawear' : '@2eros';
+  var highlight = (brand==='Supawear'||brand==='supawear') ? 'SUPAWEAR' : '2EROS';
+  if (tier==='Growth') return '1 Reel + 3 Stories or feed posts\nContent due within 14 days\nSave Stories to a \''+highlight+'\' Highlight\nTag '+handle+' in all content\nGifted disclosure required on each post\nAffiliate link in bio required';
+  if (tier==='Featured') return '1 Reel + 3–4 Stories or feed posts\nContent due within 10 days\nSave Stories to a \''+highlight+'\' Highlight\nTag '+handle+' in all content\nGifted disclosure required on each post\nAffiliate link in bio required\nDM screenshots of Story views within 24hrs';
+  return '1 Reel + 2 Stories or feed posts\nContent due within 14 days\nSave Stories to a \''+highlight+'\' Highlight\nTag '+handle+' in all content\nGifted disclosure required on each post';
+}
+
+function autopopulateBrief() {
+  var creatorId = document.getElementById('so-creator') ? document.getElementById('so-creator').value : '';
+  var brand = document.getElementById('so-brand') ? document.getElementById('so-brand').value : '2EROS';
+  var briefEl = document.getElementById('so-brief'); if (!briefEl) return;
+  var creator = DATA.creators.find(function(c){ return s(c.id)===s(creatorId); });
+  var tier = creator ? (creator.tier||'Starter') : 'Starter';
+  if (!briefEl.value || briefEl.dataset.autoSet) {
+    briefEl.value = getDefaultBrief(tier, brand);
+    briefEl.dataset.autoSet = '1';
+  }
+}
+
+// ── ADDITION 1: OVERDUE BLOCK ─────────────────────────────────
+function isCreatorOverdue(creatorId) {
+  var creator = DATA.creators.find(function(c){ return s(c.id)===s(creatorId); });
+  if (!creator) return [];
+  var today = new Date();
+  return DATA.campaigns.filter(function(c){
+    var matchesCreator = s(c.creator).toLowerCase()===s(creator.name).toLowerCase();
+    if (!matchesCreator) return false;
+    if (c.contentStatus==='Missed Deliverable') return true;
+    if (c.contentStatus==='Awaiting Content' && c.dueDate && new Date(c.dueDate)<today) return true;
+    return false;
+  });
+}
+
+function checkOverdueWarning() {
+  var creatorId = document.getElementById('so-creator') ? document.getElementById('so-creator').value : '';
+  var warningEl = document.getElementById('overdueWarning');
+  var detailEl  = document.getElementById('overdueWarningDetail');
+  var ackEl     = document.getElementById('overdueAcknowledge');
+  if (!warningEl) return;
+  if (!creatorId) { warningEl.style.display='none'; return; }
+  var overdue = isCreatorOverdue(creatorId);
+  if (overdue.length) {
+    warningEl.style.display = 'block';
+    detailEl.textContent = overdue.map(function(c){ return c.campaign+' — '+c.contentStatus+(c.dueDate?' (due '+fmtDate(c.dueDate)+')':''); }).join(', ');
+    if (ackEl) ackEl.checked = false;
+  } else {
+    warningEl.style.display = 'none';
+  }
+}
+
+// ── ADDITION 6: COMMUNICATION LOG ────────────────────────────
+function getCommLog(creatorId) {
+  try { return JSON.parse(localStorage.getItem('tlc-comms-'+creatorId)||'[]'); } catch(e) { return []; }
+}
+function saveCommLog(creatorId, entries) {
+  localStorage.setItem('tlc-comms-'+creatorId, JSON.stringify(entries));
+}
+
+function renderCommLog(creatorId) {
+  var el = document.getElementById('commLogEntries'); if (!el) return;
+  var entries = getCommLog(creatorId);
+  if (!entries.length) {
+    el.innerHTML = '<div style="font-size:12px;color:var(--stone);font-style:italic;padding:6px 0">No contacts logged yet</div>';
+    return;
+  }
+  el.innerHTML = entries.slice().reverse().map(function(e) {
+    return '<div style="background:var(--warm);border-radius:6px;padding:8px 10px">'
+      +'<div style="font-size:10px;color:var(--stone);margin-bottom:3px">'+esc(e.date)+'</div>'
+      +'<div style="font-size:13px;color:var(--ink);line-height:1.5">'+esc(e.text)+'</div>'
+      +'</div>';
+  }).join('');
+}
+
+function toggleCommEntryForm() {
+  var form = document.getElementById('commEntryForm');
+  if (!form) return;
+  form.style.display = form.style.display==='none' ? 'block' : 'none';
+  if (form.style.display==='block') {
+    var ta=document.getElementById('commEntryText'); if(ta){ta.value='';ta.focus();}
+  }
+}
+
+function saveCommEntry() {
+  if (!_detailCurrentId) return;
+  var ta = document.getElementById('commEntryText'); if (!ta||!ta.value.trim()) return;
+  var entries = getCommLog(_detailCurrentId);
+  entries.push({date:new Date().toLocaleString('en-AU',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}),text:ta.value.trim()});
+  saveCommLog(_detailCurrentId, entries);
+  renderCommLog(_detailCurrentId);
+  ta.value='';
+  document.getElementById('commEntryForm').style.display='none';
+  toast('Contact logged','success');
+}
+
+// ── ADDITION 5: SALES/COMMISSION EDIT ────────────────────────
+function editCreatorFinancials(id) {
+  id=s(id);
+  var c=DATA.creators.find(function(x){return s(x.id)===id;}); if(!c) return;
+  var sales=prompt('Sales (AUD) for '+c.name+':',c.salesAUD||0); if(sales===null) return;
+  var comm=prompt('Commission (AUD) for '+c.name+':',c.commissionAUD||0); if(comm===null) return;
+  c.salesAUD=parseFloat(sales)||0; c.commissionAUD=parseFloat(comm)||0;
+  renderCreatorDb(filteredCreators());
+  toast('Financials updated for '+c.name,'success');
+  if(c.gasId) callGAS('updateCreator',{creatorId:c.gasId,fields:{sales_aud:c.salesAUD,commission_aud:c.commissionAUD}});
+}
+
+// ── BRAND / FILTER ────────────────────────────────────────────
+function brandMatch(b){if(ACTIVE_BRAND==='both')return true;var bl=normBrand(b);return bl===ACTIVE_BRAND||bl==='both';}
+function filteredApps(){return DATA.applications.filter(function(a){return brandMatch(a.brand);});}
+function filteredCreators(){return DATA.creators.filter(function(c){return brandMatch(c.brand);});}
+function filteredCampaigns(){return DATA.campaigns.filter(function(c){return brandMatch(c.brand==='2EROS'?'2eros':normBrand(c.brand));});}
+
+function setBrand(brand, btn) {
+  ACTIVE_BRAND=brand;
+  document.querySelectorAll('.brand-tab').forEach(function(t){t.classList.remove('active');});
+  if(btn) btn.classList.add('active');
+  var label=brand==='2eros'?'2EROS':brand==='supawear'?'Supawear':'All Brands';
+  var el=document.getElementById('dashBrandLabel');
+  if(el) el.innerHTML=label+' &middot; <span id="dashDate">'+(document.getElementById('dashDate')||{}).textContent+'</span>';
+  renderAll();
+  renderTemplates(); // Addition 7: refresh templates on brand switch
+}
+
+// ── RENDER ALL ────────────────────────────────────────────────
+function renderAll() {
+  renderDashboard(); renderApplications(filteredApps()); renderCreatorDb(filteredCreators());
+  renderGifting(filteredCampaigns()); renderFollowups(DATA.followups); updateBadges();
+}
+function updateBadges() {
+  var na=DATA.applications.filter(function(a){return a.status==='New';}).length;
+  var ba=document.getElementById('badge-apps'); if(ba){ba.textContent=na;ba.style.display=na?'':'none';}
+  var hf=DATA.followups.filter(function(f){return f.urgency==='High';}).length;
+  var bf=document.getElementById('badge-fu'); if(bf){bf.textContent=hf;bf.style.display=hf?'':'none';}
+}
+
+// ── DASHBOARD ─────────────────────────────────────────────────
+function renderDashboard() {
+  var apps=filteredApps(),camps=filteredCampaigns(),creas=filteredCreators(),fus=DATA.followups;
+  var fourWk=new Date(Date.now()-28*24*60*60*1000);
+  var outstanding=camps.filter(function(c){return new Date(c.dueDate)<fourWk&&['Posted','Completed'].indexOf(c.contentStatus)<0;});
+  var alertEl=document.getElementById('outstandingAlert'),textEl=document.getElementById('outstandingText');
+  if(alertEl&&textEl){if(outstanding.length){alertEl.style.display='flex';textEl.textContent=outstanding.length+' send-out'+(outstanding.length>1?'s':'')+' outstanding 4+ weeks: '+outstanding.map(function(c){return c.creator;}).join(', ');}else{alertEl.style.display='none';}}
+  var newApps=apps.filter(function(a){return a.status==='New';}).length;
+  var reviewing=apps.filter(function(a){return a.status==='Under Review';}).length;
+  var active=camps.filter(function(c){return['Completed','Posted'].indexOf(c.contentStatus)<0;}).length;
+  var overdue=fus.filter(function(f){return f.urgency==='High';}).length;
+  var completed=camps.filter(function(c){return['Completed','Posted'].indexOf(c.contentStatus)>=0;}).length;
+  var kpiData=[
+    {id:'kpiApproved',label:'Approved Creators',value:creas.length,sub:'Total approved',cls:'kpi-green',rows:creas.map(function(c){return '<div class="kpi-panel-row"><strong>'+esc(c.name)+'</strong><span>'+c.brand+'</span></div>';}).join('')},
+    {id:'kpiNew',label:'New Applications',value:newApps,sub:'Awaiting review',cls:'kpi-blue',rows:apps.filter(function(a){return a.status==='New';}).map(function(a){return '<div class="kpi-panel-row"><strong>'+esc(a.name)+'</strong><span>'+a.brand+'</span></div>';}).join('')},
+    {id:'kpiReview',label:'Under Review',value:reviewing,sub:'In progress',cls:'kpi-orange',rows:apps.filter(function(a){return a.status==='Under Review';}).map(function(a){return '<div class="kpi-panel-row"><strong>'+esc(a.name)+'</strong></div>';}).join('')},
+    {id:'kpiActive',label:'Active Send-outs',value:active,sub:'In progress',cls:'kpi-accent',rows:camps.filter(function(c){return['Completed','Posted'].indexOf(c.contentStatus)<0;}).map(function(c){return '<div class="kpi-panel-row"><strong>'+esc(c.creator)+'</strong><span>'+c.contentStatus+'</span></div>';}).join('')},
+    {id:'kpiOverdue',label:'Overdue',value:overdue,sub:'Needs attention',cls:'kpi-red',rows:fus.filter(function(f){return f.urgency==='High';}).map(function(f){return '<div class="kpi-panel-row"><strong>'+esc(f.creator)+'</strong><span style="color:var(--red)">+'+f.daysOverdue+'d</span></div>';}).join('')},
+    {id:'kpiCompleted',label:'Completed',value:completed,sub:'All time',cls:'kpi-teal',rows:camps.filter(function(c){return['Completed','Posted'].indexOf(c.contentStatus)>=0;}).map(function(c){return '<div class="kpi-panel-row"><strong>'+esc(c.creator)+'</strong><span>'+c.campaign+'</span></div>';}).join('')}
+  ];
+  var grid=document.getElementById('kpiGrid');
+  if(grid) grid.innerHTML=kpiData.map(function(k){return '<div><div class="kpi-card '+k.cls+'" id="'+k.id+'" onclick="toggleKpi(\''+k.id+'_panel\')">'+'<div class="kpi-expand-icon">&#9662;</div><div class="kpi-label">'+k.label+'</div>'+'<div class="kpi-value">'+k.value+'</div><div class="kpi-sub">'+k.sub+'</div></div>'+'<div class="kpi-panel" id="'+k.id+'_panel">'+(k.rows||'<div style="font-size:12px;color:var(--stone)">No items</div>')+'</div></div>';}).join('');
+  renderEthnicityCards(apps.concat(creas));
+  var typeMap={};
+  camps.forEach(function(c){s(c.contentType).split(',').forEach(function(t){t=t.trim();if(!t)return;if(!typeMap[t])typeMap[t]={total:0,done:0};typeMap[t].total++;if(['Posted','Completed'].indexOf(c.contentStatus)>=0)typeMap[t].done++;});});
+  var stb=document.getElementById('sendoutTypeBars');
+  if(stb){var keys=Object.keys(typeMap);stb.innerHTML=keys.length?keys.map(function(t){var d=typeMap[t],pct=Math.round(d.done/d.total*100);return'<div class="sendout-bar-wrap"><div class="sendout-bar-label"><span>'+esc(t)+'</span><span>'+d.done+'/'+d.total+' ('+pct+'%)</span></div><div class="sendout-bar-track"><div class="sendout-bar-fill" style="width:'+pct+'%"></div></div></div>';}).join(''):'<div style="font-size:12px;color:var(--stone)">No send-outs yet</div>';}
+  var rat=document.getElementById('recentAppsTable');
+  if(rat) rat.innerHTML=apps.slice(0,5).map(function(a){return'<tr class="cursor" onclick="openDetail(\''+sId(a.id)+'\')">'+'<td><strong>'+esc(a.name)+'</strong><div style="font-size:10px;color:var(--stone)">'+esc(a.handle)+'</div></td><td>'+brandChip(a.brand)+'</td><td>'+statusChip(a.status)+'</td></tr>';}).join('')||'<tr><td colspan="3" style="text-align:center;color:var(--stone);font-size:12px;padding:16px">No applications</td></tr>';
+  var ot=document.getElementById('overdueTable');
+  if(ot) ot.innerHTML=fus.filter(function(f){return f.urgency==='High';}).slice(0,4).map(function(f){return'<tr><td><strong>'+esc(f.creator)+'</strong></td><td style="font-size:11px">'+esc(f.reason)+'</td><td><span style="color:var(--red);font-weight:700">+'+f.daysOverdue+'d</span></td></tr>';}).join('');
+  var fcg=document.getElementById('featureCreatorsGrid');
+  if(fcg){var top=creas.filter(function(c){return!c.dnc;}).sort(function(a,b){return b.score-a.score;}).slice(0,4);fcg.innerHTML=top.map(function(c){return'<div class="feature-creator-card" onclick="openDetail(\''+sId(c.id)+'\',\'creator\')">'+'<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px"><div><div class="fc-name">'+esc(c.name)+'</div><div class="fc-handle">'+handleLink(c.handle,c.platform,c.platforms)+'</div></div>'+brandChip(c.brand)+'</div>'+'<div class="fc-stats"><div class="fc-stat"><div class="fc-stat-val" style="color:'+scoreColor(c.score)+'">'+c.score+'</div><div class="fc-stat-lbl">Score</div></div><div class="fc-stat"><div class="fc-stat-val">'+c.campaigns+'</div><div class="fc-stat-lbl">Campaigns</div></div><div class="fc-stat"><div class="fc-stat-val">'+fmtNum(c.followers)+'</div><div class="fc-stat-lbl">Followers</div></div></div></div>';}).join('')||'<div style="color:var(--stone);font-size:13px">No creators yet</div>';}
+}
+function toggleKpi(panelId){var p=document.getElementById(panelId);if(p)p.classList.toggle('open');}
+function scoreColor(v){return v>=8?'var(--green)':v>=5?'var(--orange)':'var(--red)';}
+
+// ── ETHNICITY ─────────────────────────────────────────────────
+function renderEthnicityCards(people) {
+  var settings=getSettings(),grid=document.getElementById('ethCardsGrid');if(!grid)return;
+  var counts={};settings.ethnicities.forEach(function(e){counts[e]=0;});
+  people.forEach(function(p){if(p.ethnicity&&counts[p.ethnicity]!==undefined)counts[p.ethnicity]++;});
+  var total=people.length||1;
+  grid.innerHTML=settings.ethnicities.map(function(e){var c=counts[e]||0,pct=Math.round(c/total*100),col=ETH_COLORS[e]||'#888';return'<div class="eth-card" onclick="openEthDetail(\''+e.replace(/\\/g,'\\\\').replace(/'/g,'\\\'')+'\')" style="cursor:pointer">'+'<div class="eth-card-swatch" style="background:'+col+'"></div>'+'<div class="eth-card-body"><div class="eth-card-name">'+esc(e)+'</div>'+'<div class="eth-card-count">'+c+' creator'+(c!==1?'s':'')+' &middot; '+pct+'%</div>'+'<div class="eth-card-bar"><div class="eth-card-fill" style="width:'+pct+'%;background:'+col+'"></div></div></div></div>';}).join('');
+}
+function openEthDetail(group){currentEthGroup=group;var people=DATA.applications.concat(DATA.creators).filter(function(p){return p.ethnicity===group;});var title=document.getElementById('ethModalTitle');if(title)title.textContent=group;var content=document.getElementById('ethModalContent');if(content){content.innerHTML='<div class="table-wrap"><table><thead><tr><th>Name</th><th>Handle</th><th>Brand</th><th>Location</th><th>Status</th></tr></thead><tbody>'+people.map(function(p){return'<tr><td><strong>'+esc(p.name)+'</strong></td><td style="font-size:12px">'+handleLink(p.handle,p.platform,p.platforms)+'</td><td>'+brandChip(p.brand)+'</td><td style="font-size:12px">'+(p.city||'')+' '+(p.country||'')+'</td><td>'+statusChip(p.status||'Active')+'</td></tr>';}).join('')+'</tbody></table></div>';}openModal('ethDetailModal');}
+function exportEthnicityCSV(){var settings=getSettings(),all=DATA.applications.concat(DATA.creators),counts={},total=all.length;settings.ethnicities.forEach(function(e){counts[e]=0;});all.forEach(function(p){if(p.ethnicity)counts[p.ethnicity]=(counts[p.ethnicity]||0)+1;});var rows=[['Ethnicity','Count','Percentage']];Object.keys(counts).forEach(function(e){rows.push([e,counts[e],Math.round(counts[e]/total*100)+'%']);});downloadCSV(rows,'ethnicity-representation');toast('CSV downloaded','success');}
+function exportEthGroupCSV(){if(!currentEthGroup)return;var people=DATA.applications.concat(DATA.creators).filter(function(p){return p.ethnicity===currentEthGroup;});var rows=[['Name','Handle','Email','Brand','Platform','Location','Status']];people.forEach(function(p){rows.push([p.name,p.handle||'',p.email||'',p.brand||'',p.platform||'',(p.city||'')+' '+(p.country||''),p.status||'']);});downloadCSV(rows,'ethnicity-'+currentEthGroup.replace(/\W+/g,'-').toLowerCase());toast('CSV downloaded','success');}
+
+// ── DUPLICATE FLAG ────────────────────────────────────────────
+function hasPrev(item){var h=s(item.handle).toLowerCase().replace(/^@/,''),em=s(item.email).toLowerCase(),myId=s(item.id);return DATA.creators.some(function(c){return s(c.handle).toLowerCase().replace(/^@/,'')===h||(em&&s(c.email).toLowerCase()===em);})||DATA.applications.filter(function(a){return s(a.id)!==myId;}).some(function(a){return s(a.handle).toLowerCase().replace(/^@/,'')===h||(em&&s(a.email).toLowerCase()===em);});}
+function prevBadge(item){return hasPrev(item)?'<span title="Previous application or duplicate" style="background:#fef3c7;color:#92400e;font-size:9px;font-weight:600;padding:1px 6px;border-radius:3px;margin-left:4px">PREV</span>':'';}
+
+// ── APPLICATIONS ──────────────────────────────────────────────
+function renderApplications(apps) {
+  var tbody=document.getElementById('applicationsTable');if(!tbody)return;
+  var active=apps.filter(function(a){return a.status!=='Approved'&&a.status!=='Rejected';});
+  var rejected=apps.filter(function(a){return a.status==='Rejected';});
+  function appRow(a){var id=sId(a.id);return'<tr class="cursor" onclick="openDetail(\''+id+'\')">'+'<td><strong>'+esc(a.name)+'</strong>'+prevBadge(a)+'<div style="font-size:10px;color:var(--stone)">'+handleLink(a.handle,a.platform,a.platforms)+'</div></td>'+'<td style="font-size:12px">'+a.submitted+'</td><td>'+brandChip(a.brand)+'</td>'+'<td>'+tierBadge(a.tier)+'</td>'+'<td style="font-size:12px">'+a.platform+'</td>'+'<td style="font-size:12px">'+(a.followersRaw||fmtNum(a.followers)||'--')+'</td>'+'<td style="font-size:12px">'+(a.city||'')+', '+(a.country||'')+'</td>'+'<td style="font-size:12px">'+(a.ethnicity||'--')+'</td>'+'<td>'+statusChip(a.status)+'</td>'+'<td><div style="display:flex;gap:4px">'+(a.status!=='Approved'?'<button class="btn btn-success btn-xs" onclick="event.stopPropagation();doApprove(\''+id+'\')">&#10003;</button>':'')+'<button class="btn btn-danger btn-xs" onclick="event.stopPropagation();doReject(\''+id+'\')">&#10005;</button><button class="btn btn-ghost btn-xs" onclick="event.stopPropagation();openDetail(\''+id+'\')">View</button></div></td></tr>';}
+  tbody.innerHTML=active.map(appRow).join('')||'<tr><td colspan="10" style="text-align:center;color:var(--stone);padding:20px;font-size:13px">No pending applications</td></tr>';
+  var rs=document.getElementById('rejectedSection');
+  if(!rs){rs=document.createElement('div');rs.id='rejectedSection';rs.style.marginTop='28px';var card=tbody.closest('.card');if(card&&card.parentNode)card.parentNode.appendChild(rs);}
+  if(rejected.length){rs.innerHTML='<div style="font-size:11px;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:var(--stone);margin-bottom:10px">Rejected ('+rejected.length+')</div>'+'<div class="card"><div class="table-wrap"><table><thead><tr><th>Creator</th><th>Submitted</th><th>Brand</th><th>Tier</th><th>Platform</th><th>Followers</th><th>Location</th><th>Ethnicity</th><th>Status</th><th>Actions</th></tr></thead><tbody>'+rejected.map(appRow).join('')+'</tbody></table></div></div>';}
+  else rs.innerHTML='';
+}
+
+function filterApplications(){var status=(document.getElementById('filterAppStatus')||{}).value||'',brand=(document.getElementById('filterAppBrand')||{}).value||'',plat=(document.getElementById('filterAppPlatform')||{}).value||'',country=(document.getElementById('filterAppCountry')||{}).value||'',eth=(document.getElementById('filterAppEthnicity')||{}).value||'';var f=filteredApps();if(status)f=f.filter(function(a){return a.status===status;});if(brand)f=f.filter(function(a){return normBrand(a.brand)===normBrand(brand);});if(plat)f=f.filter(function(a){return a.platform===plat;});if(country)f=f.filter(function(a){return a.country===country;});if(eth)f=f.filter(function(a){return a.ethnicity===eth;});renderApplications(f);}
+
+function doApprove(id) {
+  id=s(id);var a=DATA.applications.find(function(x){return s(x.id)===id;});if(!a)return;
+  a.status='Approved';
+  var existing=DATA.creators.find(function(c){return s(c.handle).toLowerCase()===s(a.handle).toLowerCase();});
+  if(!existing){existing=Object.assign({},a,{id:'c'+Date.now(),gasId:'',score:0,campaigns:0,lastCampaign:'--',late:false,dnc:false,status:'Active',driveFolder:null,salesAUD:0,commissionAUD:0});DATA.creators.unshift(existing);}
+  renderAll();toast(a.name+' approved','success');
+  if(a.gasId){callGAS('approveApplication',{applicationId:a.gasId,reviewedBy:'Staff',notes:''}).then(function(r){if(r&&r.success){var c=DATA.creators.find(function(x){return s(x.handle).toLowerCase()===s(a.handle).toLowerCase();});if(c&&r.creatorId)c.gasId=r.creatorId;var url=r.driveFolderUrl||(r.folderId?'https://drive.google.com/drive/folders/'+r.folderId:null);if(c&&url){c.driveFolder=url;renderCreatorDb(filteredCreators());toast('Drive folder created','success');}else if(c)provisionDrive(c);}});}
+  else provisionDrive(existing);
+}
+function doReject(id){id=s(id);var a=DATA.applications.find(function(x){return s(x.id)===id;});if(!a)return;a.status='Rejected';renderAll();toast(a.name+' rejected','info');if(a.gasId)callGAS('updateApplication',{applicationId:a.gasId,fields:{status:'Rejected'}});}
+
+// ── DETAIL MODAL ──────────────────────────────────────────────
+function openDetail(id) {
+  id=s(id);_detailCurrentId=id;
+  var item=DATA.applications.find(function(x){return s(x.id)===id;})||DATA.creators.find(function(x){return s(x.id)===id;});
+  if(!item)return;
+  document.getElementById('modalCreatorName').textContent=item.name;
+  document.getElementById('modalCreatorChips').innerHTML=brandChip(item.brand)+' '+statusChip(item.status||'Active')+' '+tierBadge(item.tier||'Starter');
+  var plats=item.platforms||(item.platform?[item.platform]:[]);
+  var fields=[['Handle',plats.map(function(p){return singleLink(item.handle,p);}).join('&nbsp;&nbsp;')||esc(item.handle)],['Email',item.email?'<a href="mailto:'+item.email+'" style="color:var(--gold2)">'+esc(item.email)+'</a>':'--'],['Phone',item.phone||'--'],['Location',(item.city||'')+((item.city&&item.country)?', ':'')+(item.country||'')||'--'],['Ethnicity',item.ethnicity||'Not stated'],['Tier',tierBadge(item.tier||'Starter')],['Platforms',plats.join(', ')||'--'],['Followers',item.followersRaw||fmtNum(item.followers)||'--'],['Score',item.score!=null?s(item.score):'--'],['Campaigns',item.campaigns!=null?s(item.campaigns):'--'],['Submitted',item.submitted||'--'],['Drive Folder',driveFolderLink(item.driveFolder)]];
+  if(item.salesAUD!=null&&item.salesAUD!==undefined)fields.push(['Sales (AUD)','$'+item.salesAUD.toFixed(2)]);
+  if(item.commissionAUD!=null&&item.commissionAUD!==undefined)fields.push(['Commission (AUD)','$'+item.commissionAUD.toFixed(2)]);
+  if(item.whyUs)fields.push(['Why Us',esc(item.whyUs)]);if(item.prevCollabs)fields.push(['Past Collabs',esc(item.prevCollabs)]);if(item.mediaKit)fields.push(['Media Kit','<a href="'+item.mediaKit+'" target="_blank" style="color:var(--gold2)">View Kit</a>']);if(item.notes)fields.push(['Notes',esc(item.notes)]);
+  document.getElementById('modalDetailGrid').innerHTML=fields.map(function(kv){return'<div class="detail-group"><span class="detail-label">'+kv[0]+'</span><span class="detail-value">'+kv[1]+'</span></div>';}).join('');
+  renderCommLog(id);
+  openModal('creatorDetailModal');
+}
+function updateAppStatus(status){if(!_detailCurrentId){closeModal('creatorDetailModal');return;}if(status==='Approved')doApprove(_detailCurrentId);else if(status==='Rejected')doReject(_detailCurrentId);else{var a=DATA.applications.find(function(x){return s(x.id)===_detailCurrentId;});if(a){a.status=status;renderAll();if(a.gasId)callGAS('updateApplication',{applicationId:a.gasId,fields:{status:status}});toast('Status set to '+status,'success');}}closeModal('creatorDetailModal');}
+
+// ── CREATOR DB ────────────────────────────────────────────────
+function renderCreatorDb(creators) {
+  var tbody=document.getElementById('creatorDbTable');if(!tbody)return;
+  var active=creators.filter(function(c){return c.status==='Active';});
+  var others=creators.filter(function(c){return c.status!=='Active';});
+  function creatorRow(c){var id=sId(c.id);var flags=(c.late?'<span style="background:#fef3c7;color:#92400e;font-size:9px;font-weight:600;padding:1px 5px;border-radius:3px;margin-right:2px">LATE</span>':'')+(c.dnc?'<span style="background:var(--red-dim);color:var(--red);font-size:9px;font-weight:600;padding:1px 5px;border-radius:3px">DNC</span>':'');
+    return'<tr>'+'<td><strong>'+esc(c.name)+'</strong><div style="margin-top:2px">'+handleLink(c.handle,c.platform,c.platforms)+'</div></td>'+'<td>'+brandChip(c.brand)+'</td>'+'<td>'+tierBadge(c.tier||'Starter')+'</td>'+'<td style="font-size:12px">'+c.platform+'</td>'+'<td style="font-size:12px">'+(c.city||'')+', '+(c.country||'')+'</td>'+'<td style="font-size:12px">'+(c.ethnicity||'--')+'</td>'+'<td><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:4px;background:var(--warm);border-radius:2px"><div style="width:'+(c.score*10)+'%;height:100%;background:'+scoreColor(c.score)+';border-radius:2px"></div></div><span style="font-size:12px;font-weight:600;color:'+scoreColor(c.score)+'">'+c.score+'</span></div></td>'+'<td style="font-size:12px">'+c.campaigns+'</td>'+'<td style="font-size:12px">'+c.lastCampaign+'</td>'+'<td>'+(flags||'--')+'</td>'+'<td>'+driveFolderLink(c.driveFolder)+'</td>'+'<td style="font-size:12px"><button class="btn btn-ghost btn-xs" onclick="editCreatorFinancials(\''+id+'\')" title="Edit">$'+((c.salesAUD||0).toFixed(0))+'</button></td>'+'<td style="font-size:12px"><button class="btn btn-ghost btn-xs" onclick="editCreatorFinancials(\''+id+'\')" title="Edit">$'+((c.commissionAUD||0).toFixed(0))+'</button></td>'+'<td><button class="btn btn-ghost btn-xs" onclick="openDetail(\''+id+'\')">View</button></td></tr>';}
+  tbody.innerHTML=active.map(creatorRow).join('')||'<tr><td colspan="14" style="text-align:center;color:var(--stone);padding:20px;font-size:13px">No active creators yet</td></tr>';
+  var sect=document.getElementById('inactiveCreatorsSection');
+  if(!sect){sect=document.createElement('div');sect.id='inactiveCreatorsSection';sect.style.marginTop='28px';var card=tbody.closest('.card');if(card&&card.parentNode)card.parentNode.appendChild(sect);}
+  if(others.length){sect.innerHTML='<div style="font-size:11px;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:var(--stone);margin-bottom:10px">Inactive &amp; DNC ('+others.length+')</div>'+'<div class="card"><div class="table-wrap"><table><thead><tr><th>Creator</th><th>Brand</th><th>Tier</th><th>Platform</th><th>Location</th><th>Ethnicity</th><th>Score</th><th>Campaigns</th><th>Last Campaign</th><th>Flags</th><th>Drive</th><th>Sales (AUD)</th><th>Commission (AUD)</th><th>Actions</th></tr></thead><tbody>'+others.map(creatorRow).join('')+'</tbody></table></div></div>';}
+  else sect.innerHTML='';
+}
+
+function filterDatabase(){var brand=(document.getElementById('filterDbBrand')||{}).value||'',status=(document.getElementById('filterDbStatus')||{}).value||'',plat=(document.getElementById('filterDbPlatform')||{}).value||'',country=(document.getElementById('filterDbCountry')||{}).value||'',eth=(document.getElementById('filterDbEthnicity')||{}).value||'',score=(document.getElementById('filterDbScore')||{}).value||'';var f=filteredCreators();if(brand)f=f.filter(function(c){return normBrand(c.brand)===normBrand(brand);});if(status)f=f.filter(function(c){return c.status===status;});if(plat)f=f.filter(function(c){return c.platform===plat;});if(country)f=f.filter(function(c){return c.country===country;});if(eth)f=f.filter(function(c){return c.ethnicity===eth;});if(score==='high')f=f.filter(function(c){return c.score>=8;});if(score==='mid')f=f.filter(function(c){return c.score>=5&&c.score<8;});if(score==='low')f=f.filter(function(c){return c.score<5;});renderCreatorDb(f);}
+
+function saveCreator() {
+  var name=document.getElementById('ac-name').value.trim(),handle=document.getElementById('ac-handle').value.trim(),email=document.getElementById('ac-email').value.trim();
+  if(!name||!handle){toast('Name and handle required','error');return;}
+  var loc=document.getElementById('ac-location').value.split(','),platform=document.getElementById('ac-platform').value,brand=document.getElementById('ac-brand').value;
+  var tier=document.getElementById('ac-tier')?document.getElementById('ac-tier').value:'Starter';
+  var followers=parseInt(document.getElementById('ac-followers').value)||0,city=(loc[0]||'').trim(),country=(loc[1]||'').trim();
+  var ethnicity=document.getElementById('ac-ethnicity').value,notes=document.getElementById('ac-notes').value,phone=document.getElementById('ac-phone').value;
+  var nc={id:'c'+Date.now(),gasId:'',name:name,handle:handle,email:email,phone:phone,brand:brand,platform:platform,platforms:[platform],followers:followers,city:city,country:country,ethnicity:ethnicity,tier:tier,score:0,campaigns:0,lastCampaign:'--',late:false,dnc:false,status:'Active',driveFolder:null,salesAUD:0,commissionAUD:0};
+  DATA.creators.unshift(nc);renderCreatorDb(filteredCreators());renderEthnicityCards(DATA.applications.concat(DATA.creators));
+  closeModal('addCreatorModal');toast(name+' added — saving to Sheets...','success');
+  callGAS('addCreator',{name:name,handle:handle,email:email,phone:phone,brand:brand,platform:platform,followers:followers,city:city,country:country,ethnicity:ethnicity,tier:tier,notes:notes}).then(function(r){
+    if(r&&r.success){nc.gasId=r.creatorId||'';if(r.driveFolderUrl){nc.driveFolder=r.driveFolderUrl;renderCreatorDb(filteredCreators());toast(name+' saved with Drive folder','success');}else{toast(name+' saved to Sheets','success');provisionDrive(nc);}}
+    else{toast('Sheets save issue: '+((r&&r.error)||'check Apps Script logs'),'error');provisionDrive(nc);}
+  });
+  ['ac-name','ac-handle','ac-email','ac-phone','ac-followers','ac-location','ac-notes'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+}
+
+// ── GIFTING ───────────────────────────────────────────────────
+function mergedStatus(c){if(c.contentStatus==='Posted'||c.contentStatus==='Completed')return c.contentStatus;if(c.orderStatus==='Delivered')return'Delivered';if(c.tracking)return'Tracking Received';return c.orderStatus||'Approved to Send';}
+
+function renderGifting(campaigns) {
+  var tbody=document.getElementById('giftingTable');if(!tbody)return;
+  var fourWk=new Date(Date.now()-28*24*60*60*1000);
+  tbody.innerHTML=campaigns.map(function(c){
+    var id=sId(c.id),status=mergedStatus(c);
+    var isOut=new Date(c.dueDate)<fourWk&&['Posted','Completed','Delivered'].indexOf(status)<0;
+    // Look up creator tier
+    var cr=DATA.creators.find(function(x){return s(x.name).toLowerCase()===s(c.creator).toLowerCase();});
+    var tier=cr?cr.tier:'Starter';
+    var noteSnip=c.notes?'<span style="font-size:11px;color:var(--stone);display:block;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+esc(c.notes)+'">'+esc(c.notes)+'</span>':'<span style="font-size:11px;color:rgba(122,114,104,0.35)">--</span>';
+    return'<tr class="'+(isOut?'overdue-row':'')+'">'
+      +'<td><strong>'+esc(c.creator)+'</strong>'+(isOut?'<span style="background:var(--red-dim);color:var(--red);font-size:9px;font-weight:600;padding:1px 5px;border-radius:3px;margin-left:4px">4wk+</span>':'')+'</td>'
+      +'<td>'+brandChip(c.brand==='2EROS'?'2eros':'supawear')+'</td>'
+      +'<td>'+tierBadge(tier)+'</td>'
+      +'<td style="font-size:12px">'+esc(c.campaign)+'</td>'
+      +'<td><span style="background:var(--gold-dim);color:var(--gold2);padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600">'+(c.contentType||'--')+'</span></td>'
+      +'<td style="font-size:12px">'+(c.orderNum||'--')+(c.tracking?'<div style="font-size:10px;color:var(--stone)">'+esc(c.tracking)+'</div>':'')+'</td>'
+      +'<td>'+chipFor(status)+'</td>'
+      +'<td style="font-size:12px;'+(isOverdue(c.dueDate)?'color:var(--red)':'')+'">'  +fmtDate(c.dueDate)+'</td>'
+      +'<td style="font-size:12px">'+esc(c.owner)+'</td>'
+      +'<td>'+noteSnip+'</td>'
+      +'<td><button class="btn btn-ghost btn-xs" onclick="openUpdateModal(\''+id+'\')">&#9998;</button></td></tr>';
+  }).join('')||'<tr><td colspan="11" style="text-align:center;color:var(--stone);padding:20px;font-size:13px">No send-outs yet</td></tr>';
+}
+
+function filterGifting(){var status=(document.getElementById('filterGiftStatus')||{}).value||'',brand=(document.getElementById('filterGiftBrand')||{}).value||'',type=(document.getElementById('filterContentType')||{}).value||'',owner=(document.getElementById('filterGiftOwner')||{}).value||'';var f=DATA.campaigns;if(status)f=f.filter(function(c){return mergedStatus(c)===status;});if(brand)f=f.filter(function(c){return c.brand===brand;});if(type)f=f.filter(function(c){return c.contentType===type;});if(owner)f=f.filter(function(c){return c.owner===owner;});renderGifting(f);}
+
+function saveSendout() {
+  var creatorId=document.getElementById('so-creator').value;
+  if(!creatorId){toast('Please select a creator','error');return;}
+  // Addition 1: overdue block
+  var overdue=isCreatorOverdue(creatorId);
+  if(overdue.length){
+    var ackEl=document.getElementById('overdueAcknowledge');
+    if(!ackEl||!ackEl.checked){toast('Please acknowledge the outstanding deliverable before proceeding','error');document.getElementById('overdueWarning').scrollIntoView({behavior:'smooth',block:'center'});return;}
+  }
+  var name=document.getElementById('so-name').value.trim();
+  if(!name){toast('Please enter a campaign name','error');return;}
+  var types=Array.from(document.querySelectorAll('[name="contentType"]:checked')).map(function(i){return i.value;});
+  if(!types.length){toast('Please select content type','error');return;}
+  var brand=document.getElementById('so-brand').value,orderNum=document.getElementById('so-order').value;
+  var dueDate=document.getElementById('so-due').value,owner=document.getElementById('so-owner').value;
+  var notes=document.getElementById('so-notes').value,contentType=types.join(', ');
+  var brief=document.getElementById('so-brief')?document.getElementById('so-brief').value:'';
+  var cr=DATA.creators.find(function(c){return s(c.id)===s(creatorId);});
+  var creatorName=cr?cr.name:creatorId;
+  var nc={id:'p'+Date.now(),gasId:'',creator:creatorName,brand:brand,campaign:name,contentType:contentType,orderNum:orderNum,tracking:'',carrier:'',orderStatus:'Approved to Send',contentStatus:'Awaiting Content',dueDate:dueDate,owner:owner,sentDate:new Date().toISOString().slice(0,10),notes:notes,postUrl:'',brief:brief,reach:0,likes:0,saves:0,highlightUrl:''};
+  DATA.campaigns.unshift(nc);renderGifting(filteredCampaigns());renderDashboard();
+  closeModal('newSendoutModal');toast('Send-out created — saving to Sheets...','success');
+  callGAS('createCampaign',{campaignName:name,brand:brand,creatorId:cr&&cr.gasId||'',creatorName:creatorName,creatorHandle:cr&&cr.handle||'',shopifyOrderNum:orderNum,deliverableDueDate:dueDate,owner:owner,contentType:contentType,brief:brief,notes:notes}).then(function(r){if(r&&r.success){nc.gasId=r.campaignId||'';toast('Send-out saved to Sheets','success');}else toast('Sheets error: '+((r&&r.error)||'check logs'),'error');});
+  if(cr) callGAS('createCampaignSubfolder',{handle:cr.handle,campaignName:name,creatorId:s(cr.gasId||cr.id)});
+  // Reset brief auto-set flag
+  var briefEl=document.getElementById('so-brief'); if(briefEl) delete briefEl.dataset.autoSet;
+}
+
+function openUpdateModal(id) {
+  id=s(id);_updateSendoutId=id;
+  var c=DATA.campaigns.find(function(x){return s(x.id)===id;});if(!c)return;
+  document.getElementById('updateModalTitle').textContent=c.creator+' - '+c.campaign;
+  document.getElementById('upd-tracking').value=c.tracking||'';
+  document.getElementById('upd-carrier').value=c.carrier||'';
+  document.getElementById('upd-status').value=mergedStatus(c);
+  document.getElementById('upd-due').value=c.dueDate||'';
+  document.getElementById('upd-posts').value=c.postUrl||'';
+  document.getElementById('upd-notes').value=c.notes||'';
+  var settings=getSettings();
+  var ownerEl=document.getElementById('upd-owner');
+  if(ownerEl) ownerEl.innerHTML=settings.team.map(function(t){return'<option'+(t===c.owner?' selected':'')+'>'+esc(t)+'</option>';}).join('');
+  // Addition 4: performance fields
+  var perfEl=document.getElementById('performanceFields');
+  if(perfEl){
+    var isPosted=mergedStatus(c)==='Posted';
+    perfEl.style.display=isPosted?'block':'none';
+    var reach=document.getElementById('upd-reach'),likes=document.getElementById('upd-likes'),saves=document.getElementById('upd-saves'),hl=document.getElementById('upd-highlight');
+    if(reach) reach.value=c.reach||'';
+    if(likes) likes.value=c.likes||'';
+    if(saves) saves.value=c.saves||'';
+    if(hl)    hl.value=c.highlightUrl||'';
+  }
+  openModal('updateSendoutModal');
+}
+
+document.addEventListener('input',function(e){
+  if(e.target&&e.target.id==='upd-tracking'){var el=document.getElementById('upd-status');if(el&&e.target.value.trim()&&['Approved to Send','Order Created','Fulfilled'].indexOf(el.value)>=0)el.value='Tracking Received';}
+  if(e.target&&e.target.id==='upd-status'){var perfEl=document.getElementById('performanceFields');if(perfEl)perfEl.style.display=e.target.value==='Posted'?'block':'none';}
+  if(e.target&&(e.target.id==='so-brand')){autopopulateBrief();}
+});
+
+document.addEventListener('change',function(e){
+  if(e.target&&e.target.id==='so-creator'){checkOverdueWarning();autopopulateBrief();}
+  if(e.target&&e.target.id==='so-brand'){autopopulateBrief();}
+});
+
+function saveUpdate() {
+  if(!_updateSendoutId){closeModal('updateSendoutModal');return;}
+  var c=DATA.campaigns.find(function(x){return s(x.id)===_updateSendoutId;});if(!c){closeModal('updateSendoutModal');return;}
+  var tracking=document.getElementById('upd-tracking').value.trim(),carrier=document.getElementById('upd-carrier').value;
+  var status=document.getElementById('upd-status').value,dueDate=document.getElementById('upd-due').value;
+  var postUrl=document.getElementById('upd-posts').value.trim(),notes=document.getElementById('upd-notes').value,owner=document.getElementById('upd-owner').value;
+  if(tracking&&['Approved to Send','Order Created','Fulfilled'].indexOf(status)>=0)status='Tracking Received';
+  c.tracking=tracking;c.carrier=carrier;c.orderStatus=status;c.contentStatus=status;c.dueDate=dueDate;c.postUrl=postUrl;c.notes=notes;c.owner=owner;
+  // Addition 4: save performance fields
+  if(status==='Posted'||status==='Completed'){
+    var reach=document.getElementById('upd-reach'),likes=document.getElementById('upd-likes'),saves=document.getElementById('upd-saves'),hl=document.getElementById('upd-highlight');
+    if(reach) c.reach=parseInt(reach.value)||0;
+    if(likes) c.likes=parseInt(likes.value)||0;
+    if(saves) c.saves=parseInt(saves.value)||0;
+    if(hl)    c.highlightUrl=hl.value.trim();
+  }
+  renderGifting(filteredCampaigns());renderDashboard();closeModal('updateSendoutModal');toast('Send-out updated','success');
+  if(c.gasId) callGAS('updateCampaign',{campaignId:c.gasId,fields:{tracking_number:tracking,carrier:carrier,shipment_status:status,content_status:status,deliverable_due_date:dueDate,post_url:postUrl,notes:notes,owner:owner,reach:c.reach,likes:c.likes,saves:c.saves,highlight_url:c.highlightUrl}});
+}
+
+// ── FOLLOW-UPS ────────────────────────────────────────────────
+function renderFollowups(fus){var urg=(document.getElementById('filterFuUrgency')||{}).value||'';var f=urg?fus.filter(function(x){return x.urgency===urg;}):fus;var tbody=document.getElementById('followupsTable');if(!tbody)return;tbody.innerHTML=f.map(function(fu){var cr=DATA.creators.find(function(c){return s(c.name).toLowerCase()===s(fu.creator).toLowerCase();});var tier=cr?cr.tier:'Starter';return'<tr><td><strong>'+esc(fu.creator)+'</strong> '+tierBadge(tier)+'</td><td><span class="urg-'+s(fu.urgency).toLowerCase()+'">'+fu.urgency+'</span></td><td style="font-size:12px">'+esc(fu.reason)+'</td><td><span style="color:'+(fu.daysOverdue>14?'var(--red)':fu.daysOverdue>7?'var(--orange)':'var(--gold2)')+';font-weight:700">+'+fu.daysOverdue+'d</span></td><td style="font-size:12px">'+fu.lastFollowup+'</td><td style="font-size:12px">'+fu.count+'</td><td style="font-size:12px;color:var(--stone)">'+esc(fu.suggestedAction)+'</td><td><button class="btn btn-success btn-xs" onclick="resolveFu('+fu.id+')">Done</button></td></tr>';}).join('')||'<tr><td colspan="8" style="text-align:center;color:var(--stone);padding:20px;font-size:13px">No follow-ups</td></tr>';}
+function resolveFu(id){DATA.followups=DATA.followups.filter(function(f){return f.id!==id;});renderFollowups(DATA.followups);updateBadges();toast('Follow-up resolved','success');}
+
+// ── NOTES ─────────────────────────────────────────────────────
+function loadNotes(){
+  renderTemplates(); // Addition 7
+  var notes;try{notes=JSON.parse(localStorage.getItem('tlc-notes')||'[]');}catch(e){notes=[];}
+  var grid=document.getElementById('notesGrid');if(!grid)return;
+  grid.innerHTML='';
+  var ac=document.createElement('div');ac.className='add-note-card';ac.onclick=addNote;ac.innerHTML='<div class="add-note-icon">+</div><div style="font-size:13px;font-weight:500">New note</div><div style="font-size:11px;color:var(--stone)">Click to create</div>';
+  grid.appendChild(ac);
+  notes.forEach(function(n){grid.insertBefore(makeNoteCard(n),grid.firstChild);});
+}
+function makeNoteCard(n){var card=document.createElement('div');card.className='note-card';card.dataset.id=n.id;var top=document.createElement('div');top.className='note-card-top';var heading=document.createElement('input');heading.className='note-heading';heading.type='text';heading.placeholder='Note heading...';heading.value=n.title||'';heading.addEventListener('input',function(){saveNote(n.id);});var actions=document.createElement('div');actions.className='note-actions';[['B','bold'],['I','italic'],['=','insertUnorderedList']].forEach(function(b){var btn=document.createElement('button');btn.className='note-tb-btn';if(b[0]==='B')btn.innerHTML='<b>B</b>';else if(b[0]==='I')btn.innerHTML='<i>I</i>';else btn.textContent='=';btn.addEventListener('click',function(){document.execCommand(b[1]);});actions.appendChild(btn);});var del=document.createElement('button');del.className='note-del-btn';del.innerHTML='&times;';del.addEventListener('click',function(){deleteNote(n.id);});actions.appendChild(del);top.appendChild(heading);top.appendChild(actions);var div=document.createElement('div');div.className='note-divider';var body=document.createElement('div');body.className='note-body';body.contentEditable='true';body.setAttribute('data-placeholder','Start writing...');body.innerHTML=n.body||'';body.addEventListener('input',function(){saveNote(n.id);});var footer=document.createElement('div');footer.className='note-footer';if(n.updatedAt){var d=document.createElement('span');d.className='note-date';d.textContent=new Date(n.updatedAt).toLocaleDateString('en-AU',{day:'numeric',month:'short'});footer.appendChild(d);}card.appendChild(top);card.appendChild(div);card.appendChild(body);card.appendChild(footer);return card;}
+function addNote(){var notes;try{notes=JSON.parse(localStorage.getItem('tlc-notes')||'[]');}catch(e){notes=[];}var n={id:Date.now().toString(),title:'',body:'',updatedAt:new Date().toISOString()};notes.unshift(n);localStorage.setItem('tlc-notes',JSON.stringify(notes));var grid=document.getElementById('notesGrid');if(!grid)return;var card=makeNoteCard(n);grid.insertBefore(card,grid.firstChild);var h=card.querySelector('.note-heading');if(h)h.focus();}
+function saveNote(id){var card=document.querySelector('[data-id="'+id+'"]');if(!card)return;var notes;try{notes=JSON.parse(localStorage.getItem('tlc-notes')||'[]');}catch(e){notes=[];}var idx=notes.findIndex(function(n){return n.id===id;});if(idx<0)return;var h=card.querySelector('.note-heading'),b=card.querySelector('.note-body');notes[idx].title=h?h.value:'';notes[idx].body=b?b.innerHTML:'';notes[idx].updatedAt=new Date().toISOString();localStorage.setItem('tlc-notes',JSON.stringify(notes));}
+function deleteNote(id){if(!confirm('Delete this note?'))return;var notes;try{notes=JSON.parse(localStorage.getItem('tlc-notes')||'[]');}catch(e){notes=[];}notes=notes.filter(function(n){return n.id!==id;});localStorage.setItem('tlc-notes',JSON.stringify(notes));var card=document.querySelector('[data-id="'+id+'"]');if(card)card.remove();}
+
+// ── REPORTS ───────────────────────────────────────────────────
+function setReportPeriod(period,btn){_reportPeriod=period;document.querySelectorAll('.report-period-btn').forEach(function(b){b.classList.remove('active');});if(btn)btn.classList.add('active');buildReports();}
+function buildReports(){var now=new Date(),from=new Date(2000,0,1),to=new Date(now);if(_reportPeriod==='month')from=new Date(now.getFullYear(),now.getMonth(),1);else if(_reportPeriod==='quarter'){var q=Math.floor(now.getMonth()/3);from=new Date(now.getFullYear(),q*3,1);}else if(_reportPeriod==='half')from=new Date(now.getFullYear(),now.getMonth()-5,1);else if(_reportPeriod==='year')from=new Date(now.getFullYear(),0,1);else if(_reportPeriod==='custom'){var fEl=document.getElementById('rpt-from'),tEl=document.getElementById('rpt-to');if(fEl&&fEl.value)from=new Date(fEl.value);if(tEl&&tEl.value)to=new Date(tEl.value);}
+  var camps=DATA.campaigns.filter(function(c){if(_reportPeriod==='all')return true;if(!c.sentDate)return false;var d=new Date(c.sentDate);return d>=from&&d<=to;});
+  var total=camps.length,done=camps.filter(function(c){return['Posted','Completed'].indexOf(c.contentStatus)>=0;}).length,pending=total-done,pct=total>0?Math.round(done/total*100):0;
+  var ki=document.getElementById('reportKpis');if(ki)ki.innerHTML=[{val:total,lbl:'Total Send-outs',col:'var(--ink)'},{val:done,lbl:'Completed',col:'var(--green)'},{val:pending,lbl:'Pending',col:'var(--gold2)'},{val:pct+'%',lbl:'Completion Rate',col:pct>=75?'var(--green)':pct>=50?'var(--orange)':'var(--red)'}].map(function(k){return'<div class="rpt-kpi" style="border-top:3px solid '+k.col+'"><div class="rpt-kpi-lbl">'+k.lbl+'</div><div class="rpt-kpi-val" style="color:'+k.col+'">'+k.val+'</div></div>';}).join('');
+  function barChart(elId,data,max){var el=document.getElementById(elId);if(!el)return;if(!data.length){el.innerHTML='<div style="font-size:12px;color:var(--stone)">No data</div>';return;}el.innerHTML=data.map(function(d){return'<div class="bar-row"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(d[0])+'</span><div class="bar-track"><div class="bar-fill" style="width:'+Math.round(d[1]/max*100)+'%"></div></div><span>'+d[1]+'</span></div>';}).join('');}
+  var mMap={};camps.forEach(function(c){if(!c.sentDate)return;var k=new Date(c.sentDate).toLocaleDateString('en-AU',{month:'short',year:'2-digit'});mMap[k]=(mMap[k]||0)+1;});var mE=Object.keys(mMap).map(function(k){return[k,mMap[k]];});barChart('chart-sendouts',mE,mE.reduce(function(a,e){return Math.max(a,e[1]);},1));
+  var bMap={};camps.forEach(function(c){var b=c.brand||'Other';bMap[b]=(bMap[b]||0)+1;});var bE=Object.keys(bMap).map(function(k){return[k,bMap[k]];});barChart('chart-brand',bE,bE.reduce(function(a,e){return Math.max(a,e[1]);},1));
+  var ctMap={};camps.forEach(function(c){s(c.contentType).split(',').forEach(function(t){t=t.trim();if(t)ctMap[t]=(ctMap[t]||0)+1;});});var ctE=Object.keys(ctMap).map(function(k){return[k,ctMap[k]];});barChart('chart-content-type',ctE,ctE.reduce(function(a,e){return Math.max(a,e[1]);},1));
+  var top=DATA.creators.filter(function(c){return!c.dnc;}).sort(function(a,b){return b.score-a.score;}).slice(0,5);var tc=document.getElementById('chart-creators');if(tc)tc.innerHTML=top.length?top.map(function(c){return'<div class="bar-row"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(c.name.split(' ')[0])+'</span><div class="bar-track"><div class="bar-fill" style="width:'+c.score*10+'%;background:var(--green)"></div></div><span>'+c.score+'</span></div>';}).join(''):'<div style="font-size:12px;color:var(--stone)">No creators yet</div>';
+  // Addition 4: top performing by reach
+  var posted=camps.filter(function(c){return(c.contentStatus==='Posted'||c.contentStatus==='Completed')&&c.reach>0;}).sort(function(a,b){return b.reach-a.reach;}).slice(0,5);
+  var avoid=DATA.creators.filter(function(c){return c.score<4||c.dnc;}).sort(function(a,b){return a.score-b.score;});
+  var al=document.getElementById('avoid-list');if(al)al.innerHTML=avoid.length?avoid.map(function(c){return'<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border2);font-size:13px"><strong>'+esc(c.name)+'</strong><span style="color:var(--red)">'+(c.dnc?'DNC':'Score: '+c.score)+'</span></div>';}).join(''):'<div style="font-size:12px;color:var(--stone)">No flagged creators</div>';}
+
+// ── SETTINGS ──────────────────────────────────────────────────
+var SETTING_SECTIONS=[{key:'ethnicities',label:'Ethnicities',desc:'Ethnicity options in forms, filters, and representation section.'},{key:'niches',label:'Content Niches',desc:'Niche/category options in the submission form and filters.'},{key:'countries',label:'Countries',desc:'Country dropdown in submission form and filters.'},{key:'audienceLocations',label:'Audience Locations',desc:'Audience location options in the submission form.'},{key:'contentTypes',label:'Content Types',desc:'Content type options for new send-outs.'},{key:'platforms',label:'Platforms',desc:'Social media platform options across forms and filters.'},{key:'team',label:'Team Members',desc:'Staff names used in Owner and Assign To dropdowns.'}];
+function renderSettingsPage(){var pwEl=document.getElementById('pw-display');if(pwEl)pwEl.textContent=Array(PORTAL_PASSWORD.length+1).join('\u25CF');var settings=getSettings();var grid=document.getElementById('settingsGrid');if(!grid)return;grid.innerHTML=SETTING_SECTIONS.map(function(sec){var items=(settings[sec.key]||[]).map(function(item){var safe=item.replace(/\\/g,'\\\\').replace(/'/g,'\\\'');return'<span class="settings-tag">'+esc(item)+'<button class="settings-tag-del" onclick="removeSettingItem(\''+sec.key+'\',\''+safe+'\')">&#215;</button></span>';}).join('');return'<div class="settings-card"><div class="settings-card-header"><div><h3>'+sec.label+'</h3><p>'+sec.desc+'</p></div></div><div class="settings-card-body"><div class="settings-tag-wrap" id="stags-'+sec.key+'">'+items+'</div><div class="settings-add-row"><input class="settings-input" type="text" id="sinput-'+sec.key+'" placeholder="Add new..." onkeydown="if(event.key===\'Enter\')addSettingItem(\''+sec.key+'\')"><button class="btn btn-primary btn-sm" onclick="addSettingItem(\''+sec.key+'\')">+ Add</button></div><div class="settings-note">Changes sync to the Creator Submission form automatically.</div></div></div>';}).join('');}
+function addSettingItem(key){var input=document.getElementById('sinput-'+key);if(!input)return;var val=input.value.trim();if(!val)return;var settings=getSettings();if(!settings[key])settings[key]=[];if(settings[key].indexOf(val)>=0){toast('Already exists','error');return;}settings[key].push(val);saveSettings(settings);input.value='';renderSettingsPage();applySettings();toast('"'+val+'" added','success');}
+function removeSettingItem(key,val){var settings=getSettings();if(!settings[key])return;settings[key]=settings[key].filter(function(i){return i!==val;});saveSettings(settings);renderSettingsPage();applySettings();toast('"'+val+'" removed','info');}
+var _pwVisible=false;
+function togglePwVisible(){_pwVisible=!_pwVisible;var el=document.getElementById('pw-display'),btn=document.getElementById('pw-toggle');if(el)el.textContent=_pwVisible?PORTAL_PASSWORD:Array(PORTAL_PASSWORD.length+1).join('\u25CF');if(btn)btn.textContent=_pwVisible?'Hide':'Show';}
+
+// ── APPLY SETTINGS ────────────────────────────────────────────
+function applySettings(){var settings=getSettings();['so-owner','upd-owner'].forEach(function(id){var el=document.getElementById(id);if(!el)return;var cur=el.value;el.innerHTML=settings.team.map(function(t){return'<option>'+esc(t)+'</option>';}).join('');if(settings.team.indexOf(cur)>=0)el.value=cur;});var plat=document.getElementById('ac-platform');if(plat)plat.innerHTML=settings.platforms.map(function(p){return'<option>'+esc(p)+'</option>';}).join('');var eth=document.getElementById('ac-ethnicity');if(eth)eth.innerHTML='<option value="">Prefer not to say</option>'+settings.ethnicities.map(function(e){return'<option>'+esc(e)+'</option>';}).join('');var ctGrid=document.getElementById('soContentTypes');if(ctGrid)ctGrid.innerHTML=settings.contentTypes.map(function(t){return'<label class="ct-check"><input type="checkbox" name="contentType" value="'+esc(t)+'"><div class="ct-check-lbl">'+esc(t)+'</div></label>';}).join('');var soCreator=document.getElementById('so-creator');if(soCreator){var cur=soCreator.value;soCreator.innerHTML='<option value="">Select creator...</option>'+DATA.creators.map(function(c){return'<option value="'+sId(c.id)+'">'+esc(c.name)+' ('+esc(c.handle)+')</option>';}).join('');if(cur)soCreator.value=cur;}buildFilters();}
+
+// ── FILTERS ───────────────────────────────────────────────────
+function buildFilters(){var settings=getSettings();var platOpts=settings.platforms.map(function(p){return'<option>'+esc(p)+'</option>';}).join('');var countryOpts=settings.countries.map(function(c){return'<option>'+esc(c)+'</option>';}).join('');var ethOpts=settings.ethnicities.map(function(e){return'<option>'+esc(e)+'</option>';}).join('');var ab=document.getElementById('appFilters');if(ab)ab.innerHTML='<span class="filter-label">Filter:</span><select class="filter-select" id="filterAppStatus" onchange="filterApplications()"><option value="">All Statuses</option><option>New</option><option>Under Review</option><option>Need More Info</option><option>Approved</option><option>Rejected</option><option>On Hold</option></select><select class="filter-select" id="filterAppBrand" onchange="filterApplications()"><option value="">All Brands</option><option value="2eros">2EROS</option><option value="supawear">Supawear</option><option value="both">Both</option></select><select class="filter-select" id="filterAppPlatform" onchange="filterApplications()"><option value="">All Platforms</option>'+platOpts+'</select><select class="filter-select" id="filterAppCountry" onchange="filterApplications()"><option value="">All Countries</option>'+countryOpts+'</select><select class="filter-select" id="filterAppEthnicity" onchange="filterApplications()"><option value="">All Backgrounds</option>'+ethOpts+'</select>';var db=document.getElementById('dbFilters');if(db)db.innerHTML='<span class="filter-label">Filter:</span><select class="filter-select" id="filterDbBrand" onchange="filterDatabase()"><option value="">All Brands</option><option value="2eros">2EROS</option><option value="supawear">Supawear</option><option value="both">Both</option></select><select class="filter-select" id="filterDbStatus" onchange="filterDatabase()"><option value="">All Status</option><option>Active</option><option>Inactive</option><option>DNC</option></select><select class="filter-select" id="filterDbPlatform" onchange="filterDatabase()"><option value="">All Platforms</option>'+platOpts+'</select><select class="filter-select" id="filterDbCountry" onchange="filterDatabase()"><option value="">All Countries</option>'+countryOpts+'</select><select class="filter-select" id="filterDbEthnicity" onchange="filterDatabase()"><option value="">All Backgrounds</option>'+ethOpts+'</select><select class="filter-select" id="filterDbScore" onchange="filterDatabase()"><option value="">All Scores</option><option value="high">High (8-10)</option><option value="mid">Medium (5-7)</option><option value="low">Low (1-4)</option></select>';var gb=document.getElementById('giftFilters');if(gb)gb.innerHTML='<span class="filter-label">Filter:</span><select class="filter-select" id="filterGiftStatus" onchange="filterGifting()"><option value="">All Statuses</option><option>Approved to Send</option><option>Fulfilled</option><option>Tracking Received</option><option>Delivered</option><option>Awaiting Content</option><option>Content Submitted</option><option>Posted</option><option>Completed</option></select><select class="filter-select" id="filterGiftBrand" onchange="filterGifting()"><option value="">All Brands</option><option>2EROS</option><option>Supawear</option></select><select class="filter-select" id="filterContentType" onchange="filterGifting()"><option value="">All Content Types</option>'+settings.contentTypes.map(function(t){return'<option>'+esc(t)+'</option>';}).join('')+'</select><select class="filter-select" id="filterGiftOwner" onchange="filterGifting()"><option value="">All Owners</option>'+settings.team.map(function(t){return'<option>'+esc(t)+'</option>';}).join('')+'</select>';}
+
+// ── DRIVE ─────────────────────────────────────────────────────
+function provisionDrive(creator){toast('Creating Drive folder for '+s(creator.handle)+'...','info');callGAS('createCreatorFolder',{handle:s(creator.handle),email:s(creator.email),creatorId:s(creator.gasId||creator.id)}).then(function(r){var url=r&&(r.folderUrl||(r.folderId?'https://drive.google.com/drive/folders/'+r.folderId:null));if(r&&r.success&&url){creator.driveFolder=url;renderCreatorDb(filteredCreators());toast('Drive folder ready for '+s(creator.handle),'success');if(creator.gasId)callGAS('updateCreator',{creatorId:creator.gasId,fields:{drive_folder_url:url}});}else{toast('Drive error: '+((r&&r.error)||'unknown'),'error');}});}
+
+// ── NAVIGATION ────────────────────────────────────────────────
+function showPage(page,btn){document.querySelectorAll('.page-section').forEach(function(section){section.classList.remove('active');});var el=document.getElementById('page-'+page);if(el)el.classList.add('active');document.querySelectorAll('.nav-item').forEach(function(n){n.classList.remove('active');});if(btn)btn.classList.add('active');var titles={dashboard:'Dashboard',applications:'Applications',database:'Creator Database',gifting:'Gifting Tracker',followups:'Follow-ups',notes:'Notes',reports:'Reports',settings:'Settings'};var pt=document.getElementById('pageTitle');if(pt)pt.textContent=titles[page]||page;if(page==='notes')renderTemplates();var sb=document.getElementById('sidebar');if(sb)sb.classList.remove('open');}
+
+// ── MODALS ────────────────────────────────────────────────────
+function openModal(id){var el=document.getElementById(id);if(el){el.classList.add('active');document.body.style.overflow='hidden';}}
+function closeModal(id){var el=document.getElementById(id);if(el){el.classList.remove('active');document.body.style.overflow='';}}
+document.addEventListener('click',function(e){if(e.target.classList.contains('modal-overlay'))closeModal(e.target.id);});
+
+// ── TOAST ─────────────────────────────────────────────────────
+function toast(msg,type){var wrap=document.getElementById('toastContainer');if(!wrap)return;var t=document.createElement('div');t.className='toast '+(type||'info');t.innerHTML='<span>'+(type==='success'?'&#10003;':type==='error'?'&#10005;':'&#9432;')+'</span><span>'+esc(msg)+'</span>';wrap.appendChild(t);setTimeout(function(){t.remove();},4500);}
+function toggleCard(id){var el=document.getElementById(id);if(el)el.style.display=el.style.display==='none'?'block':'none';}
+
+// ── PLATFORM HELPERS ──────────────────────────────────────────
+var PLAT_META={Instagram:{icon:'I',url:function(h){return'https://instagram.com/'+h.replace(/^@/,'');}},TikTok:{icon:'T',url:function(h){return'https://tiktok.com/@'+h.replace(/^@/,'');}},YouTube:{icon:'Y',url:function(h){return'https://youtube.com/@'+h.replace(/^@/,'');}},Facebook:{icon:'F',url:function(h){return'https://facebook.com/'+h.replace(/^@/,'');}},Pinterest:{icon:'P',url:function(h){return'https://pinterest.com/'+h.replace(/^@/,'');}},Threads:{icon:'Th',url:function(h){return'https://threads.net/@'+h.replace(/^@/,'');}}};
+function singleLink(handle,platform){if(!handle||handle==='--')return handle||'--';var meta=PLAT_META[platform];if(!meta)return'<span style="font-size:11px;color:var(--stone)">'+esc(handle)+'</span>';return'<a href="'+meta.url(handle)+'" target="_blank" rel="noopener" class="handle-link" onclick="event.stopPropagation()"><span style="font-size:11px">'+meta.icon+'</span>'+esc(handle)+'</a>';}
+function handleLink(handle,platform,platforms){if(!handle||handle==='--')return'--';var plats=(platforms&&platforms.length)?platforms:(platform?[platform]:[]);if(plats.length<=1)return singleLink(handle,plats[0]||platform);var uid='pp_'+Math.random().toString(36).slice(2,8);var items=plats.map(function(p){var meta=PLAT_META[p];if(!meta)return'';return'<a href="'+meta.url(handle)+'" target="_blank" rel="noopener" class="plat-picker-item" onclick="event.stopPropagation()"><span class="pi">'+meta.icon+'</span><span class="pn">'+esc(p)+'</span><span class="ph">'+esc(handle)+'</span></a>';}).join('');return'<div class="plat-picker-wrap" id="'+uid+'"><button class="plat-picker-btn" onclick="event.stopPropagation();togglePicker(\''+uid+'\')">'+esc(handle)+' <span style="font-size:9px">&#9662;</span></button><div class="plat-picker-menu" id="'+uid+'_menu">'+items+'</div></div>';}
+function togglePicker(uid){var menu=document.getElementById(uid+'_menu');if(!menu)return;var open=menu.classList.contains('open');document.querySelectorAll('.plat-picker-menu.open').forEach(function(m){m.classList.remove('open');});if(!open)menu.classList.add('open');}
+document.addEventListener('click',function(){document.querySelectorAll('.plat-picker-menu.open').forEach(function(m){m.classList.remove('open');});});
+function driveFolderLink(url){if(!url)return'<span class="drive-link-pending">&#128193; No folder yet</span>';return'<a href="'+url+'" target="_blank" rel="noopener" class="drive-link" onclick="event.stopPropagation()">&#128193; Drive Folder</a>';}
+
+// ── CHIPS / FORMAT ────────────────────────────────────────────
+function brandChip(b){var bl=normBrand(b);if(bl==='2eros')return'<span class="chip chip-2eros">2EROS</span>';if(bl==='supawear')return'<span class="chip chip-supa">Supawear</span>';return'<span class="chip chip-both">Both</span>';}
+function statusChip(st){var map={New:'new','Under Review':'review',Approved:'approved',Rejected:'rejected','On Hold':'hold','Need More Info':'review',Active:'approved',Inactive:'hold',DNC:'rejected',Pending:'review'};return'<span class="chip chip-'+(map[st]||'pending')+'">'+esc(st)+'</span>';}
+function chipFor(st){var map={Completed:'completed',Posted:'completed',Overdue:'overdue',Fulfilled:'shipped','Tracking Received':'shipped',Delivered:'approved','Awaiting Content':'review','Content Submitted':'pending','Order Created':'new','Approved to Send':'new','Missed Deliverable':'rejected'};return'<span class="chip chip-'+(map[st]||'pending')+'">'+esc(st)+'</span>';}
+function fmtNum(n){if(!n)return'--';if(n>=1000000)return(n/1000000).toFixed(1)+'M';if(n>=1000)return(n/1000).toFixed(1)+'K';return String(n);}
+function fmtDate(d){if(!d)return'--';try{return new Date(d).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'});}catch(e){return s(d);}}
+function isOverdue(d){if(!d)return false;return new Date(d)<new Date();}
+function esc(v){return s(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function sId(id){return s(id).replace(/['"\\]/g,'');}
+
+// ── CSV ───────────────────────────────────────────────────────
+function exportTableCSV(tableId,filename){var tbody=document.getElementById(tableId);if(!tbody)return;var table=tbody.closest('table');var headers=table?Array.from(table.querySelectorAll('thead th')).map(function(th){return th.textContent.trim();}).filter(function(h){return h!=='Actions';}).join(','):'';var rows=[];tbody.querySelectorAll('tr').forEach(function(tr){var cells=Array.from(tr.querySelectorAll('td'));if(!cells.length)return;rows.push(cells.slice(0,headers.split(',').length).map(function(td){return'"'+td.innerText.replace(/\n/g,' ').trim().replace(/"/g,'""')+'"';}).join(','));});var csv=(headers?headers+'\n':'')+rows.join('\n');var blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download=filename+'-'+new Date().toISOString().slice(0,10)+'.csv';a.click();URL.revokeObjectURL(url);toast('CSV downloaded','success');}
+function downloadCSV(rows,filename){var csv=rows.map(function(r){return r.map(function(v){return'"'+s(v).replace(/"/g,'""')+'"';}).join(',');}).join('\n');var blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download=filename+'-'+new Date().toISOString().slice(0,10)+'.csv';a.click();URL.revokeObjectURL(url);}
+
+</script>
+</body>
+</html>
